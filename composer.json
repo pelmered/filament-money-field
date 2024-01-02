@@ -1,0 +1,29 @@
+{
+    "name": "pelmered/filament-money-field",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Pelmered\\FilamentMoneyField\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Peter Elmered",
+            "email": "peter@elmered.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "filament/support": "^3.0",
+        "moneyphp/money": "^4.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Pelmered\\FilamentMoneyField\\FilamentMoneyFieldServiceProvider"
+            ]
+        }
+    }
+}
