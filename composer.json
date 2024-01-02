@@ -21,6 +21,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
+        "ext-intl": "*",
         "filament/support": "^3.0",
         "moneyphp/money": "^4.0"
     },
