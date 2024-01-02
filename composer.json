@@ -7,6 +7,11 @@
             "Pelmered\\FilamentMoneyField\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Pelmered\\FilamentMoneyField\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Peter Elmered",
@@ -25,5 +30,9 @@
                 "Pelmered\\FilamentMoneyField\\FilamentMoneyFieldServiceProvider"
             ]
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10",
+        "filament/filament": "^3.0"
     }
 }
