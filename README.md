@@ -1,4 +1,4 @@
-# filament-money-field
+# Filament Money Field
 Money field powered by [Money PHP ](https://www.moneyphp.org/en/stable/).
 
 This package gives much better localization support for money fields in Filament than most other packages. For example when it comes to currency symbols and decimal and thousand separators. Especially for more obscure currencies.
