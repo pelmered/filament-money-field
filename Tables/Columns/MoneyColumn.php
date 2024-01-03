@@ -1,12 +1,13 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\Infolists\Components;
+namespace Pelmered\FilamentMoneyField\Tables\Columns;
 
-use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Columns\TextColumn;
 use Pelmered\FilamentMoneyField\hasMoneyAttributes;
+use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
-class MoneyEntry extends TextEntry
+class MoneyColumn extends TextColumn
 {
     use hasMoneyAttributes;
 

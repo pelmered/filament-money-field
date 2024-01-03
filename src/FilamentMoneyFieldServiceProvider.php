@@ -7,10 +7,9 @@ class FilamentMoneyFieldServiceProvider extends \Spatie\LaravelPackageTools\Pack
 {
     public static string $name = 'filament-money-field';
 
-    public static string $viewNamespace = 'filament-money-field';
-
     public function configurePackage(Package $package): void
     {
-        $package->name(static::$name);
+        $package->name(static::$name)
+                ->hasConfigFile();
     }
 }

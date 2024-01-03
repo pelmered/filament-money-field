@@ -4,24 +4,21 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Filament\Forms\Components\TextInput;
 use Money\Currencies\ISOCurrencies;
-use Money\Currency;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 use NumberFormatter;
+use Pelmered\FilamentMoneyField\hasMoneyAttributes;
+use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {
-    protected string | \Closure $prefix = '';
-    protected string | \Closure $suffix = '';
-    protected Currency | \Closure $currency;
-    protected string $locale;
-
+    use hasMoneyAttributes;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->prefix('$');
+        $this->prefix(MoneyFormatter::getCurrencySymbol($this->getCurrency(), $this->getLocale()));
 
         $this->integer();
         /*
@@ -45,34 +42,4 @@ class MoneyInput extends TextInput
         });
 
     }
-
-    public function locale(string $locale = 'en_US'): static
-    {
-        $this->locale = $locale;
-
-        return $this;
-    }
-
-    public function currency(string $currencyCode = 'USD'): static
-    {
-        $currency = new Currency($currencyCode);
-        $currencies = new ISOCurrencies();
-        $currencies->contains($currency);
-
-        $this->currency = $currency;
-
-        return $this;
-    }
-
-
-    /*
-    public function __construct(string $name)
-    {
-        parent::__construct($name);
-        $this->prefix('$');
-        $this->type('number');
-        $this->step('0.01');
-        $this->min('0');
-    }
-    */
 }
