@@ -11,11 +11,25 @@ This package would give "1234.56 kr", while most other solutions probably would 
 - PHP 8.2 or higher
 - Filament 3.0 or higher
 - [PHP Internationalization extension (intl) ](https://www.php.net/manual/en/intro.intl.php)
+- The database column should be a integers with minor units (i.e. cents) and not a float (Floats should never be used for storing money).
 
 ## Installation
 
 ```bash
 composer require pelmered/filament-money-field
+```
+
+**Optional: Set the default options for currency and locale so that you don't have to set them for every field.**
+
+**Option 1 (Recommended): Put the default options in your .env file.**
+
+```php
+MONEY_DEFAULT_LOCALE=sv_SE
+MONEY_DEFAULT_CURRENCY=SEK
+```
+**Option 2: Publish the config file and set the default options there.**
+```bash
+php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider" --tag="config"
 ```
 
 ## Usage
@@ -58,7 +72,15 @@ MoneyField::make('price')
 ### Table column
 
 ```php
-use Pelmered\FilamentMoneyField\Tables\Columns\Money;
+use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 
+MoneyColumn::make('price'); // Defaults to USD and the current Laravel locale
 
+MoneyColumn::make('price')
+    ->currency('USD')
+    ->locale('en_US');
+
+MoneyColumn::make('price')
+    ->currency('SEK')
+    ->locale('sv_SE');
 ```
