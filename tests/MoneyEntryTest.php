@@ -1,31 +1,29 @@
 <?php
 namespace Pelmered\FilamentMoneyField\Tests;
 
+use JetBrains\PhpStorm\NoReturn;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 
 class MoneyEntryTest extends TestCase
 {
-    public function testInfoListMoneyFormat()
+    public function testInfoListMoneyFormat(): void
     {
-        $this->markTestSkipped('Not implemented yet');
+        $this->markTestSkipped('Not working yet');
 
         $moneyEntry = (new MoneyEntry('name'))->currency('SEK')->locale('sv_SE');
 
-        $moneyEntry->initMoneyEntry();
-
-        //MoneyTest::callMethod($moneyEntry, 'setUp', []);
-        //$moneyEntry->__call('setUp', []);
+        self::callMethod($moneyEntry, 'setUp', []);
 
         $state = 1000000;
 
-        dd($moneyEntry->formatState('1000000'));
-
-        $value = $moneyEntry->evaluate($moneyEntry->formatStateUsing, [
+        $value = $moneyEntry->evaluate(self::getProperty($moneyEntry, 'formatStateUsing'), [
             'state' => $state,
         ]);
 
-        dd($value);
+        $this->assertEquals('10000,00 kr', $value);
+
 
         $this->assertEquals('10000,00 kr', $moneyEntry->formatState('1000000'));
     }
+
 }
