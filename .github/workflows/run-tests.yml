@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
       - name: Execute tests
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-filter=src
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
