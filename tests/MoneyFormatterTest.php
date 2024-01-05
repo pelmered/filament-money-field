@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Pelmered\FilamentMoneyField\Tests;
 use Money\Currency;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
+use PHPUnit\Framework;
 
 final class MoneyFormatterTest extends TestCase
 {
@@ -44,8 +45,10 @@ final class MoneyFormatterTest extends TestCase
 
 
     /**
+     * @covers MoneyFormatter::format
      * @dataProvider provideMoneyDataSEK
      */
+    #[Framework\CoversClass(MoneyFormatter::class)]
     public function testMoneyFormatterSEK( string $expectedOutput, mixed $input)
     {
         self::assertSame(
@@ -55,8 +58,10 @@ final class MoneyFormatterTest extends TestCase
     }
 
     /**
+     * @covers MoneyFormatter::format
      * @dataProvider provideMoneyDataUSD
      */
+    #[Framework\CoversClass(MoneyFormatter::class)]
     public function testMoneyFormatterUSD( string $expectedOutput, mixed $input)
     {
         self::assertSame(

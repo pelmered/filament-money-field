@@ -25,15 +25,15 @@
         "filament/support": "^3.0",
         "moneyphp/money": "^4.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^10",
+        "filament/filament": "^3.0"
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "Pelmered\\FilamentMoneyField\\FilamentMoneyFieldServiceProvider"
             ]
         }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^10",
-        "filament/filament": "^3.0"
     }
 }
