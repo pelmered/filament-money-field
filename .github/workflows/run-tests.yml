@@ -38,13 +38,11 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
       - name: Execute tests
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
           flags: tests
           name: codecov-umbrella
-          #yml: ./codecov.yml
           fail_ci_if_error: true
 
