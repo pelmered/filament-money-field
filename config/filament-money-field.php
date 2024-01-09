@@ -21,6 +21,6 @@ return [
     | The currency code to use if not set on the field.
     |
     */
-    'default_currency' => env('MONEY_DEFAULT_CURRENCY', config('app.locale', 'en'),),
+    'default_currency' => env('MONEY_DEFAULT_CURRENCY', null),
 
 ];
