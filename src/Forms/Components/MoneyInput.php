@@ -32,7 +32,6 @@ class MoneyInput extends TextInput
 
         $this->afterStateHydrated(static function (MoneyInput $component, $state): string {
 
-            ray($component->locale, $component->currency, $state)->green();
             $currencies = new ISOCurrencies();
             $numberFormatter = new NumberFormatter($component->locale, NumberFormatter::CURRENCY);
             $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
