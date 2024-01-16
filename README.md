@@ -4,7 +4,7 @@ Money field powered by [Money PHP ](https://www.moneyphp.org/en/stable/).
 This package gives much better localization support for money fields in Filament than most other packages. For example when it comes to currency symbols and decimal and thousand separators. Especially for more obscure currencies.
 
 Example of a money field with Swedish localization. 
-This package would give "1234.56 kr", while most other solutions probably would give you something like "SEK 1234.56" which is not the correct format for Sweden.
+This package would give "1234,56 kr", while most other solutions probably would give you something like "SEK 1234.56" which is not the correct format for Sweden.
 
 ## Requirements
 
@@ -39,7 +39,7 @@ php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoney
 ```php
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 
-MoneyEntry::make('price'); // Defaults to USD and the current Laravel locale
+MoneyEntry::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
 
 // The default can be set in the Infolist class with:
 public static string $defaultCurrency = 'SEK';
@@ -58,7 +58,7 @@ MoneyEntry::make('price')
 ```php
 use Filament\Forms\Components\MoneyField;
 
-MoneyField::make('price'); // Defaults to USD and the current Laravel locale
+MoneyField::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
 
 MoneyField::make('price')
     ->currency('USD')
@@ -74,7 +74,7 @@ MoneyField::make('price')
 ```php
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 
-MoneyColumn::make('price'); // Defaults to USD and the current Laravel locale
+MoneyColumn::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
 
 MoneyColumn::make('price')
     ->currency('USD')
@@ -84,3 +84,10 @@ MoneyColumn::make('price')
     ->currency('SEK')
     ->locale('sv_SE');
 ```
+
+## TDOO / Ideas for the future. 
+Contact me if you want something of this, or something else.
+
+- Add support for dynamic currency and locale based on current user.
+- Currency conversions. Set what base curreny the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case. 
+
