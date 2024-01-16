@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Support\RawJs;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
@@ -18,26 +19,34 @@ class MoneyInput extends TextInput
     {
         parent::setUp();
 
-        $this->prefix(MoneyFormatter::getCurrencySymbol($this->getCurrency(), $this->getLocale()));
+        $formattingRules = MoneyFormatter::getFormattingRules($this->getLocale());
 
-        $this->integer();
-        /*
-        $this->inputMode('numeric');
+        $this->prefix($formattingRules->currencySymbol);
+
+        //$this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', '.$formattingRules->fractionDigits.')'));
+        $this->stripCharacters($formattingRules->groupingSeparator);
+        $this->inputMode('decimal');
         $this->rule('numeric');
-        $this->step(1);
-        */
+        $this->step(0.01);
         $this->minValue = 0;
 
+        /*
+        $this->afterStateHydrated(static function (MoneyInput $component, $state): void {
+           $component->state($state/100);
+        });
+        */
 
+        $this->formatStateUsing(fn (string $state): string => (int) $state/100);
 
-        $this->afterStateHydrated(static function (MoneyInput $component, $state): string {
+        $this->dehydrateStateUsing(static function (MoneyInput $component, $state): string {
 
-            $currencies = new ISOCurrencies();
-            $numberFormatter = new NumberFormatter($component->locale, NumberFormatter::CURRENCY);
-            $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
+            $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
 
-            $money = new Money($state, $component->currency);
-            return $moneyFormatter->format($money);
+            if($formattingRules->decimalSeparator === ',') {
+                $state = str_replace(',', '.', $state);
+            }
+
+            return (int) ($state*100);
         });
 
     }

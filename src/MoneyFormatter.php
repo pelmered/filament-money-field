@@ -23,8 +23,15 @@ class MoneyFormatter
         return $moneyFormatter->format($money);
     }
 
-    public static function getCurrencySymbol($currency, $locale): string
+    public static function getFormattingRules($locale): MoneyFormattingRules
     {
-        return (new NumberFormatter($locale, NumberFormatter::CURRENCY))->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+        $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+
+        return new MoneyFormattingRules(
+            currencySymbol: $numberFormatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL),
+            fractionDigits: $numberFormatter->getAttribute(NumberFormatter::FRACTION_DIGITS),
+            decimalSeparator: $numberFormatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL),
+            groupingSeparator: $numberFormatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL),
+        );
     }
 }
