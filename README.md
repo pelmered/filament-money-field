@@ -37,6 +37,8 @@ php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoney
 
 ### If you want to use the formatting mask on the `MoneyInput` component 
 **This will auto format the input field as you type.**
+
+This is a bit experimental at the moment and is therefore disabled by default. Hopefully it will be improved in the future and enabled by default in the next major version. Please try it out and provide feedback.
 ```php
 MONEY_USE_INPUT_MASK=true // Defaults to false
 ```
