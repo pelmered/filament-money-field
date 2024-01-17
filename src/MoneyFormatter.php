@@ -14,7 +14,6 @@ class MoneyFormatter
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
         $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
-        //$numberFormatter->setSymbol(\NumberFormatter::CURRENCY_SYMBOL, $currency);
 
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
 
@@ -33,5 +32,17 @@ class MoneyFormatter
             decimalSeparator: $numberFormatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL),
             groupingSeparator: $numberFormatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL),
         );
+    }
+
+    public static function decimalToMoneyString($moneyString, $locale): string
+    {
+        $formattingRules = self::getFormattingRules($locale);
+        $moneyString = (string) $moneyString;
+
+        if($formattingRules->decimalSeparator === ',') {
+            $moneyString = str_replace('.', ',', (string) $moneyString);
+        }
+
+        return $moneyString;
     }
 }

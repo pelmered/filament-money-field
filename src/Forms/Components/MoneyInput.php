@@ -23,20 +23,18 @@ class MoneyInput extends TextInput
 
         $this->prefix($formattingRules->currencySymbol);
 
-        //$this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', '.$formattingRules->fractionDigits.')'));
+        if(config('filament-money-field.use_input_mask')) {
+            $this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')'));
+        }
         $this->stripCharacters($formattingRules->groupingSeparator);
         $this->inputMode('decimal');
         $this->rule('numeric');
         $this->step(0.01);
         $this->minValue = 0;
 
-        /*
-        $this->afterStateHydrated(static function (MoneyInput $component, $state): void {
-           $component->state($state/100);
+        $this->formatStateUsing(static function (MoneyInput $component, $state): string {
+            return MoneyFormatter::decimalToMoneyString($state/100, $component->getLocale());
         });
-        */
-
-        $this->formatStateUsing(fn (string $state): string => (int) $state/100);
 
         $this->dehydrateStateUsing(static function (MoneyInput $component, $state): string {
 

@@ -26,7 +26,7 @@ trait hasMoneyAttributes
         $currencies     = new ISOCurrencies();
 
         if (! $currencies->contains($this->currency)) {
-            throw new \Exception('Currency not supported: '.$currencyCode);
+            throw new \RuntimeException('Currency not supported: ' . $currencyCode);
         }
 
         return $this;
