@@ -32,5 +32,5 @@ return [
     | The currency code to use if not set on the field.
     |
     */
-    'use_input_mask' => env('MONEY_USE_INPUT_MASK', true),
+    'use_input_mask' => env('MONEY_USE_INPUT_MASK', false),
 ];

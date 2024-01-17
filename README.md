@@ -19,7 +19,10 @@ This package would give "1234,56 kr", while most other solutions probably would 
 composer require pelmered/filament-money-field
 ```
 
-**Optional: Set the default options for currency and locale so that you don't have to set them for every field.**
+## Configuration
+
+### Set the default currency and locale
+**Set the default options for currency and locale so that you don't have to set them for every field.**
 
 **Option 1 (Recommended): Put the default options in your .env file.**
 
@@ -30,6 +33,12 @@ MONEY_DEFAULT_CURRENCY=SEK
 **Option 2: Publish the config file and set the default options there.**
 ```bash
 php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider" --tag="config"
+```
+
+### If you want to use the formatting mask on the `MoneyInput` component 
+**This will auto format the input field as you type.**
+```php
+MONEY_USE_INPUT_MASK=true // Defaults to false
 ```
 
 ## Usage
@@ -58,13 +67,13 @@ MoneyEntry::make('price')
 ```php
 use Filament\Forms\Components\MoneyField;
 
-MoneyField::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
+MoneyInput::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
 
-MoneyField::make('price')
+MoneyInput::make('price')
     ->currency('USD')
     ->locale('en_US');
 
-MoneyField::make('price')
+MoneyInput::make('price')
     ->currency('SEK')
     ->locale('sv_SE');
 ```

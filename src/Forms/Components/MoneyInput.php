@@ -4,10 +4,6 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
-use Money\Currencies\ISOCurrencies;
-use Money\Formatter\IntlMoneyFormatter;
-use Money\Money;
-use NumberFormatter;
 use Pelmered\FilamentMoneyField\hasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
@@ -37,7 +33,6 @@ class MoneyInput extends TextInput
         });
 
         $this->dehydrateStateUsing(static function (MoneyInput $component, $state): string {
-
             $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
 
             if($formattingRules->decimalSeparator === ',') {
@@ -46,6 +41,5 @@ class MoneyInput extends TextInput
 
             return (int) ($state*100);
         });
-
     }
 }
