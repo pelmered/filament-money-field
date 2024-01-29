@@ -19,7 +19,7 @@ class MoneyInput extends TextInput
 
         $this->prefix($formattingRules->currencySymbol);
 
-        if(config('filament-money-field.use_input_mask')) {
+        if (config('filament-money-field.use_input_mask')) {
             $this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')'));
         }
         $this->stripCharacters($formattingRules->groupingSeparator);
@@ -28,18 +28,18 @@ class MoneyInput extends TextInput
         $this->step(0.01);
         $this->minValue = 0;
 
-        $this->formatStateUsing(static function (MoneyInput $component, $state): string {
-            return MoneyFormatter::decimalToMoneyString($state/100, $component->getLocale());
+        $this->formatStateUsing(static function (MoneyInput $component, $state): ?string {
+        return is_null($state) ? null : MoneyFormatter::decimalToMoneyString($state / 100, $component->getLocale());
         });
 
         $this->dehydrateStateUsing(static function (MoneyInput $component, $state): string {
             $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
 
-            if($formattingRules->decimalSeparator === ',') {
+            if ($formattingRules->decimalSeparator === ',') {
                 $state = str_replace(',', '.', $state);
             }
 
-            return (int) ($state*100);
+            return (int)($state * 100);
         });
     }
 }
