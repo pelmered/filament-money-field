@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField;
 
 use Filament\Infolists\Infolist;
@@ -9,6 +10,7 @@ trait hasMoneyAttributes
 {
     protected Currency $currency;
     protected string $locale;
+    protected ?string $monetarySeparator = null;
 
     protected function getCurrency(): Currency
     {
@@ -23,9 +25,9 @@ trait hasMoneyAttributes
     public function currency(string|\Closure|null $currencyCode = null): static
     {
         $this->currency = new Currency($currencyCode);
-        $currencies     = new ISOCurrencies();
+        $currencies = new ISOCurrencies();
 
-        if (! $currencies->contains($this->currency)) {
+        if (!$currencies->contains($this->currency)) {
             throw new \RuntimeException('Currency not supported: ' . $currencyCode);
         }
 
@@ -35,6 +37,13 @@ trait hasMoneyAttributes
     public function locale(string|\Closure|null $locale = null): static
     {
         $this->locale = $locale;
+
+        return $this;
+    }
+
+    public function monetarySeparator(string|\Closure|null $monetarySeparator = null): static
+    {
+        $this->monetarySeparator = $monetarySeparator;
 
         return $this;
     }

@@ -21,29 +21,34 @@ class MoneyInput extends TextInput
         $this->step(0.01);
         $this->minValue = 0;
 
+
         $this->formatStateUsing(function (MoneyInput $component, $state): ?string {
 
-            $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
-
-            $this->prefix($formattingRules->currencySymbol);
-
-            if (config('filament-money-field.use_input_mask')) {
-                $this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')'));
-            }
-            
-            $this->stripCharacters($formattingRules->groupingSeparator);
+            $this->prepare($component);
 
             return is_null($state) ? null : MoneyFormatter::decimalToMoneyString($state / 100, $component->getLocale());
         });
 
-        $this->dehydrateStateUsing(static function (MoneyInput $component, $state): string {
-            $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
+        $this->dehydrateStateUsing( function (MoneyInput $component, $state): string {
 
-            if ($formattingRules->decimalSeparator === ',') {
-                $state = str_replace(',', '.', $state);
-            }
+            $this->prepare($component);
+
+            $state = str_replace(',', '.', $state);
 
             return (int)($state * 100);
         });
+    }
+
+    protected function prepare(MoneyInput $component): void
+    {
+        $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
+
+        $this->prefix($formattingRules->currencySymbol);
+
+        if (config('filament-money-field.use_input_mask')) {
+            $this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')'));
+        }
+
+        $this->stripCharacters($formattingRules->groupingSeparator);
     }
 }
