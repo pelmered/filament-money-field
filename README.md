@@ -97,9 +97,10 @@ MoneyColumn::make('price')
 ```
 
 ## TDOO / Ideas for the future. 
-Contact me if you want something of this, or something else.
+Contact me or create an issue if you want something of this, or something else. 
+I appriciate if you could tell me a bit about your use case for that feature as well. 
 
-- Improve test suite with tests for the individual components.
+- Improve test suite with tests for the individual components (I was struggling a bit with this. Help would be appriciated).
 - Add support for dynamic currency and locale based on current user.
 - Currency conversions. Set what base currency the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case. 
 
