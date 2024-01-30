@@ -33,12 +33,10 @@ class MoneyInput extends TextInput
         });
 
         $this->dehydrateStateUsing(static function (MoneyInput $component, $state): string {
-            $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
+            $currency = $component->getCurrency()->getCode();
+            $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
 
-            $state = str_replace($formattingRules->decimalSeparator, '', $state);
-            $state = str_replace($formattingRules->groupingSeparator, '', $state);
-
-            return (int) ($state*100);
+            return $state;
         });
     }
 }
