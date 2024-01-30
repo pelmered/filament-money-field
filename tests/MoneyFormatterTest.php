@@ -43,6 +43,42 @@ final class MoneyFormatterTest extends TestCase
         ];
     }
 
+    public static function provideDecimalDataSEK(): array
+    {
+        return [
+            'thousands' => [
+                '10 000,00',
+                '1000000',
+            ],
+            'decimals' => [
+                '100,45',
+                '10045',
+            ],
+            'millions' => [
+                '1 234 567,89',
+                '123456789',
+            ],
+        ];
+    }
+
+    public static function provideDecimalDataUSD(): array
+    {
+        return [
+            'thousands' => [
+                '10,000.00',
+                '1000000',
+            ],
+            'decimals' => [
+                '100.45',
+                '10045',
+            ],
+            'millions' => [
+                '1,234,567.89',
+                '123456789',
+            ],
+        ];
+    }
+
 
     /**
      * @covers MoneyFormatter::format
@@ -70,6 +106,29 @@ final class MoneyFormatterTest extends TestCase
         );
     }
 
+    /**
+     * @covers MoneyFormatter::parse
+     * @dataProvider provideDecimalDataSEK
+     */
+    #[Framework\CoversClass(MoneyFormatter::class)]
+    public function testMoneyParserDecimalSEK( string $input, mixed $expectedOutput)
+    {
+        self::assertSame(
+            $expectedOutput,
+            MoneyFormatter::parseDecimal($input, new Currency('SEK'), 'sv_SE')
+        );
+    }
 
-
+    /**
+     * @covers MoneyFormatter::parse
+     * @dataProvider provideDecimalDataUSD
+     */
+    #[Framework\CoversClass(MoneyFormatter::class)]
+    public function testMoneyParserDecimalUSD( string $input, mixed $expectedOutput)
+    {
+        self::assertSame(
+            $expectedOutput,
+            MoneyFormatter::parseDecimal($input, new Currency('USD'), 'en_US')
+        );
+    }
 }
