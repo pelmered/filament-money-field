@@ -20,7 +20,10 @@ class MoneyInput extends TextInput
         $this->minValue = 0;
 
         $this->formatStateUsing(function (MoneyInput $component, $state): ?string {
-
+            
+            $currency = $component->getCurrency()->getCode();
+            $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
+          
             $this->prepare($component);
 
             if (is_null($state)) {
@@ -37,9 +40,10 @@ class MoneyInput extends TextInput
 
             $this->prepare($component);
 
-            $state = str_replace(',', '.', $state);
+            $currency = $component->getCurrency()->getCode();
+            $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
 
-            return (int)($state * 100);
+            return $state;
         });
     }
 
