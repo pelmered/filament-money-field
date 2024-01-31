@@ -24,7 +24,6 @@ class MoneyInput extends TextInput
         }
         $this->stripCharacters($formattingRules->groupingSeparator);
         $this->inputMode('decimal');
-        $this->rule('numeric');
         $this->step(0.01);
         $this->minValue = 0;
 
