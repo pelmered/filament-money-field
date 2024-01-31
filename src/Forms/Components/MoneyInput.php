@@ -15,21 +15,25 @@ class MoneyInput extends TextInput
     {
         parent::setUp();
 
-
         $this->inputMode('decimal');
-        $this->rule('numeric');
         $this->step(0.01);
         $this->minValue = 0;
-
 
         $this->formatStateUsing(function (MoneyInput $component, $state): ?string {
 
             $this->prepare($component);
 
-            return is_null($state) ? null : MoneyFormatter::decimalToMoneyString($state / 100, $component->getLocale());
+            if (is_null($state)) {
+                return '';
+            }
+            if(!is_numeric($state)) {
+                return $state;
+            }
+
+            return MoneyFormatter::decimalToMoneyString($state / 100, $component->getLocale());
         });
 
-        $this->dehydrateStateUsing( function (MoneyInput $component, $state): string {
+        $this->dehydrateStateUsing(function (MoneyInput $component, $state): string {
 
             $this->prepare($component);
 
@@ -50,5 +54,7 @@ class MoneyInput extends TextInput
         }
 
         $this->stripCharacters($formattingRules->groupingSeparator);
+        // OR
+        $this->stripCharacters([',', '.', ' ',]);
     }
 }
