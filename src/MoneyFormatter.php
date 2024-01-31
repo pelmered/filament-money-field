@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField;
 
 use Money\Currencies\ISOCurrencies;
@@ -8,17 +9,20 @@ use NumberFormatter;
 
 class MoneyFormatter
 {
-    public static function format($value, $currency, $locale): string
+    public static function format($value, $currency, $locale, $monetarySeparator = null): string
     {
         $currencies = new ISOCurrencies();
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+
+        if (!is_null($monetarySeparator)) {
+            $numberFormatter->setSymbol(NumberFormatter::MONETARY_SEPARATOR_SYMBOL, $monetarySeparator);
+        }
 
         $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
 
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
 
         $money = new Money($value, $currency);
-
         return $moneyFormatter->format($money);
     }
 
@@ -37,11 +41,9 @@ class MoneyFormatter
     public static function decimalToMoneyString($moneyString, $locale): string
     {
         $formattingRules = self::getFormattingRules($locale);
-        $moneyString = (string) $moneyString;
+        $moneyString = (string)$moneyString;
 
-        if($formattingRules->decimalSeparator === ',') {
-            $moneyString = str_replace('.', ',', (string) $moneyString);
-        }
+        $moneyString = str_replace(',', '.', (string)$moneyString);
 
         return $moneyString;
     }
