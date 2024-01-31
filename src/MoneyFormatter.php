@@ -13,11 +13,12 @@ class MoneyFormatter
 {
     public static function format($value, $currency, $locale, $monetarySeparator = null): string
     {
-        $currencies = new ISOCurrencies();
+        if (is_null($value) || $value === '') {
+            return '';
+        }
 
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::CURRENCY);
-
-        $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
+        $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
         $money = new Money($value, $currency);
         return $moneyFormatter->format($money);
@@ -25,6 +26,10 @@ class MoneyFormatter
 
     public static function parseDecimal($moneyString, $currency, $locale): string
     {
+        if (is_null($moneyString) || $moneyString === '') {
+            return '';
+        }
+
         $currencies = new ISOCurrencies();
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL);
         $moneyParser = new IntlLocalizedDecimalParser($numberFormatter, $currencies);

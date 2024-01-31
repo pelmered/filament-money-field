@@ -11,16 +11,24 @@ final class MoneyFormatterTest extends TestCase
     {
         return [
             'thousands' => [
-                '10 000,00 kr',
                 1000000,
+                '10 000,00 kr',
             ],
             'decimals' => [
-                '100,45 kr',
                 10045,
+                '100,45 kr',
             ],
             'millions' => [
-                '1 234 567,89 kr',
                 123456789,
+                '1 234 567,89 kr',
+            ],
+            'empty_string' => [
+                '',
+                '',
+            ],
+            'null' => [
+                null,
+                '',
             ],
         ];
     }
@@ -29,16 +37,24 @@ final class MoneyFormatterTest extends TestCase
     {
         return [
             'thousands' => [
-                '$10,000.00',
                 1000000,
+                '$10,000.00',
             ],
             'decimals' => [
-                '$100.45',
                 10045,
+                '$100.45',
             ],
             'millions' => [
-                '$1,234,567.89',
                 123456789,
+                '$1,234,567.89',
+            ],
+            'empty_string' => [
+                '',
+                '',
+            ],
+            'null' => [
+                null,
+                '',
             ],
         ];
     }
@@ -58,6 +74,14 @@ final class MoneyFormatterTest extends TestCase
                 '1 234 567,89',
                 '123456789',
             ],
+            'empty_string' => [
+                '',
+                '',
+            ],
+            'null' => [
+                null,
+                '',
+            ],
         ];
     }
 
@@ -76,6 +100,14 @@ final class MoneyFormatterTest extends TestCase
                 '1,234,567.89',
                 '123456789',
             ],
+            'empty_string' => [
+                '',
+                '',
+            ],
+            'null' => [
+                null,
+                '',
+            ],
         ];
     }
 
@@ -85,7 +117,7 @@ final class MoneyFormatterTest extends TestCase
      * @dataProvider provideMoneyDataSEK
      */
     #[Framework\CoversClass(MoneyFormatter::class)]
-    public function testMoneyFormatterSEK( string $expectedOutput, mixed $input)
+    public function testMoneyFormatterSEK(mixed $input, string $expectedOutput)
     {
         self::assertSame(
             static::replaceNonBreakingSpaces($expectedOutput),
@@ -98,7 +130,7 @@ final class MoneyFormatterTest extends TestCase
      * @dataProvider provideMoneyDataUSD
      */
     #[Framework\CoversClass(MoneyFormatter::class)]
-    public function testMoneyFormatterUSD( string $expectedOutput, mixed $input)
+    public function testMoneyFormatterUSD(mixed $input, string $expectedOutput)
     {
         self::assertSame(
             static::replaceNonBreakingSpaces($expectedOutput),
@@ -107,11 +139,11 @@ final class MoneyFormatterTest extends TestCase
     }
 
     /**
-     * @covers MoneyFormatter::parse
+     * @covers MoneyFormatter::parseDecimal
      * @dataProvider provideDecimalDataSEK
      */
     #[Framework\CoversClass(MoneyFormatter::class)]
-    public function testMoneyParserDecimalSEK( string $input, mixed $expectedOutput)
+    public function testMoneyParserDecimalSEK(mixed $input, string $expectedOutput)
     {
         self::assertSame(
             $expectedOutput,
@@ -120,11 +152,11 @@ final class MoneyFormatterTest extends TestCase
     }
 
     /**
-     * @covers MoneyFormatter::parse
+     * @covers MoneyFormatter::parseDecimal
      * @dataProvider provideDecimalDataUSD
      */
     #[Framework\CoversClass(MoneyFormatter::class)]
-    public function testMoneyParserDecimalUSD( string $input, mixed $expectedOutput)
+    public function testMoneyParserDecimalUSD(mixed $input, string $expectedOutput)
     {
         self::assertSame(
             $expectedOutput,
