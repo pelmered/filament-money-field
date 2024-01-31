@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField;
 
 use Money\Currencies\ISOCurrencies;
@@ -10,14 +11,15 @@ use NumberFormatter;
 
 class MoneyFormatter
 {
-    public static function format($value, $currency, $locale): string
+    public static function format($value, $currency, $locale, $monetarySeparator = null): string
     {
         $currencies = new ISOCurrencies();
+
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::CURRENCY);
+
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
 
         $money = new Money($value, $currency);
-
         return $moneyFormatter->format($money);
     }
 
@@ -47,11 +49,9 @@ class MoneyFormatter
     public static function decimalToMoneyString($moneyString, $locale): string
     {
         $formattingRules = self::getFormattingRules($locale);
-        $moneyString = (string) $moneyString;
+        $moneyString = (string)$moneyString;
 
-        if($formattingRules->decimalSeparator === ',') {
-            $moneyString = str_replace('.', ',', (string) $moneyString);
-        }
+        $moneyString = str_replace(',', '.', (string)$moneyString);
 
         return $moneyString;
     }

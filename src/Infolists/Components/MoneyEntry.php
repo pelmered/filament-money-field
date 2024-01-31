@@ -17,11 +17,11 @@ class MoneyEntry extends TextEntry
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(static function (MoneyEntry $component, $state): ?string {
+        $this->formatStateUsing(function (MoneyEntry $component, $state): ?string {
             $currency = $component->getCurrency();
             $locale   = $component->getLocale();
 
-            return MoneyFormatter::format($state, $currency, $locale);
+            return MoneyFormatter::format($state, $currency, $locale, $this->monetarySeparator);
         });
     }
 }
