@@ -24,6 +24,19 @@ class MoneyFormatter
         return $moneyFormatter->format($money);
     }
 
+    public static function formatAsDecimal($value, $currency, $locale): string
+    {
+        if (is_null($value) || $value === '') {
+            return '';
+        }
+
+        $numberFormatter = self::getNumberFormatter($locale, \NumberFormatter::DECIMAL);
+        $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
+
+        $money = new Money($value, $currency);
+        return $moneyFormatter->format($money); // outputs 1.000,00
+    }
+
     public static function parseDecimal($moneyString, $currency, $locale): string
     {
         if (is_null($moneyString) || $moneyString === '') {
