@@ -15,16 +15,12 @@ class MoneyInput extends TextInput
     {
         parent::setUp();
 
-        $this->inputMode('decimal');
-        $this->step(0.01);
-        $this->minValue = 0;
-
         $this->formatStateUsing(function (MoneyInput $component, $state): ?string {
             
-            $currency = $component->getCurrency()->getCode();
-            $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
-          
             $this->prepare($component);
+
+            $currency = $component->getCurrency();
+            $locale = $component->getLocale();
 
             if (is_null($state)) {
                 return '';
@@ -33,15 +29,15 @@ class MoneyInput extends TextInput
                 return $state;
             }
 
-            return MoneyFormatter::decimalToMoneyString($state / 100, $component->getLocale());
+            return MoneyFormatter::formatAsDecimal($state, $currency, $locale);
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, $state): string {
 
-            $this->prepare($component);
-
             $currency = $component->getCurrency()->getCode();
             $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
+
+            $this->prepare($component);
 
             return $state;
         });
@@ -50,15 +46,50 @@ class MoneyInput extends TextInput
     protected function prepare(MoneyInput $component): void
     {
         $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
-
         $this->prefix($formattingRules->currencySymbol);
 
         if (config('filament-money-field.use_input_mask')) {
             $this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')'));
         }
+    }
 
-        $this->stripCharacters($formattingRules->groupingSeparator);
-        // OR
-        $this->stripCharacters([',', '.', ' ',]);
+    public function minValue(mixed $min): static
+    {
+        $this->rule(static function (MoneyInput $component, mixed $state) use ($min) {
+            return function (string $attribute, mixed $value, \Closure $fail) use ($component, $state, $min) {
+
+                $value = MoneyFormatter::parseDecimal(
+                    $state, 
+                    $component->getCurrency()->getCode(),
+                    $component->getLocale()
+                );
+
+                if ($value < $min) {
+                    $fail('The :attribute must be greater than or equal to ' . $min . '.');
+                }
+            };
+        });
+
+        return $this;
+    }
+
+    public function maxValue(mixed $max): static
+    {
+        $this->rule(static function (MoneyInput $component, mixed $state) use ($max) {
+            return function (string $attribute, mixed $value, \Closure $fail) use ($component, $state, $max) {
+
+                $value = MoneyFormatter::parseDecimal(
+                    $state, 
+                    $component->getCurrency()->getCode(),
+                    $component->getLocale()
+                );
+
+                if ($value > $max) {
+                    $fail('The :attribute must be less than or equal to ' . $max . '.');
+                }
+            };
+        });
+
+        return $this;
     }
 }

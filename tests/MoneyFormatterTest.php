@@ -3,8 +3,10 @@
 namespace Pelmered\FilamentMoneyField\Tests;
 use Money\Currency;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
-use PHPUnit\Framework;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
+#[CoversClass(MoneyFormatter::class)]
 final class MoneyFormatterTest extends TestCase
 {
     public static function provideMoneyDataSEK(): array
@@ -33,6 +35,32 @@ final class MoneyFormatterTest extends TestCase
         ];
     }
 
+    public static function provideDecimalMoneyDataSEK(): array
+    {
+        return [
+            'thousands' => [
+                1000000,
+                '10 000,00',
+            ],
+            'decimals' => [
+                10045,
+                '100,45',
+            ],
+            'millions' => [
+                123456789,
+                '1 234 567,89',
+            ],
+            'empty_string' => [
+                '',
+                '',
+            ],
+            'null' => [
+                null,
+                '',
+            ],
+        ];
+    }
+
     public static function provideMoneyDataUSD(): array
     {
         return [
@@ -47,6 +75,32 @@ final class MoneyFormatterTest extends TestCase
             'millions' => [
                 123456789,
                 '$1,234,567.89',
+            ],
+            'empty_string' => [
+                '',
+                '',
+            ],
+            'null' => [
+                null,
+                '',
+            ],
+        ];
+    }
+
+    public static function provideDecimalMoneyDataUSD(): array
+    {
+        return [
+            'thousands' => [
+                1000000,
+                '10,000.00',
+            ],
+            'decimals' => [
+                10045,
+                '100.45',
+            ],
+            'millions' => [
+                123456789,
+                '1,234,567.89',
             ],
             'empty_string' => [
                 '',
@@ -110,26 +164,8 @@ final class MoneyFormatterTest extends TestCase
             ],
         ];
     }
-
-
-    /**
-     * @covers MoneyFormatter::format
-     * @dataProvider provideMoneyDataSEK
-     */
-    #[Framework\CoversClass(MoneyFormatter::class)]
-    public function testMoneyFormatterSEK(mixed $input, string $expectedOutput)
-    {
-        self::assertSame(
-            static::replaceNonBreakingSpaces($expectedOutput),
-            MoneyFormatter::format($input, new Currency('SEK'), 'sv_SE')
-        );
-    }
-
-    /**
-     * @covers MoneyFormatter::format
-     * @dataProvider provideMoneyDataUSD
-     */
-    #[Framework\CoversClass(MoneyFormatter::class)]
+    
+    #[DataProvider('provideMoneyDataUSD')]
     public function testMoneyFormatterUSD(mixed $input, string $expectedOutput)
     {
         self::assertSame(
@@ -138,11 +174,37 @@ final class MoneyFormatterTest extends TestCase
         );
     }
 
-    /**
-     * @covers MoneyFormatter::parseDecimal
-     * @dataProvider provideDecimalDataSEK
-     */
-    #[Framework\CoversClass(MoneyFormatter::class)]
+    #[DataProvider('provideMoneyDataSEK')]
+    public function testMoneyFormatterSEK(mixed $input, string $expectedOutput)
+    {
+        self::assertSame(
+            static::replaceNonBreakingSpaces($expectedOutput),
+            MoneyFormatter::format($input, new Currency('SEK'), 'sv_SE')
+        );
+    }
+
+    #[DataProvider('provideDecimalMoneyDataUSD')]
+    //#[CoversClass(MoneyFormatter::class)]
+    public function testMoneyDecimalFormatterUSD(mixed $input, string $expectedOutput)
+    {
+        self::assertSame(
+            static::replaceNonBreakingSpaces($expectedOutput),
+            MoneyFormatter::formatAsDecimal($input, new Currency('USD'), 'en_US')
+        );
+    }
+
+    #[DataProvider('provideDecimalMoneyDataSEK')]
+    //#[CoversClass(MoneyFormatter::class)]
+    public function testMoneyDecimalFormatterSEK(mixed $input, string $expectedOutput)
+    {
+        self::assertSame(
+            static::replaceNonBreakingSpaces($expectedOutput),
+            MoneyFormatter::formatAsDecimal($input, new Currency('SEK'), 'sv_SE')
+        );
+    }
+    
+    #[DataProvider('provideDecimalDataSEK')]
+    //#[CoversClass(MoneyFormatter::class)]
     public function testMoneyParserDecimalSEK(mixed $input, string $expectedOutput)
     {
         self::assertSame(
@@ -151,11 +213,7 @@ final class MoneyFormatterTest extends TestCase
         );
     }
 
-    /**
-     * @covers MoneyFormatter::parseDecimal
-     * @dataProvider provideDecimalDataUSD
-     */
-    #[Framework\CoversClass(MoneyFormatter::class)]
+    #[DataProvider('provideDecimalDataUSD')]
     public function testMoneyParserDecimalUSD(mixed $input, string $expectedOutput)
     {
         self::assertSame(
