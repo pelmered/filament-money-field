@@ -78,6 +78,13 @@ MoneyInput::make('price')
 MoneyInput::make('price')
     ->currency('SEK')
     ->locale('sv_SE');
+
+
+MoneyInput::make('price')
+    ->currency('SEK')
+    ->locale('sv_SE')
+    ->minValue(0) // Do not allow negative values.
+    ->maxValue(10000); // Add min and max value (in minor units, i.e. cents) to the input field. In this case no values over 100
 ```
 
 ### Table column
