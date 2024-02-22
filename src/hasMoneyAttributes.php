@@ -40,11 +40,4 @@ trait hasMoneyAttributes
 
         return $this;
     }
-
-    public function monetarySeparator(string|\Closure|null $monetarySeparator = null): static
-    {
-        $this->monetarySeparator = $monetarySeparator;
-
-        return $this;
-    }
 }

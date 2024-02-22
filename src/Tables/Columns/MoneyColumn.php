@@ -21,7 +21,7 @@ class MoneyColumn extends TextColumn
             $currency = $column->getCurrency();
             $locale   = $column->getLocale();
 
-            return MoneyFormatter::format($state, $currency, $locale, $this->monetarySeparator);
+            return MoneyFormatter::format($state, $currency, $locale);
         });
 
     }

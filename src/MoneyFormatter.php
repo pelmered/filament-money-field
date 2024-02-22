@@ -11,33 +11,25 @@ use NumberFormatter;
 
 class MoneyFormatter
 {
-    public static function format($value, $currency, $locale, $monetarySeparator = null): string
+    public static function format(null|int|string $value, Currency $currency, string $locale, int $outputStyle = NumberFormatter::CURRENCY): string
     {
         if (is_null($value) || $value === '') {
             return '';
         }
 
-        $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::CURRENCY);
+        $numberFormatter = self::getNumberFormatter($locale, $outputStyle);
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
         $money = new Money($value, $currency);
-        return $moneyFormatter->format($money);
+        return $moneyFormatter->format($money);  // outputs $1.000,00
     }
 
-    public static function formatAsDecimal($value, $currency, $locale): string
+    public static function formatAsDecimal(null|int|string $value, Currency $currency, string $locale): string
     {
-        if (is_null($value) || $value === '') {
-            return '';
-        }
-
-        $numberFormatter = self::getNumberFormatter($locale, \NumberFormatter::DECIMAL);
-        $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
-
-        $money = new Money($value, $currency);
-        return $moneyFormatter->format($money); // outputs 1.000,00
+        return static::format($value, $currency, $locale, NumberFormatter::DECIMAL); // outputs 1.000,00
     }
 
-    public static function parseDecimal($moneyString, $currency, $locale): string
+    public static function parseDecimal($moneyString, Currency $currency, string $locale): string
     {
         if (is_null($moneyString) || $moneyString === '') {
             return '';
@@ -47,17 +39,16 @@ class MoneyFormatter
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL);
         $moneyParser = new IntlLocalizedDecimalParser($numberFormatter, $currencies);
 
-        $money = $moneyParser->parse($moneyString, new Currency($currency));
-
-        return $money->getAmount();
+        return $moneyParser->parse($moneyString, $currency)->getAmount();
     }
 
     public static function getFormattingRules($locale): MoneyFormattingRules
     {
+        $config = config('filament-money-field');
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
         return new MoneyFormattingRules(
-            currencySymbol: $numberFormatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL),
+            currencySymbol: $numberFormatter->getSymbol($config['intl_currency_symbol'] ? NumberFormatter::INTL_CURRENCY_SYMBOL : NumberFormatter::CURRENCY_SYMBOL),
             fractionDigits: $numberFormatter->getAttribute(NumberFormatter::FRACTION_DIGITS),
             decimalSeparator: $numberFormatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL),
             groupingSeparator: $numberFormatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL),
@@ -66,12 +57,7 @@ class MoneyFormatter
 
     public static function decimalToMoneyString($moneyString, $locale): string
     {
-        $formattingRules = self::getFormattingRules($locale);
-        $moneyString = (string)$moneyString;
-
-        $moneyString = str_replace(',', '.', (string)$moneyString);
-
-        return $moneyString;
+        return str_replace(',', '.', (string)$moneyString);
     }
 
     private static function getNumberFormatter($locale, int $style): NumberFormatter

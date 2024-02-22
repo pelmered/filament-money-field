@@ -21,7 +21,7 @@ class MoneyEntry extends TextEntry
             $currency = $component->getCurrency();
             $locale   = $component->getLocale();
 
-            return MoneyFormatter::format($state, $currency, $locale, $this->monetarySeparator);
+            return MoneyFormatter::format($state, $currency, $locale);
         });
     }
 }

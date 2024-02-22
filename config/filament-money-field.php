@@ -33,4 +33,26 @@ return [
     |
     */
     'use_input_mask' => env('MONEY_USE_INPUT_MASK', false),
+
+    /*
+    |---------------------------------------------------------------------------
+    | International currency symbol
+    |---------------------------------------------------------------------------
+    |
+    | Use international currency symbols. For example: USD, EUR, SEK instead of $, €, kr etc.
+    |
+    */
+    'intl_currency_symbol' => env('MONEY_INTL_CURRENCY_SYMBOL', false),
+
+
+    /*
+    |---------------------------------------------------------------------------
+    | Currency symbol placement
+    |---------------------------------------------------------------------------
+    |
+    | Where the dunit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'none'.
+    |
+    */
+    'form_currency_symbol_placement' => env('MONEY_UNIT_PLACEMENT', 'before'),
+
 ];
