@@ -44,13 +44,13 @@ return [
     */
     'intl_currency_symbol' => env('MONEY_INTL_CURRENCY_SYMBOL', false),
 
-
     /*
     |---------------------------------------------------------------------------
     | Currency symbol placement
     |---------------------------------------------------------------------------
     |
     | Where the dunit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'none'.
+    | Note: In most non-English speaking European countries, the currency symbol is after the amount and is preceded by a space (as in "10 €")
     |
     */
     'form_currency_symbol_placement' => env('MONEY_UNIT_PLACEMENT', 'before'),
