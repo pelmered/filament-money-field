@@ -1,10 +1,33 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Tests;
 
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use Filament\Forms\FormsServiceProvider;
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\FilamentServiceProvider;
+use Filament\Support\SupportServiceProvider;
+use Livewire\LivewireServiceProvider;
+use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
 
-class TestCase extends PHPUnitTestCase
+class TestCase extends \Orchestra\Testbench\TestCase
 {
+    protected function getPackageProviders($app): array
+    {
+        return [
+            // Filament service providers
+            BladeHeroiconsServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            FilamentServiceProvider::class,
+            FormsServiceProvider::class,
+            LivewireServiceProvider::class,
+            SupportServiceProvider::class,
+
+            // This package service provider
+            FilamentMoneyFieldServiceProvider::class,
+        ];
+    }
+
     public static function callMethod($obj, $name, array $args) {
         $class = new \ReflectionClass($obj);
         return $class->getMethod($name)->invokeArgs($obj, $args);
