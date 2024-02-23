@@ -2,7 +2,9 @@
 
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
+#[CoversClass(MoneyColumn::class)]
 class MoneyColumnTest extends TestCase
 {
     public function testMoneyColumnn(): void
