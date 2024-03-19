@@ -11,6 +11,15 @@ use NumberFormatter;
 
 class MoneyFormatter
 {
+    /**
+     * Format a money value to a string.
+     *
+     * @param null|int|string $value
+     * @param Currency $currency
+     * @param string $locale
+     * @param int $outputStyle
+     * @return string
+     */
     public static function format(null|int|string $value, Currency $currency, string $locale, int $outputStyle = NumberFormatter::CURRENCY): string
     {
         if (is_null($value) || $value === '') {
@@ -24,11 +33,27 @@ class MoneyFormatter
         return $moneyFormatter->format($money);  // outputs $1.000,00
     }
 
+    /**
+     * Format a money value to a string using the currency's default formatting.
+     *
+     * @param null|int|string $value
+     * @param Currency $currency
+     * @param string $locale
+     * @return string
+     */
     public static function formatAsDecimal(null|int|string $value, Currency $currency, string $locale): string
     {
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL); // outputs 1.000,00
     }
 
+    /**
+     * Parse a money string to a decimal value.
+     * 
+     * @param string $moneyString
+     * @param Currency $currency
+     * @param string $locale
+     * @return string
+     */
     public static function parseDecimal($moneyString, Currency $currency, string $locale): string
     {
         if (is_null($moneyString) || $moneyString === '') {
@@ -42,6 +67,12 @@ class MoneyFormatter
         return $moneyParser->parse($moneyString, $currency)->getAmount();
     }
 
+    /**
+     * Get the formatting rules for a locale.
+     * 
+     * @param string $locale
+     * @return MoneyFormattingRules
+     */
     public static function getFormattingRules($locale): MoneyFormattingRules
     {
         $config = config('filament-money-field');
@@ -55,11 +86,25 @@ class MoneyFormatter
         );
     }
 
+    /**
+     * Convert a decimal value to a money string.
+     * 
+     * @param string $moneyString
+     * @param string $locale
+     * @return string
+     */
     public static function decimalToMoneyString($moneyString, $locale): string
     {
         return str_replace(',', '.', (string)$moneyString);
     }
 
+    /**
+     * Get a number formatter for a locale and style.
+     * 
+     * @param string $locale
+     * @param int $style
+     * @return NumberFormatter
+     */
     private static function getNumberFormatter($locale, int $style): NumberFormatter
     {
         $numberFormatter = new NumberFormatter($locale, $style);

@@ -12,6 +12,11 @@ class MoneyInput extends TextInput
 {
     use hasMoneyAttributes;
 
+    /**
+     * The name of the component.
+     * 
+     * @var string
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -46,6 +51,12 @@ class MoneyInput extends TextInput
         });
     }
 
+    /**
+     * Prepare the money input.
+     * 
+     * @param MoneyInput $component
+     * @return void
+     */
     protected function prepare(MoneyInput $component): void
     {
         $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
@@ -62,6 +73,12 @@ class MoneyInput extends TextInput
         }
     }
 
+    /**
+     * Set the minimum value of the money input.
+     * 
+     * @param mixed $min
+     * @return static
+     */
     public function minValue(mixed $min): static
     {
         $this->rule(static function (MoneyInput $component, mixed $state) use ($min) {
@@ -85,6 +102,12 @@ class MoneyInput extends TextInput
         return $this;
     }
 
+    /**
+     * Set the maximum value of the money input.
+     * 
+     * @param mixed $max
+     * @return static
+     */
     public function maxValue(mixed $max): static
     {
         $this->rule(static function (MoneyInput $component) use ($max) {

@@ -10,6 +10,11 @@ class MoneyColumn extends TextColumn
 {
     use hasMoneyAttributes;
 
+    /**
+     * Setup component.
+     * 
+     * @var string
+     */
     protected function setUp(): void
     {
         parent::setUp();

@@ -10,6 +10,11 @@ class MoneyEntry extends TextEntry
 {
     use hasMoneyAttributes;
 
+    /**
+     * Setup component.
+     * 
+     * @var string
+     */
     protected function setUp(): void
     {
         parent::setUp();
