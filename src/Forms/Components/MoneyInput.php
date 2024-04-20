@@ -50,7 +50,7 @@ class MoneyInput extends TextInput
     {
         $symbolPlacement = Config::get('filament-money-field.form_currency_symbol_placement', 'before');
 
-        $getCurrencySymbol = function ($component) {
+        $getCurrencySymbol = function (MoneyInput $component) {
             $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
             return $formattingRules->currencySymbol;
         };
@@ -62,7 +62,7 @@ class MoneyInput extends TextInput
         }
 
         if (config('filament-money-field.use_input_mask')) {
-            $this->mask(function ($component) {
+            $this->mask(function (MoneyInput $component) {
                 $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
                 return RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')');
             });
