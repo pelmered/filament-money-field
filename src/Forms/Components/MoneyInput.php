@@ -16,11 +16,11 @@ class MoneyInput extends TextInput
     {
         parent::setUp();
 
-        $this->prepare($this);
+        $this->prepare();
 
         $this->formatStateUsing(function (MoneyInput $component, $state): ?string {
 
-            $this->prepare($component);
+            $this->prepare();
 
             $currency = $component->getCurrency();
             $locale = $component->getLocale();
@@ -28,7 +28,7 @@ class MoneyInput extends TextInput
             if (is_null($state)) {
                 return '';
             }
-            if(!is_numeric($state)) {
+            if (!is_numeric($state)) {
                 return $state;
             }
 
@@ -40,25 +40,32 @@ class MoneyInput extends TextInput
             $currency = $component->getCurrency();
             $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
 
-            $this->prepare($component);
+            $this->prepare();
 
             return $state;
         });
     }
 
-    protected function prepare(MoneyInput $component): void
+    protected function prepare(): void
     {
-        $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
         $symbolPlacement = Config::get('filament-money-field.form_currency_symbol_placement', 'before');
 
+        $getCurrencySymbol = function ($component) {
+            $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
+            return $formattingRules->currencySymbol;
+        };
+
         if ($symbolPlacement === 'before') {
-            $this->prefix($formattingRules->currencySymbol);
+            $this->prefix($getCurrencySymbol);
         } else {
-            $this->suffix($formattingRules->currencySymbol);
+            $this->suffix($getCurrencySymbol);
         }
 
         if (config('filament-money-field.use_input_mask')) {
-            $this->mask(RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')'));
+            $this->mask(function ($component) {
+                $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
+                return RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')');
+            });
         }
     }
 
