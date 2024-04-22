@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Tests;
 
 use JetBrains\PhpStorm\NoReturn;
