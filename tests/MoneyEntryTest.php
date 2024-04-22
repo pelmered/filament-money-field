@@ -22,7 +22,6 @@ class MoneyEntryTest extends TestCase
 
         $this->assertEquals('10000,00 kr', $value);
 
-
         $this->assertEquals('10000,00 kr', $moneyEntry->formatState('1000000'));
     }
 

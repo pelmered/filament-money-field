@@ -39,6 +39,11 @@ class MoneyFormatter
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL);
         $moneyParser = new IntlLocalizedDecimalParser($numberFormatter, $currencies);
 
+        // Needed to fix some parsing issues with small numbers such as "2,00" with "," as thousands separator
+        // See: https://github.com/pelmered/filament-money-field/issues/20
+        $formattingRules = self::getFormattingRules($locale);
+        $moneyString = str_replace($formattingRules->groupingSeparator, '', $moneyString);
+
         return $moneyParser->parse($moneyString, $currency)->getAmount();
     }
 
