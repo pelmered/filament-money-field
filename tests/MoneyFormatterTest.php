@@ -164,7 +164,7 @@ final class MoneyFormatterTest extends TestCase
             ],
         ];
     }
-    
+
     #[DataProvider('provideMoneyDataUSD')]
     public function testMoneyFormatterUSD(mixed $input, string $expectedOutput)
     {
@@ -202,7 +202,7 @@ final class MoneyFormatterTest extends TestCase
             MoneyFormatter::formatAsDecimal($input, new Currency('SEK'), 'sv_SE')
         );
     }
-    
+
     #[DataProvider('provideDecimalDataSEK')]
     //#[CoversClass(MoneyFormatter::class)]
     public function testMoneyParserDecimalSEK(mixed $input, string $expectedOutput)
@@ -219,6 +219,16 @@ final class MoneyFormatterTest extends TestCase
         self::assertSame(
             $expectedOutput,
             MoneyFormatter::parseDecimal($input, new Currency('USD'), 'en_US')
+        );
+    }
+
+    public static function testMoneyParserDecimal(): void
+    {
+        // Tests for some parsing issues with small numbers such as "2,00" with "," left as thousands separator in the wrong place
+        // See: https://github.com/pelmered/filament-money-field/issues/20
+        self::assertSame(
+            '20000',
+            MoneyFormatter::parseDecimal('2,00', new Currency('USD'), 'en_US')
         );
     }
 }
