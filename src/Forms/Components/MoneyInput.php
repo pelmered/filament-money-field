@@ -26,7 +26,7 @@ class MoneyInput extends TextInput
             $locale = $component->getLocale();
 
             if (is_null($state)) {
-                return '';
+                return null;
             }
             if (!is_numeric($state)) {
                 return $state;
