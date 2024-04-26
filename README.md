@@ -1,10 +1,10 @@
 # Filament Money Field
 Money field powered by [Money PHP ](https://www.moneyphp.org/en/stable/).
 
-This package gives much better localization support for money fields in Filament than most other packages. For example when it comes to currency symbols and decimal and thousand separators. Especially for more obscure currencies.
+This package gives much better localization support for money fields in Filament than most other packages, and especially the built in money support on TextColumns and TextEntries. For example when it comes to currency symbols and decimal and thousand separators. Especially for more obscure currencies. This also includes an input field that handles localized formats. 
 
-Example of a money field with Swedish localization. 
-This package would give "1234,56 kr", while most other solutions probably would give you something like "SEK 1234.56" which is not the correct format for Sweden.
+Example of a money field with Swedish localization.
+This package would give "1 234,56 kr", while most other solutions probably would give you something like "SEK 1234.56" which is not the correct format for Sweden.
 
 ## Requirements
 
