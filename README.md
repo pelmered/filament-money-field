@@ -6,6 +6,18 @@ This package gives much better localization support for money fields in Filament
 Example of a money field with Swedish localization.
 This package would give "1 234,56 kr", while most other solutions probably would give you something like "SEK 1234.56" which is not the correct format for Sweden.
 
+
+[![Latest Stable Version](https://poser.pugx.org/pelmered/filament-money-field/v/stable)](https://packagist.org/packages/pelmered/filament-money-field)
+[![Latest Unstable Version](https://poser.pugx.org/pelmered/filament-money-field/v/unstable)](//packagist.org/packages/pelmered/filament-money-field)
+[![Total Downloads](https://poser.pugx.org/pelmered/filament-money-field/d/total)](//packagist.org/packages/pelmered/filament-money-field)
+[![Monthly Downloads](https://poser.pugx.org/pelmered/filament-money-field/d/monthly)](//packagist.org/packages/pelmered/filament-money-field)
+[![License](https://poser.pugx.org/pelmered/filament-money-field/license)](https://packagist.org/packages/pelmered/filament-money-field)
+
+[![Build Status](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/build.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/build-status/main)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/?branch=main)
+
+
 ## Requirements
 
 - PHP 8.2 or higher
