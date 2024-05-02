@@ -5,12 +5,12 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
 use Illuminate\Support\Facades\Config;
-use Pelmered\FilamentMoneyField\hasMoneyAttributes;
+use Pelmered\FilamentMoneyField\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {
-    use hasMoneyAttributes;
+    use HasMoneyAttributes;
 
     protected function setUp(): void
     {
