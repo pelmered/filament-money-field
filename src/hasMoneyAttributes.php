@@ -24,7 +24,7 @@ trait hasMoneyAttributes
 
     public function currency(string|\Closure|null $currencyCode = null): static
     {
-        $this->currency = new Currency($currencyCode);
+        $this->currency = new Currency($this->evaluate($currencyCode));
         $currencies = new ISOCurrencies();
 
         if (!$currencies->contains($this->currency)) {
@@ -36,7 +36,7 @@ trait hasMoneyAttributes
 
     public function locale(string|\Closure|null $locale = null): static
     {
-        $this->locale = $locale;
+        $this->locale = $this->evaluate($locale);
 
         return $this;
     }
