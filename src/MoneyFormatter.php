@@ -48,7 +48,6 @@ class MoneyFormatter
         try {
             return $moneyParser->parse($moneyString, $currency)->getAmount();
         } catch (ParserException $parserException) {
-
             throw new ParserException('The value must be a valid numeric value.');
         }
     }
