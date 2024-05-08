@@ -12,12 +12,12 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <php>
-    <env name="XDEBUG_MODE" value="debug,develop,coverage"/>
-  </php>
   <source>
     <include>
       <directory suffix=".php">./src</directory>
     </include>
   </source>
+  <php>
+    <env name="XDEBUG_MODE" value="debug,develop,coverage"/>
+  </php>
 </phpunit>
