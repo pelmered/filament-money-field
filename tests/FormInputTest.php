@@ -3,6 +3,7 @@ namespace Pelmered\FilamentMoneyField\Tests;
 
 use Filament\Forms\Components\Field;
 use Mockery\MockInterface;
+use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Filament\Forms\ComponentContainer;
@@ -18,12 +19,34 @@ class FormInputTest extends TestCase
     public function testFormInputMoneyFormat(): void
     {
         $component = ComponentContainer::make(FormTestComponent::make())
-                          ->statePath('data')
-                          ->components([
-                              MoneyInput::make('price'),
-                          ])->fill(['price' => 20]);
+                                       ->statePath('data')
+                                       ->components([
+                                           MoneyInput::make('price'),
+                                       ])->fill(['price' => 20]);
 
         $this->assertEquals('20', $component->getState()['price']);
+    }
+    public function testNullState(): void
+    {
+        $component = ComponentContainer::make(FormTestComponent::make())
+                                       ->statePath('data')
+                                       ->components([
+                                           MoneyInput::make('price'),
+                                       ])->fill(['price' => null]);
+
+        $this->assertNull($component->getState()['price']);
+    }
+    public function testNonNumericState(): void
+    {
+        $this->expectException(ParserException::class);
+
+        $component = ComponentContainer::make(FormTestComponent::make())
+                                       ->statePath('data')
+                                       ->components([
+                                           MoneyInput::make('price'),
+                                       ])->fill(['price' => 'non_numeric']);
+
+        $component->getState();
     }
 
     public function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
