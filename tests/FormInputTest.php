@@ -29,7 +29,7 @@ class FormInputTest extends TestCase
         $this->assertEquals('20', $component->getState()['price']);
     }
 
-    public function validationTester(Field $field, $value): true|array
+    public function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
     {
         try {
             ComponentContainer::make(FormTestComponent::make())
@@ -39,7 +39,14 @@ class FormInputTest extends TestCase
                               ])->fill([$field->getName() => $value])
                               ->validate();
         } catch (ValidationException $exception) {
-            return $exception->validator->failed()[$field->getStatePath()];
+            if ($assertsCallback) {
+                $assertsCallback($exception, $field);
+            }
+
+            return [
+                'errors' => $exception->validator->errors()->toArray()[$field->getStatePath()],
+                'failed' => $exception->validator->failed()[$field->getStatePath()]
+            ];
         }
 
         return true;
@@ -49,17 +56,48 @@ class FormInputTest extends TestCase
     {
         $this->assertTrue($this->validationTester(
             (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000),
-            20
+            20,
         ));
 
-        $this->assertArrayHasKey(MaxValueRule::class,$this->validationTester(
+        $this->validationTester(
+            (new MoneyInput('amount'))->required()->minValue(100)->maxValue(10000),
+            20,
+            function (ValidationException $exception, MoneyInput $field) {
+                $this->assertArrayHasKey(MinValueRule::class, $exception->validator->failed()[$field->getStatePath()]);
+                $this->assertEquals(
+                    'The Amount must be less than or equal to 100.00.',
+                    $exception->validator->errors()->toArray()[$field->getStatePath()][0]
+                );
+            }
+        );
+
+        $this->validationTester(
             (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000),
-            200
-        ));
+            200,
+            function (ValidationException $exception, MoneyInput $field) {
+                $this->assertArrayHasKey(MaxValueRule::class, $exception->validator->failed()[$field->getStatePath()]);
+                $this->assertEquals(
+                    'The Total Amount must be less than or equal to 100.00.',
+                    $exception->validator->errors()->toArray()[$field->getStatePath()][0]
+                );
+            }
+        );
 
-        $this->assertArrayHasKey(MinValueRule::class,$this->validationTester(
-            (new MoneyInput('totalAmount'))->required()->minValue(10000)->maxValue(20000),
-            20
-        ));
+
+
+        $this->validationTester(
+            (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000),
+            'random string',
+            function (ValidationException $exception, MoneyInput $field) {
+                $failed = $exception->validator->failed()[$field->getStatePath()];
+
+                $this->assertArrayHasKey(MinValueRule::class, $failed);
+                $this->assertArrayHasKey(MaxValueRule::class, $failed);
+                $this->assertEquals(
+                    'The Total Amount must be a valid numeric value.',
+                    $exception->validator->errors()->toArray()[$field->getStatePath()][0]
+                );
+            }
+        );
     }
 }

@@ -3,6 +3,7 @@ namespace Pelmered\FilamentMoneyField\Forms\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
@@ -16,20 +17,30 @@ readonly class MinValueRule implements ValidationRule
         $currencyCode = $this->component->getCurrency();
         $locale       = $this->component->getLocale();
 
-        $minorValue = MoneyFormatter::parseDecimal(
-            $value,
-            $currencyCode,
-            $locale
-        );
+        try {
+            $minorValue = MoneyFormatter::parseDecimal(
+                $value,
+                $currencyCode,
+                $locale
+            );
 
-        //dump($currencyCode, $locale, $minorValue, $this->min);
-        if ($minorValue <= $this->min) {
+            if ($minorValue <= $this->min) {
+                $fail(
+                    strtr(
+                        'The {attribute} must be at least {value}.',
+                        [
+                            '{attribute}' => ucwords($this->component->getLabel()),
+                            '{value}' => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
+                        ]
+                    )
+                );
+            }
+        } catch (ParserException $parserException) {
             $fail(
                 strtr(
-                    'The {attribute} must be at least {value}.',
+                    'The {attribute} must be a valid numeric value.',
                     [
                         '{attribute}' => ucwords($this->component->getLabel()),
-                        '{value}' => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
                     ]
                 )
             );
