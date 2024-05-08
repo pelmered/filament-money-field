@@ -3,12 +3,12 @@
 namespace Pelmered\FilamentMoneyField\Tables\Columns;
 
 use Filament\Tables\Columns\TextColumn;
-use Pelmered\FilamentMoneyField\hasMoneyAttributes;
+use Pelmered\FilamentMoneyField\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 class MoneyColumn extends TextColumn
 {
-    use hasMoneyAttributes;
+    use HasMoneyAttributes;
 
     protected function setUp(): void
     {

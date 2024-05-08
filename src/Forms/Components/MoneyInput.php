@@ -7,12 +7,12 @@ use Filament\Support\RawJs;
 use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\hasMoneyAttributes;
+use Pelmered\FilamentMoneyField\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {
-    use hasMoneyAttributes;
+    use HasMoneyAttributes;
 
     protected function setUp(): void
     {

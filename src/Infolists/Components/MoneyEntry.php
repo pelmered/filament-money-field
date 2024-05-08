@@ -3,12 +3,12 @@
 namespace Pelmered\FilamentMoneyField\Infolists\Components;
 
 use Filament\Infolists\Components\TextEntry;
-use Pelmered\FilamentMoneyField\hasMoneyAttributes;
+use Pelmered\FilamentMoneyField\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 class MoneyEntry extends TextEntry
 {
-    use hasMoneyAttributes;
+    use HasMoneyAttributes;
 
     protected function setUp(): void
     {
