@@ -5,6 +5,7 @@ namespace Pelmered\FilamentMoneyField;
 use Filament\Infolists\Infolist;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
+use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 
 trait HasMoneyAttributes
 {
@@ -28,7 +29,7 @@ trait HasMoneyAttributes
         $currencies = new ISOCurrencies();
 
         if (!$currencies->contains($this->currency)) {
-            throw new \RuntimeException('Currency not supported: ' . $currencyCode);
+            throw new UnsupportedCurrency($currencyCode);
         }
 
         return $this;

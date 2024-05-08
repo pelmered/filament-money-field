@@ -3,6 +3,7 @@ namespace Pelmered\FilamentMoneyField\Tests;
 
 use Filament\Forms\Components\Field;
 use Mockery\MockInterface;
+use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Filament\Forms\ComponentContainer;
 use Illuminate\Support\Str;
@@ -98,6 +99,15 @@ class FormInputTest extends TestCase
                     $exception->validator->errors()->toArray()[$field->getStatePath()][0]
                 );
             }
+        );
+    }
+
+    public function testUnsupportedCurrency(): void
+    {
+        $this->expectException(UnsupportedCurrency::class);
+        $this->validationTester(
+            (new MoneyInput('totalAmount'))->currency('SOMETHING'),
+            20,
         );
     }
 }
