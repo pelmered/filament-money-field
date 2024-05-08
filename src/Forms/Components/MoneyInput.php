@@ -4,6 +4,7 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
@@ -35,7 +36,7 @@ class MoneyInput extends TextInput
                 return $state;
             }
 
-            return MoneyFormatter::formatAsDecimal($state, $currency, $locale);
+            return MoneyFormatter::formatAsDecimal((int) $state, $currency, $locale);
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, $state): ?string {
@@ -74,13 +75,23 @@ class MoneyInput extends TextInput
 
     public function minValue(mixed $value): static
     {
-        $this->rule(new MinValueRule($value, $this));
+        $this->rule(new MinValueRule((int) $this->evaluate($value), $this));
         return $this;
     }
 
     public function maxValue(mixed $value): static
     {
-        $this->rule(new MaxValueRule($value, $this));
+        $this->rule(new MaxValueRule((int) $this->evaluate($value), $this));
         return $this;
+    }
+
+
+    public function getLabel(): string
+    {
+        return (string) str($this->getName())
+            ->afterLast('.')
+            ->kebab()
+            ->replace(['-', '_'], ' ')
+            ->title();
     }
 }

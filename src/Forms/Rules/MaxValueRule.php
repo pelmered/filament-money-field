@@ -3,6 +3,7 @@ namespace Pelmered\FilamentMoneyField\Forms\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Str;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
@@ -29,7 +30,7 @@ class MaxValueRule implements ValidationRule
                     strtr(
                         'The {attribute} must be less than or equal to {value}.',
                         [
-                            '{attribute}' => ucwords($this->component->getLabel()),
+                            '{attribute}' => Str::of($this->component->getLabel())->title(),
                             '{value}' => MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale),
                         ]
                     )
@@ -40,7 +41,7 @@ class MaxValueRule implements ValidationRule
                 strtr(
                     'The {attribute} must be a valid numeric value.',
                     [
-                        '{attribute}' => ucwords($this->component->getLabel()),
+                        '{attribute}' => Str::title($this->component->getLabel()),
                     ]
                 )
             );

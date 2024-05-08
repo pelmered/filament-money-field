@@ -15,7 +15,14 @@ trait HasMoneyAttributes
 
     public function getCurrency(): Currency
     {
-        return $this->currency ?? $this->currency(config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency)->getCurrency();
+        return $this->currency ?? $this->getDefaultCurrency();
+    }
+
+    protected function getDefaultCurrency(): Currency
+    {
+        $defaultCurrencyCode = (string) (config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency);
+
+        return $this->currency($defaultCurrencyCode)->getCurrency();
     }
 
     public function getLocale(): string
@@ -23,9 +30,11 @@ trait HasMoneyAttributes
         return $this->locale ?? config('filament-money-field.default_locale');
     }
 
-    public function currency(string|\Closure|null $currencyCode = null): static
+    public function currency(string|\Closure $currencyCode): static
     {
-        $this->currency = new Currency($this->evaluate($currencyCode));
+        /** @var non-empty-string $currencyCode */
+        $currencyCode = (string) $this->evaluate($currencyCode);
+        $this->currency = new Currency($currencyCode);
         $currencies = new ISOCurrencies();
 
         if (!$currencies->contains($this->currency)) {

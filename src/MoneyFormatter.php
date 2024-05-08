@@ -2,6 +2,7 @@
 
 namespace Pelmered\FilamentMoneyField;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Money\Currencies\ISOCurrencies;
 use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
@@ -14,14 +15,14 @@ class MoneyFormatter
 {
     public static function format(null|int|string $value, Currency $currency, string $locale, int $outputStyle = NumberFormatter::CURRENCY): string
     {
-        if (is_null($value) || $value === '') {
+        if ($value === '' || !is_numeric($value)){
             return '';
         }
 
         $numberFormatter = self::getNumberFormatter($locale, $outputStyle);
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
-        $money = new Money($value, $currency);
+        $money = new Money((int) $value, $currency);
         return $moneyFormatter->format($money);  // outputs $1.000,00
     }
 
@@ -30,7 +31,7 @@ class MoneyFormatter
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL); // outputs 1.000,00
     }
 
-    public static function parseDecimal($moneyString, Currency $currency, string $locale): string
+    public static function parseDecimal(?string $moneyString, Currency $currency, string $locale): string
     {
         if (is_null($moneyString) || $moneyString === '') {
             return '';
@@ -52,7 +53,7 @@ class MoneyFormatter
         }
     }
 
-    public static function getFormattingRules($locale): MoneyFormattingRules
+    public static function getFormattingRules(string $locale): MoneyFormattingRules
     {
         $config = config('filament-money-field');
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
@@ -72,7 +73,7 @@ class MoneyFormatter
     }
     */
 
-    private static function getNumberFormatter($locale, int $style): NumberFormatter
+    private static function getNumberFormatter(string $locale, int $style): NumberFormatter
     {
         $numberFormatter = new NumberFormatter($locale, $style);
         $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
