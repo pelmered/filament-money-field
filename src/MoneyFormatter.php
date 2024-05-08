@@ -65,10 +65,12 @@ class MoneyFormatter
         );
     }
 
+    /*
     public static function decimalToMoneyString($moneyString, $locale): string
     {
         return str_replace(',', '.', (string)$moneyString);
     }
+    */
 
     private static function getNumberFormatter($locale, int $style): NumberFormatter
     {

@@ -14,6 +14,7 @@ class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
 
+
     protected function setUp(): void
     {
         parent::setUp();
