@@ -3,9 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Tests;
 
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
-use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(MoneyColumn::class)]
 class MoneyColumnTest extends TestCase
 {
     public function testMoneyColumn(): void

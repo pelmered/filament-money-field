@@ -4,9 +4,7 @@ namespace Pelmered\FilamentMoneyField\Tests;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(MoneyInput::class)]
 class ValidationRulesTest extends TestCase
 {
     public function testMinValueRule(): void

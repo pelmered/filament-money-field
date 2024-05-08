@@ -11,12 +11,8 @@ use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule2;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\Tests\Components\FormTestComponent;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\Exception;
-use Livewire\Livewire;
 use Illuminate\Validation\ValidationException;
 
-#[CoversClass(MoneyInput::class)]
 class FormInputTest extends TestCase
 {
     public function testFormInputMoneyFormat(): void
