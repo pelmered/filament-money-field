@@ -5,6 +5,7 @@ namespace Pelmered\FilamentMoneyField;
 use Filament\Infolists\Infolist;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
+use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 
 trait HasMoneyAttributes
 {
@@ -12,12 +13,12 @@ trait HasMoneyAttributes
     protected string $locale;
     protected ?string $monetarySeparator = null;
 
-    protected function getCurrency(): Currency
+    public function getCurrency(): Currency
     {
         return $this->currency ?? $this->currency(config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency)->getCurrency();
     }
 
-    protected function getLocale(): string
+    public function getLocale(): string
     {
         return $this->locale ?? config('filament-money-field.default_locale');
     }
@@ -28,7 +29,7 @@ trait HasMoneyAttributes
         $currencies = new ISOCurrencies();
 
         if (!$currencies->contains($this->currency)) {
-            throw new \RuntimeException('Currency not supported: ' . $currencyCode);
+            throw new UnsupportedCurrency($currencyCode);
         }
 
         return $this;

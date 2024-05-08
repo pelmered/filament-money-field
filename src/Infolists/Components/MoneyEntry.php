@@ -17,7 +17,7 @@ class MoneyEntry extends TextEntry
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyEntry $component, $state): ?string {
+        $this->formatStateUsing(function (MoneyEntry $component, $state): string {
             $currency = $component->getCurrency();
             $locale   = $component->getLocale();
 

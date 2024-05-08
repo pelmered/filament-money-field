@@ -1,6 +1,9 @@
 <?php
 namespace Pelmered\FilamentMoneyField;
 
+use Illuminate\Foundation\Application;
+use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
+use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule2;
 use Spatie\LaravelPackageTools\Package;
 
 class FilamentMoneyFieldServiceProvider extends \Spatie\LaravelPackageTools\PackageServiceProvider
@@ -13,7 +16,7 @@ class FilamentMoneyFieldServiceProvider extends \Spatie\LaravelPackageTools\Pack
                 ->hasConfigFile();
     }
 
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
             __DIR__ . '/../config/filament-money-field.php' => config_path('filament-money-field.php'),

@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField;
 
 use Money\Currencies\ISOCurrencies;
+use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Parser\IntlLocalizedDecimalParser;
 use Money\Money;
@@ -44,7 +45,11 @@ class MoneyFormatter
         $formattingRules = self::getFormattingRules($locale);
         $moneyString = str_replace($formattingRules->groupingSeparator, '', $moneyString);
 
-        return $moneyParser->parse($moneyString, $currency)->getAmount();
+        try {
+            return $moneyParser->parse($moneyString, $currency)->getAmount();
+        } catch (ParserException $parserException) {
+            throw new ParserException('The value must be a valid numeric value.');
+        }
     }
 
     public static function getFormattingRules($locale): MoneyFormattingRules
@@ -60,10 +65,12 @@ class MoneyFormatter
         );
     }
 
+    /*
     public static function decimalToMoneyString($moneyString, $locale): string
     {
         return str_replace(',', '.', (string)$moneyString);
     }
+    */
 
     private static function getNumberFormatter($locale, int $style): NumberFormatter
     {

@@ -5,12 +5,15 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
 use Illuminate\Support\Facades\Config;
+use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
+use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
+
 
     protected function setUp(): void
     {
@@ -52,8 +55,7 @@ class MoneyInput extends TextInput
         $symbolPlacement = Config::get('filament-money-field.form_currency_symbol_placement', 'before');
 
         $getCurrencySymbol = function (MoneyInput $component) {
-            $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
-            return $formattingRules->currencySymbol;
+            return MoneyFormatter::getFormattingRules($component->getLocale())->currencySymbol;
         };
 
         if ($symbolPlacement === 'before') {
@@ -70,49 +72,15 @@ class MoneyInput extends TextInput
         }
     }
 
-    public function minValue(mixed $min): static
+    public function minValue(mixed $value): static
     {
-        $this->rule(static function (MoneyInput $component, mixed $state) use ($min) {
-            return function (string $attribute, mixed $value, \Closure $fail) use ($component, $state, $min) {
-
-                $currencyCode = $component->getCurrency();
-                $locale       = $component->getLocale();
-
-                $minorValue = MoneyFormatter::parseDecimal(
-                    $state,
-                    $currencyCode,
-                    $locale
-                );
-
-                if ($minorValue < $min) {
-                    $fail('The :attribute must be greater than or equal to ' . MoneyFormatter::formatAsDecimal($min, $currencyCode, $locale) . '.');
-                }
-            };
-        });
-
+        $this->rule(new MinValueRule($value, $this));
         return $this;
     }
 
-    public function maxValue(mixed $max): static
+    public function maxValue(mixed $value): static
     {
-        $this->rule(static function (MoneyInput $component) use ($max) {
-            return function (string $attribute, mixed $value, \Closure $fail) use ($component, $max) {
-
-                $currencyCode = $component->getCurrency();
-                $locale       = $component->getLocale();
-
-                $minorValue = MoneyFormatter::parseDecimal(
-                    $value,
-                    $currencyCode,
-                    $locale
-                );
-
-                if ($minorValue > $max) {
-                    $fail('The :attribute must be less than or equal to ' . MoneyFormatter::formatAsDecimal($max, $currencyCode, $locale) . '.');
-                }
-            };
-        });
-
+        $this->rule(new MaxValueRule($value, $this));
         return $this;
     }
 }
