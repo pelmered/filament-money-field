@@ -12,12 +12,12 @@ trait hasMoneyAttributes
     protected string $locale;
     protected ?string $monetarySeparator = null;
 
-    protected function getCurrency(): Currency
+    public function getCurrency(): Currency
     {
         return $this->currency ?? $this->currency(config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency)->getCurrency();
     }
 
-    protected function getLocale(): string
+    public function getLocale(): string
     {
         return $this->locale ?? config('filament-money-field.default_locale');
     }

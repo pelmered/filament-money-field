@@ -6,7 +6,6 @@ use Pelmered\FilamentMoneyField\MoneyFormatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-#[CoversClass(MoneyFormatter::class)]
 final class MoneyFormatterTest extends TestCase
 {
     public static function provideMoneyDataSEK(): array
@@ -184,7 +183,6 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideDecimalMoneyDataUSD')]
-    //#[CoversClass(MoneyFormatter::class)]
     public function testMoneyDecimalFormatterUSD(mixed $input, string $expectedOutput)
     {
         self::assertSame(
@@ -194,7 +192,6 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideDecimalMoneyDataSEK')]
-    //#[CoversClass(MoneyFormatter::class)]
     public function testMoneyDecimalFormatterSEK(mixed $input, string $expectedOutput)
     {
         self::assertSame(
@@ -204,7 +201,6 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideDecimalDataSEK')]
-    //#[CoversClass(MoneyFormatter::class)]
     public function testMoneyParserDecimalSEK(mixed $input, string $expectedOutput)
     {
         self::assertSame(
