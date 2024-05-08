@@ -22,8 +22,17 @@ readonly class MinValueRule implements ValidationRule
             $locale
         );
 
+        //dump($currencyCode, $locale, $minorValue, $this->min);
         if ($minorValue <= $this->min) {
-            $fail('The ' . $this->component->getLabel() . ' must be less than or equal to ' . MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale) . '.');
+            $fail(
+                strtr(
+                    'The {attribute} must be at least {value}.',
+                    [
+                        '{attribute}' => ucwords($this->component->getLabel()),
+                        '{value}' => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
+                    ]
+                )
+            );
         }
     }
 }

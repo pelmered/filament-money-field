@@ -8,7 +8,7 @@ use Livewire\Component;
 use Filament\Forms\Form;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 
-class LivewireComponent extends Component implements HasForms
+class FormTestComponent extends Component implements HasForms
 {
     use InteractsWithForms;
 

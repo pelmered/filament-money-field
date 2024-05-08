@@ -23,7 +23,15 @@ readonly class MaxValueRule implements ValidationRule
         );
 
         if ($minorValue >= $this->max) {
-            $fail('The ' . $this->component->getLabel() . ' must be less than or equal to ' . MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale) . '.');
+            $fail(
+                strtr(
+                    'The {attribute} must be less than or equal to {value}.',
+                    [
+                        '{attribute}' => ucwords($this->component->getLabel()),
+                        '{value}' => MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale),
+                    ]
+                )
+            );
         }
     }
 }
