@@ -12,4 +12,13 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </coverage>
+    <php>
+        <env name="XDEBUG_MODE" value="debug,develop,coverage"/>
+"/>
+    </php>
 </phpunit>
