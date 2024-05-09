@@ -31,7 +31,7 @@ This package would give "1 234,56 kr", while most other solutions probably would
 composer require pelmered/filament-money-field
 ```
 
-## Configuration
+## Configure your locale
 
 ### Set the default currency and locale
 **Set the default options for currency and locale so that you don't have to set them for every field.**
@@ -47,12 +47,30 @@ MONEY_DEFAULT_CURRENCY=SEK
 php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider" --tag="config"
 ```
 
+## Additional Configuration
+
 ### If you want to use the formatting mask on the `MoneyInput` component 
 **This will auto format the input field as you type.**
 
 This is a bit experimental at the moment and is therefore disabled by default. Hopefully it will be improved in the future and enabled by default in the next major version. Please try it out and provide feedback.
 ```php
 MONEY_USE_INPUT_MASK=true // Defaults to false
+```
+
+### Use international currency codes (ISO 4217)
+
+If you want to use international currency codes istead of their symbols or local short variants. For example USD instead of $, EUR instead of € or SEK instead of kr. 
+
+```php
+MONEY_INTL_CURRENCY_SYMBOL=true // Defaults to false
+```
+
+### Placement of currency symbol/code on input fields. 
+
+Possible options: `after`, `before`, `none`.
+
+```php
+MONEY_UNIT_PLACEMENT=after // Defaults to before
 ```
 
 ## Usage
