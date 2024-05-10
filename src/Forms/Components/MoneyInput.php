@@ -88,7 +88,7 @@ class MoneyInput extends TextInput
 
     public function getLabel(): string
     {
-        if ($this->label) {
+        if ($this->label !== null) {
             return $this->label;
         }
 
