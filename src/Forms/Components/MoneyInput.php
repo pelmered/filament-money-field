@@ -88,6 +88,10 @@ class MoneyInput extends TextInput
 
     public function getLabel(): string
     {
+        if ($this->label) {
+            return $this->label;
+        }
+
         return (string) str($this->getName())
             ->afterLast('.')
             ->kebab()
