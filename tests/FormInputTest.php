@@ -62,7 +62,7 @@ class FormInputTest extends TestCase
         $field = $component->getComponent('data.price');
         $this->assertEquals('$', $field->getSuffixLabel());
         $this->assertNull($field->getPrefixLabel());
-}
+    }
 
     public function testCurrencySymbolPlacementBefore()
     {
@@ -179,7 +179,6 @@ class FormInputTest extends TestCase
     {
         $field = (new MoneyInput('price'))->label('Custom Label');
 
-
         $component = ComponentContainer::make(FormTestComponent::make())
                                        ->statePath('data')
                                        ->components([
@@ -188,5 +187,21 @@ class FormInputTest extends TestCase
 
         $field = $component->getComponent('data.price');
         $this->assertEquals('Custom Label', $field->getLabel());
+    }
+
+    public function testResolveLabelClosures(): void
+    {
+        $field = (new MoneyInput('price'))->label(function () {
+            return 'Custom Label in Closure';
+        });
+
+        $component = ComponentContainer::make(FormTestComponent::make())
+                                       ->statePath('data')
+                                       ->components([
+                                           $field,
+                                       ])->fill([$field->getName() => 45345]);
+
+        $field = $component->getComponent('data.price');
+        $this->assertEquals('Custom Label in Closure', $field->getLabel());
     }
 }
