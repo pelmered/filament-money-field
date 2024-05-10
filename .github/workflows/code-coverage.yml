@@ -1,0 +1,29 @@
+
+name: Code Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  code-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: intl, fileinfo
+          coverage: xdebug
+      - name: Install dependencies
+        run: composer update --prefer-stable --prefer-dist --no-interaction
+      - name: Execute tests
+        run: vendor/bin/phpunit  --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
