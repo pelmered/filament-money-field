@@ -40,7 +40,7 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpunit --testsuite=default
       - name: Execute tests
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-filter=src
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-filter=src --path-coverage
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
