@@ -1,7 +1,9 @@
 <?php
 namespace Pelmered\FilamentMoneyField\Exceptions;
 
-class UnsupportedCurrency extends \RuntimeException
+use RuntimeException;
+
+class UnsupportedCurrency extends RuntimeException
 {
     public function __construct(string $currencyCode)
     {

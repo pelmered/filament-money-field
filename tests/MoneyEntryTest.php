@@ -25,7 +25,7 @@ class MoneyEntryTest extends TestCase
 
         $this->assertEquals('$10,000.00', $entry->formatState($entry->getState()));
     }
-    public function testInfoListMoneyFormatSEK(): void
+    public function testInfoListMoneyFormatSek(): void
     {
         $entry = MoneyEntry::make('price')->currency('SEK')->locale('sv_SE');
 

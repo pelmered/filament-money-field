@@ -4,7 +4,6 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
@@ -68,7 +67,17 @@ class MoneyInput extends TextInput
         if (config('filament-money-field.use_input_mask')) {
             $this->mask(function (MoneyInput $component) {
                 $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
-                return RawJs::make('$money($input, \'' . $formattingRules->decimalSeparator . '\', \'' . $formattingRules->groupingSeparator . '\', ' . $formattingRules->fractionDigits . ')');
+
+                return RawJs::make(
+                    strtr(
+                        '$money($input, \'\', \'{decimalSeparator}\', \'{groupingSeparator}\', {fractionDigits})',
+                        [
+                            '{decimalSeparator}' => $formattingRules->decimalSeparator,
+                            '{groupingSeparator}' => $formattingRules->groupingSeparator,
+                            '{fractionDigits}' => $formattingRules->fractionDigits,
+                        ]
+                    )
+                );
             });
         }
     }
@@ -88,12 +97,9 @@ class MoneyInput extends TextInput
 
     public function getLabel(): string
     {
-        if ($this->label !== null) {
-            return $this->label;
-        }
-
-        return (string) str($this->getName())
-            ->afterLast('.')
+        return $this->label
+               ?? (string)str($this->getName())
+                ->afterLast('.')
             ->kebab()
             ->replace(['-', '_'], ' ')
             ->title();

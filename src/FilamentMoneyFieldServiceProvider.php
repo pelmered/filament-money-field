@@ -1,12 +1,10 @@
 <?php
 namespace Pelmered\FilamentMoneyField;
 
-use Illuminate\Foundation\Application;
-use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
-use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule2;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FilamentMoneyFieldServiceProvider extends \Spatie\LaravelPackageTools\PackageServiceProvider
+class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'filament-money-field';
 

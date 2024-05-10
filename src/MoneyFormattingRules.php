@@ -8,7 +8,6 @@ class MoneyFormattingRules
         public int $fractionDigits,
         public string $decimalSeparator,
         public string $groupingSeparator,
-    )
-    {
+    ) {
     }
 }

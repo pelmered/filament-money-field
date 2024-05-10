@@ -8,10 +8,11 @@ use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
-class MaxValueRule implements ValidationRule
+readonly class MaxValueRule implements ValidationRule
 {
     public function __construct(private int $max, private MoneyInput $component)
-    {}
+    {
+    }
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -36,7 +37,7 @@ class MaxValueRule implements ValidationRule
                     )
                 );
             }
-        } catch (ParserException $parserException) {
+        } catch (ParserException) {
             $fail(
                 strtr(
                     'The {attribute} must be a valid numeric value.',
@@ -46,6 +47,5 @@ class MaxValueRule implements ValidationRule
                 )
             );
         }
-
     }
 }

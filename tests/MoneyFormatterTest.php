@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 final class MoneyFormatterTest extends TestCase
 {
-    public static function provideMoneyDataSEK(): array
+    public static function provideMoneyDataSek(): array
     {
         return [
             'thousands' => [
@@ -33,7 +33,7 @@ final class MoneyFormatterTest extends TestCase
         ];
     }
 
-    public static function provideDecimalMoneyDataSEK(): array
+    public static function provideDecimalMoneyDataSek(): array
     {
         return [
             'thousands' => [
@@ -59,7 +59,7 @@ final class MoneyFormatterTest extends TestCase
         ];
     }
 
-    public static function provideMoneyDataUSD(): array
+    public static function provideMoneyDataUsd(): array
     {
         return [
             'thousands' => [
@@ -85,7 +85,7 @@ final class MoneyFormatterTest extends TestCase
         ];
     }
 
-    public static function provideDecimalMoneyDataUSD(): array
+    public static function provideDecimalMoneyDataUsd(): array
     {
         return [
             'thousands' => [
@@ -111,7 +111,7 @@ final class MoneyFormatterTest extends TestCase
         ];
     }
 
-    public static function provideDecimalDataSEK(): array
+    public static function provideDecimalDataSek(): array
     {
         return [
             'thousands' => [
@@ -137,7 +137,7 @@ final class MoneyFormatterTest extends TestCase
         ];
     }
 
-    public static function provideDecimalDataUSD(): array
+    public static function provideDecimalDataUsd(): array
     {
         return [
             'thousands' => [
@@ -164,7 +164,7 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideMoneyDataUSD')]
-    public function testMoneyFormatterUSD(mixed $input, string $expectedOutput)
+    public function testMoneyFormatterUsd(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
             static::replaceNonBreakingSpaces($expectedOutput),
@@ -173,7 +173,7 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideMoneyDataSEK')]
-    public function testMoneyFormatterSEK(mixed $input, string $expectedOutput)
+    public function testMoneyFormatterSek(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
             static::replaceNonBreakingSpaces($expectedOutput),
@@ -182,7 +182,7 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideDecimalMoneyDataUSD')]
-    public function testMoneyDecimalFormatterUSD(mixed $input, string $expectedOutput)
+    public function testMoneyDecimalFormatterUsd(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
             static::replaceNonBreakingSpaces($expectedOutput),
@@ -191,7 +191,7 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideDecimalMoneyDataSEK')]
-    public function testMoneyDecimalFormatterSEK(mixed $input, string $expectedOutput)
+    public function testMoneyDecimalFormatterSek(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
             static::replaceNonBreakingSpaces($expectedOutput),
@@ -200,7 +200,7 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideDecimalDataSEK')]
-    public function testMoneyParserDecimalSEK(mixed $input, string $expectedOutput)
+    public function testMoneyParserDecimalSek(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
             $expectedOutput,
@@ -209,7 +209,7 @@ final class MoneyFormatterTest extends TestCase
     }
 
     #[DataProvider('provideDecimalDataUSD')]
-    public function testMoneyParserDecimalUSD(mixed $input, string $expectedOutput)
+    public function testMoneyParserDecimalUsd(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
             $expectedOutput,

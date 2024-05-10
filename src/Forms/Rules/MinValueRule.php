@@ -10,7 +10,8 @@ use Pelmered\FilamentMoneyField\MoneyFormatter;
 readonly class MinValueRule implements ValidationRule
 {
     public function __construct(private int $min, private MoneyInput $component)
-    {}
+    {
+    }
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -35,7 +36,7 @@ readonly class MinValueRule implements ValidationRule
                     )
                 );
             }
-        } catch (ParserException $parserException) {
+        } catch (ParserException) {
             $fail(
                 strtr(
                     'The {attribute} must be a valid numeric value.',

@@ -2,6 +2,7 @@
 
 namespace Pelmered\FilamentMoneyField;
 
+use Closure;
 use Filament\Infolists\Infolist;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
@@ -30,7 +31,7 @@ trait HasMoneyAttributes
         return $this->locale ?? config('filament-money-field.default_locale');
     }
 
-    public function currency(string|\Closure $currencyCode): static
+    public function currency(string|Closure $currencyCode): static
     {
         /** @var non-empty-string $currencyCode */
         $currencyCode = (string) $this->evaluate($currencyCode);
@@ -44,7 +45,7 @@ trait HasMoneyAttributes
         return $this;
     }
 
-    public function locale(string|\Closure|null $locale = null): static
+    public function locale(string|Closure|null $locale = null): static
     {
         $this->locale = $this->evaluate($locale);
 

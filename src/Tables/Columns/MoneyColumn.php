@@ -23,6 +23,5 @@ class MoneyColumn extends TextColumn
 
             return MoneyFormatter::format($state, $currency, $locale);
         });
-
     }
 }

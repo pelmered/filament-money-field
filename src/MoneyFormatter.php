@@ -2,7 +2,6 @@
 
 namespace Pelmered\FilamentMoneyField;
 
-use Illuminate\Contracts\Support\Htmlable;
 use Money\Currencies\ISOCurrencies;
 use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
@@ -13,9 +12,13 @@ use NumberFormatter;
 
 class MoneyFormatter
 {
-    public static function format(null|int|string $value, Currency $currency, string $locale, int $outputStyle = NumberFormatter::CURRENCY): string
-    {
-        if ($value === '' || !is_numeric($value)){
+    public static function format(
+        null|int|string $value,
+        Currency $currency,
+        string $locale,
+        int $outputStyle = NumberFormatter::CURRENCY
+    ): string {
+        if ($value === '' || !is_numeric($value)) {
             return '';
         }
 
@@ -41,14 +44,15 @@ class MoneyFormatter
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL);
         $moneyParser = new IntlLocalizedDecimalParser($numberFormatter, $currencies);
 
-        // Needed to fix some parsing issues with small numbers such as "2,00" with "," left as thousands separator in the wrong place
+        // Needed to fix some parsing issues with small numbers such as
+        // "2,00" with "," left as thousands separator in the wrong place
         // See: https://github.com/pelmered/filament-money-field/issues/20
         $formattingRules = self::getFormattingRules($locale);
         $moneyString = str_replace($formattingRules->groupingSeparator, '', $moneyString);
 
         try {
             return $moneyParser->parse($moneyString, $currency)->getAmount();
-        } catch (ParserException $parserException) {
+        } catch (ParserException) {
             throw new ParserException('The value must be a valid numeric value.');
         }
     }
@@ -59,19 +63,16 @@ class MoneyFormatter
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
         return new MoneyFormattingRules(
-            currencySymbol: $numberFormatter->getSymbol($config['intl_currency_symbol'] ? NumberFormatter::INTL_CURRENCY_SYMBOL : NumberFormatter::CURRENCY_SYMBOL),
+            currencySymbol: $numberFormatter->getSymbol(
+                $config['intl_currency_symbol']
+                    ? NumberFormatter::INTL_CURRENCY_SYMBOL
+                    : NumberFormatter::CURRENCY_SYMBOL
+            ),
             fractionDigits: $numberFormatter->getAttribute(NumberFormatter::FRACTION_DIGITS),
             decimalSeparator: $numberFormatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL),
             groupingSeparator: $numberFormatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL),
         );
     }
-
-    /*
-    public static function decimalToMoneyString($moneyString, $locale): string
-    {
-        return str_replace(',', '.', (string)$moneyString);
-    }
-    */
 
     private static function getNumberFormatter(string $locale, int $style): NumberFormatter
     {
