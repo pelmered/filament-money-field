@@ -174,4 +174,19 @@ class FormInputTest extends TestCase
             20,
         );
     }
+
+    public function testAllowLabelToBeOverrided(): void
+    {
+        $field = (new MoneyInput('price'))->label('Custom Label');
+
+
+        $component = ComponentContainer::make(FormTestComponent::make())
+                                       ->statePath('data')
+                                       ->components([
+                                           $field,
+                                       ])->fill([$field->getName() => 45345]);
+
+        $field = $component->getComponent('data.price');
+        $this->assertEquals('Custom Label', $field->getLabel());
+    }
 }
