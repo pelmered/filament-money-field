@@ -1,21 +1,23 @@
 # Filament Money Field
 Money field powered by [Money PHP ](https://www.moneyphp.org/en/stable/).
 
-This package gives much better localization support for money fields in Filament than most other packages, and especially the built in money support on TextColumns and TextEntries. For example when it comes to currency symbols and decimal and thousand separators. Especially for more obscure currencies. This also includes an input field that handles localized formats. 
+This package gives much better localization support for money fields in Filament than most other packages, and especially the built-in money support on TextColumns and TextEntries. For example when it comes to currency symbols and decimal and thousands separators. Especially for more obscure currencies. This also includes an input field that handles localized formats. 
 
 Example of a money field with Swedish localization.
 This package would give "1 234,56 kr", while most other solutions probably would give you something like "SEK 1234.56" which is not the correct format for Sweden.
-
 
 [![Latest Stable Version](https://poser.pugx.org/pelmered/filament-money-field/v/stable)](https://packagist.org/packages/pelmered/filament-money-field)
 [![Total Downloads](https://poser.pugx.org/pelmered/filament-money-field/d/total)](//packagist.org/packages/pelmered/filament-money-field)
 [![Monthly Downloads](https://poser.pugx.org/pelmered/filament-money-field/d/monthly)](//packagist.org/packages/pelmered/filament-money-field)
 [![License](https://poser.pugx.org/pelmered/filament-money-field/license)](https://packagist.org/packages/pelmered/filament-money-field)
 
+[![Tests](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml/badge.svg?branch=main)][GHA-tests]
 [![Build Status](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/build.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/build-status/main)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/?branch=main)
 
+[![Tested on PHP 8.2 to 8.3](https://img.shields.io/badge/tested%20on-PHP%208.2%20|%208.3-brightgreen.svg?maxAge=2419200)][GHA-tests]
+[![Tested on OS:es Linux, MacOS, Windows](https://img.shields.io/badge/Tested%20on%20lastest%20versions%20of-%20Linux%20|%20MacOS%20|%20Windows-brightgreen.svg?maxAge=2419200)][GHA-tests]
 
 ## Requirements
 
@@ -23,6 +25,18 @@ This package would give "1 234,56 kr", while most other solutions probably would
 - Filament 3.0 or higher
 - [PHP Internationalization extension (intl) ](https://www.php.net/manual/en/intro.intl.php)
 - The database column should be a integers with minor units (i.e. cents) and not a float (Floats should never be used for storing money).
+
+## Key features
+
+- Fully localized money fields in most locales. Report in an issue if you find a locale that is not working as expected.
+- Includes fully localized:
+  - Input field with currency symbols and (optional) input mask.
+  - Column for tables.
+  - Entry for infolists.
+- Comprehensive test suite.
+- Configure currency and locale globally or per field.
+- Validation rules for valid numeric input, and min/max values.
+- A [money formatter class](https://github.com/pelmered/filament-money-field/blob/main/src/MoneyFormatter.php) that could be used in your project.
 
 ## Installation
 
@@ -133,10 +147,19 @@ MoneyColumn::make('price')
 ```
 
 ## Roadmap / Ideas for the future. 
+
 Contact me or create an issue if you want something of this, or something else. 
 I appreciate if you could tell me a bit about your use case for that feature as well. 
 
-- ~~Improve test suite with tests for the individual components.~~
 - Add support for dynamic currency and locale based on current user.
 - Currency conversions. Set what base currency the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case. 
 
+## Contributing
+
+I'm very happy to receive PRs with fixes or improvements. If it is a new feature, it is probably best to open an issue first, so I can give feedback and see if that is something I think would fit in this package. Especially if it is a larger feature, so you don't waste your time.
+
+When you are submitting a PR, I appreciate if you:
+
+- Add tests for your code. Not a strict requirement. Ask for guidance if you are unsure. I will try to help if I have time. 
+- Run the test suite and make sure it passes with `composer test`.
+- Check the code with `composer phpstan`. It doesn't have to be 100 % clean, but if there is something there in your code it is good if you can address it before submitting. 
