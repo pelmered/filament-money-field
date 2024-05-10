@@ -8,7 +8,6 @@ This package would give "1 234,56 kr", while most other solutions probably would
 
 
 [![Latest Stable Version](https://poser.pugx.org/pelmered/filament-money-field/v/stable)](https://packagist.org/packages/pelmered/filament-money-field)
-[![Latest Unstable Version](https://poser.pugx.org/pelmered/filament-money-field/v/unstable)](//packagist.org/packages/pelmered/filament-money-field)
 [![Total Downloads](https://poser.pugx.org/pelmered/filament-money-field/d/total)](//packagist.org/packages/pelmered/filament-money-field)
 [![Monthly Downloads](https://poser.pugx.org/pelmered/filament-money-field/d/monthly)](//packagist.org/packages/pelmered/filament-money-field)
 [![License](https://poser.pugx.org/pelmered/filament-money-field/license)](https://packagist.org/packages/pelmered/filament-money-field)
@@ -38,7 +37,7 @@ composer require pelmered/filament-money-field
 
 **Option 1 (Recommended): Put the default options in your .env file.**
 
-```php
+```env
 MONEY_DEFAULT_LOCALE=sv_SE
 MONEY_DEFAULT_CURRENCY=SEK
 ```
@@ -53,7 +52,7 @@ php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoney
 **This will auto format the input field as you type.**
 
 This is a bit experimental at the moment and is therefore disabled by default. Hopefully it will be improved in the future and enabled by default in the next major version. Please try it out and provide feedback.
-```php
+```env
 MONEY_USE_INPUT_MASK=true // Defaults to false
 ```
 
@@ -61,7 +60,7 @@ MONEY_USE_INPUT_MASK=true // Defaults to false
 
 If you want to use international currency codes istead of their symbols or local short variants. For example USD instead of $, EUR instead of € or SEK instead of kr. 
 
-```php
+```env
 MONEY_INTL_CURRENCY_SYMBOL=true // Defaults to false
 ```
 
@@ -69,7 +68,7 @@ MONEY_INTL_CURRENCY_SYMBOL=true // Defaults to false
 
 Possible options: `after`, `before`, `none`.
 
-```php
+```env
 MONEY_UNIT_PLACEMENT=after // Defaults to before
 ```
 
@@ -133,11 +132,11 @@ MoneyColumn::make('price')
     ->locale('sv_SE');
 ```
 
-## TDOO / Ideas for the future. 
+## Roadmap / Ideas for the future. 
 Contact me or create an issue if you want something of this, or something else. 
-I appriciate if you could tell me a bit about your use case for that feature as well. 
+I appreciate if you could tell me a bit about your use case for that feature as well. 
 
-- Improve test suite with tests for the individual components (I was struggling a bit with this. Help would be appriciated).
+- ~~Improve test suite with tests for the individual components.~~
 - Add support for dynamic currency and locale based on current user.
 - Currency conversions. Set what base currency the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case. 
 
