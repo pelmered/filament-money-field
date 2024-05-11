@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField;
 
 use Spatie\LaravelPackageTools\Package;
@@ -11,13 +12,13 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)
-                ->hasConfigFile();
+            ->hasConfigFile();
     }
 
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/filament-money-field.php' => config_path('filament-money-field.php'),
+            __DIR__.'/../config/filament-money-field.php' => config_path('filament-money-field.php'),
         ], 'config');
     }
 }

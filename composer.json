@@ -34,7 +34,8 @@
         "filament/filament": "^3.0",
         "orchestra/testbench": "^8.8 || ^9.0",
         "phpstan/phpstan": "^1.10",
-        "nunomaduro/collision": "^7.0 || ^8.0"
+        "nunomaduro/collision": "^7.0 || ^8.0",
+        "laravel/pint": "^1.15"
     },
     "extra": {
         "laravel": {
@@ -45,6 +46,7 @@
     },
     "scripts": {
         "phpstan": "vendor/bin/phpstan analyse src --level=8",
+        "pint": "vendor/bin/pint",
         "post-autoload-dump": [
             "@clear",
             "@prepare"
@@ -58,7 +60,8 @@
             "@php vendor/bin/testbench serve"
         ],
         "lint": [
-            "@php vendor/bin/phpstan analyse"
+            "composer phpstan",
+            "composer pint"
         ],
         "test": [
             "@php vendor/bin/testbench package:test"

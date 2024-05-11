@@ -1,6 +1,7 @@
 <?php
 
 namespace Pelmered\FilamentMoneyField\Tests;
+
 use Money\Currency;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -167,7 +168,7 @@ final class MoneyFormatterTest extends TestCase
     public function testMoneyFormatterUsd(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
-            static::replaceNonBreakingSpaces($expectedOutput),
+            self::replaceNonBreakingSpaces($expectedOutput),
             MoneyFormatter::format($input, new Currency('USD'), 'en_US')
         );
     }
@@ -176,7 +177,7 @@ final class MoneyFormatterTest extends TestCase
     public function testMoneyFormatterSek(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
-            static::replaceNonBreakingSpaces($expectedOutput),
+            self::replaceNonBreakingSpaces($expectedOutput),
             MoneyFormatter::format($input, new Currency('SEK'), 'sv_SE')
         );
     }
@@ -185,7 +186,7 @@ final class MoneyFormatterTest extends TestCase
     public function testMoneyDecimalFormatterUsd(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
-            static::replaceNonBreakingSpaces($expectedOutput),
+            self::replaceNonBreakingSpaces($expectedOutput),
             MoneyFormatter::formatAsDecimal($input, new Currency('USD'), 'en_US')
         );
     }
@@ -194,7 +195,7 @@ final class MoneyFormatterTest extends TestCase
     public function testMoneyDecimalFormatterSek(mixed $input, string $expectedOutput): void
     {
         self::assertSame(
-            static::replaceNonBreakingSpaces($expectedOutput),
+            self::replaceNonBreakingSpaces($expectedOutput),
             MoneyFormatter::formatAsDecimal($input, new Currency('SEK'), 'sv_SE')
         );
     }

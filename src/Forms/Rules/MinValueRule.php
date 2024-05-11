@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Forms\Rules;
 
 use Closure;
@@ -31,7 +32,7 @@ readonly class MinValueRule implements ValidationRule
                         'The {attribute} must be at least {value}.',
                         [
                             '{attribute}' => ucwords($this->component->getLabel()),
-                            '{value}' => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
+                            '{value}'     => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
                         ]
                     )
                 );

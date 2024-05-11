@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Tests;
 
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
@@ -27,7 +28,6 @@ class ValidationRulesTest extends TestCase
         $rule->validate('amount', 30000, function ($message) {
             $this->assertEquals('The Amount must be less than or equal to 100.00.', $message);
         });
-
 
         $rule->validate('amount', 'invalid', function ($message) {
             $this->assertEquals('The Amount must be a valid numeric value.', $message);

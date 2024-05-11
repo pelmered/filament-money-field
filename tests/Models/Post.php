@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Tests\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;

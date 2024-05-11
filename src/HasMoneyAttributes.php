@@ -11,7 +11,9 @@ use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 trait HasMoneyAttributes
 {
     protected Currency $currency;
+
     protected string $locale;
+
     protected ?string $monetarySeparator = null;
 
     public function getCurrency(): Currency
@@ -34,11 +36,11 @@ trait HasMoneyAttributes
     public function currency(string|Closure $currencyCode): static
     {
         /** @var non-empty-string $currencyCode */
-        $currencyCode = (string) $this->evaluate($currencyCode);
+        $currencyCode   = (string) $this->evaluate($currencyCode);
         $this->currency = new Currency($currencyCode);
-        $currencies = new ISOCurrencies();
+        $currencies     = new ISOCurrencies();
 
-        if (!$currencies->contains($this->currency)) {
+        if (! $currencies->contains($this->currency)) {
             throw new UnsupportedCurrency($currencyCode);
         }
 

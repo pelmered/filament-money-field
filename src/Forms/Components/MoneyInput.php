@@ -14,7 +14,6 @@ class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
 
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,12 +25,12 @@ class MoneyInput extends TextInput
             $this->prepare();
 
             $currency = $component->getCurrency();
-            $locale = $component->getLocale();
+            $locale   = $component->getLocale();
 
             if (is_null($state)) {
                 return null;
             }
-            if (!is_numeric($state)) {
+            if (! is_numeric($state)) {
                 return $state;
             }
 
@@ -40,9 +39,9 @@ class MoneyInput extends TextInput
 
         $this->dehydrateStateUsing(function (MoneyInput $component, $state): ?string {
             $currency = $component->getCurrency();
-            $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
+            $state    = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
 
-            if (!is_numeric($state)) {
+            if (! is_numeric($state)) {
                 return null;
             }
 
@@ -72,9 +71,9 @@ class MoneyInput extends TextInput
                     strtr(
                         '$money($input, \'\', \'{decimalSeparator}\', \'{groupingSeparator}\', {fractionDigits})',
                         [
-                            '{decimalSeparator}' => $formattingRules->decimalSeparator,
+                            '{decimalSeparator}'  => $formattingRules->decimalSeparator,
                             '{groupingSeparator}' => $formattingRules->groupingSeparator,
-                            '{fractionDigits}' => $formattingRules->fractionDigits,
+                            '{fractionDigits}'    => $formattingRules->fractionDigits,
                         ]
                     )
                 );
@@ -85,23 +84,24 @@ class MoneyInput extends TextInput
     public function minValue(mixed $value): static
     {
         $this->rule(new MinValueRule((int) $this->evaluate($value), $this));
+
         return $this;
     }
 
     public function maxValue(mixed $value): static
     {
         $this->rule(new MaxValueRule((int) $this->evaluate($value), $this));
+
         return $this;
     }
-
 
     public function getLabel(): string
     {
         return $this->evaluate($this->label)
-               ?? (string)str($this->getName())
-                ->afterLast('.')
-            ->kebab()
-            ->replace(['-', '_'], ' ')
-            ->title();
+               ?? (string) str($this->getName())
+                   ->afterLast('.')
+                   ->kebab()
+                   ->replace(['-', '_'], ' ')
+                   ->title();
     }
 }

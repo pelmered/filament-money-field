@@ -3,11 +3,11 @@
 namespace Pelmered\FilamentMoneyField;
 
 use Money\Currencies\ISOCurrencies;
+use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
-use Money\Parser\IntlLocalizedDecimalParser;
 use Money\Money;
-use Money\Currency;
+use Money\Parser\IntlLocalizedDecimalParser;
 use NumberFormatter;
 
 class MoneyFormatter
@@ -18,14 +18,15 @@ class MoneyFormatter
         string $locale,
         int $outputStyle = NumberFormatter::CURRENCY
     ): string {
-        if ($value === '' || !is_numeric($value)) {
+        if ($value === '' || ! is_numeric($value)) {
             return '';
         }
 
         $numberFormatter = self::getNumberFormatter($locale, $outputStyle);
-        $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
+        $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
         $money = new Money((int) $value, $currency);
+
         return $moneyFormatter->format($money);  // outputs $1.000,00
     }
 
@@ -40,15 +41,14 @@ class MoneyFormatter
             return '';
         }
 
-        $currencies = new ISOCurrencies();
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL);
-        $moneyParser = new IntlLocalizedDecimalParser($numberFormatter, $currencies);
+        $moneyParser     = new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies());
 
         // Needed to fix some parsing issues with small numbers such as
         // "2,00" with "," left as thousands separator in the wrong place
         // See: https://github.com/pelmered/filament-money-field/issues/20
         $formattingRules = self::getFormattingRules($locale);
-        $moneyString = str_replace($formattingRules->groupingSeparator, '', $moneyString);
+        $moneyString     = str_replace($formattingRules->groupingSeparator, '', $moneyString);
 
         try {
             return $moneyParser->parse($moneyString, $currency)->getAmount();
@@ -59,7 +59,7 @@ class MoneyFormatter
 
     public static function getFormattingRules(string $locale): MoneyFormattingRules
     {
-        $config = config('filament-money-field');
+        $config          = config('filament-money-field');
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
         return new MoneyFormattingRules(
