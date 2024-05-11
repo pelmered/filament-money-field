@@ -1,5 +1,7 @@
+
 # Filament Money Field
-Money field powered by [Money PHP ](https://www.moneyphp.org/en/stable/).
+
+Money field powered by [Money PHP](https://www.moneyphp.org/en/stable/).
 
 This package gives much better localization support for money fields in Filament than most other packages, and especially the built-in money support on TextColumns and TextEntries. For example when it comes to currency symbols and decimal and thousands separators. Especially for more obscure currencies. This also includes an input field that handles localized formats. 
 
@@ -23,7 +25,7 @@ This package would give "1 234,56 kr", while most other solutions probably would
 
 - PHP 8.2 or higher
 - Filament 3.0 or higher
-- [PHP Internationalization extension (intl) ](https://www.php.net/manual/en/intro.intl.php)
+- [PHP Internationalization extension (intl)](https://www.php.net/manual/en/intro.intl.php)
 - The database column should be a integers with minor units (i.e. cents) and not a float (Floats should never be used for storing money).
 
 ## Key features
@@ -47,6 +49,7 @@ composer require pelmered/filament-money-field
 ## Configure your locale
 
 ### Set the default currency and locale
+
 **Set the default options for currency and locale so that you don't have to set them for every field.**
 
 **Option 1 (Recommended): Put the default options in your .env file.**
@@ -63,6 +66,7 @@ php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoney
 ## Additional Configuration
 
 ### If you want to use the formatting mask on the `MoneyInput` component 
+
 **This will auto format the input field as you type.**
 
 This is a bit experimental at the moment and is therefore disabled by default. Hopefully it will be improved in the future and enabled by default in the next major version. Please try it out and provide feedback.
@@ -78,7 +82,7 @@ If you want to use international currency codes istead of their symbols or local
 MONEY_INTL_CURRENCY_SYMBOL=true // Defaults to false
 ```
 
-### Placement of currency symbol/code on input fields. 
+### Placement of currency symbol/code on input fields
 
 Possible options: `after`, `before`, `none`.
 
@@ -146,7 +150,7 @@ MoneyColumn::make('price')
     ->locale('sv_SE');
 ```
 
-## Roadmap / Ideas for the future. 
+## Roadmap / Ideas for the future
 
 Contact me or create an issue if you want something of this, or something else. 
 I appreciate if you could tell me a bit about your use case for that feature as well. 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Forms\Rules;
 
 use Closure;
@@ -32,7 +33,7 @@ readonly class MaxValueRule implements ValidationRule
                         'The {attribute} must be less than or equal to {value}.',
                         [
                             '{attribute}' => Str::of($this->component->getLabel())->title(),
-                            '{value}' => MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale),
+                            '{value}'     => MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale),
                         ]
                     )
                 );

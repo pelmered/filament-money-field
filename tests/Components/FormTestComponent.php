@@ -1,11 +1,11 @@
 <?php
-namespace Pelmered\FilamentMoneyField\Tests\Components;
 
+namespace Pelmered\FilamentMoneyField\Tests\Components;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Livewire\Component;
 use Filament\Forms\Form;
+use Livewire\Component;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 
 class FormTestComponent extends Component implements HasForms
@@ -13,6 +13,7 @@ class FormTestComponent extends Component implements HasForms
     use InteractsWithForms;
 
     public $data;
+
     public $form;
 
     public static function make(): static
@@ -20,14 +21,13 @@ class FormTestComponent extends Component implements HasForms
         return new static();
     }
 
-
     public function form(Form $form): Form
     {
         return $form
             ->schema([
                 MoneyInput::make('price')
                     ->minValue(100)
-                    ->maxValue(1000)
+                    ->maxValue(1000),
             ]);
     }
 

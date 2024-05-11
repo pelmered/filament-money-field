@@ -2,10 +2,10 @@
 
 namespace Pelmered\FilamentMoneyField\Tests;
 
-use Filament\Forms\FormsServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\FilamentServiceProvider;
+use Filament\Forms\FormsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
@@ -28,16 +28,19 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ];
     }
 
-    public static function callMethod($obj, $name, array $args) {
+    public static function callMethod($obj, $name, array $args)
+    {
         $class = new \ReflectionClass($obj);
+
         return $class->getMethod($name)->invokeArgs($obj, $args);
     }
 
     public static function getProperty($object, $property)
     {
         $reflectedClass = new \ReflectionClass($object);
-        $reflection = $reflectedClass->getProperty($property);
+        $reflection     = $reflectedClass->getProperty($property);
         $reflection->setAccessible(true);
+
         return $reflection->getValue($object);
     }
 
