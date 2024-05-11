@@ -166,4 +166,4 @@ When you are submitting a PR, I appreciate if you:
 
 - Add tests for your code. Not a strict requirement. Ask for guidance if you are unsure. I will try to help if I have time. 
 - Run the test suite and make sure it passes with `composer test`.
-- Check the code with `composer phpstan`. It doesn't have to be 100 % clean, but if there is something there in your code it is good if you can address it before submitting. 
+- Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. 

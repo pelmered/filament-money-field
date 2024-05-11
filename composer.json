@@ -46,6 +46,7 @@
     },
     "scripts": {
         "phpstan": "vendor/bin/phpstan analyse src --level=8",
+        "pint": "vendor/bin/pint",
         "post-autoload-dump": [
             "@clear",
             "@prepare"
@@ -59,7 +60,8 @@
             "@php vendor/bin/testbench serve"
         ],
         "lint": [
-            "@php vendor/bin/phpstan analyse"
+            "composer phpstan",
+            "composer pint"
         ],
         "test": [
             "@php vendor/bin/testbench package:test"
