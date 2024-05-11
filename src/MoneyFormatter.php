@@ -84,10 +84,10 @@ class MoneyFormatter
         if ($config['intl_currency_symbol']) {
             $intlCurrencySymbol = $numberFormatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
             if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_PREFIX) !== '') {
-                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_PREFIX, $intlCurrencySymbol . ' ');
+                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_PREFIX, $intlCurrencySymbol.' ');
             }
             if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_SUFFIX) !== '') {
-                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_SUFFIX, ' ' . $intlCurrencySymbol);
+                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_SUFFIX, ' '.$intlCurrencySymbol);
             }
         }
 
