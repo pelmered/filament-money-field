@@ -237,4 +237,14 @@ final class MoneyFormatterTest extends TestCase
             MoneyFormatter::format(100000, new Currency('USD'), 'en_US')
         );
     }
+
+    public function testInternationalCurrencySymbolSuffix()
+    {
+        config(['filament-money-field.intl_currency_symbol' => true]);
+
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 000,00 SEK'),
+            MoneyFormatter::format(100000, new Currency('EUR'), 'sv_SE')
+        );
+    }
 }

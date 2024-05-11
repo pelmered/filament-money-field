@@ -84,10 +84,12 @@ class MoneyFormatter
         if ($config['intl_currency_symbol']) {
             $intlCurrencySymbol = $numberFormatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
             if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_PREFIX) !== '') {
-                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_PREFIX, $intlCurrencySymbol.' ');
+                // "\xc2\xa0" is a non-breaking space
+                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_PREFIX, $intlCurrencySymbol."\xc2\xa0");
             }
             if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_SUFFIX) !== '') {
-                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_SUFFIX, ' '.$intlCurrencySymbol);
+                // "\xc2\xa0" is a non-breaking space
+                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_SUFFIX, "\xc2\xa0".$intlCurrencySymbol);
             }
         }
 
