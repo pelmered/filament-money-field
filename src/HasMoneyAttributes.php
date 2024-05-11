@@ -53,4 +53,6 @@ trait HasMoneyAttributes
 
         return $this;
     }
+
+    abstract protected function evaluate(string|Closure|null $value): mixed;
 }
