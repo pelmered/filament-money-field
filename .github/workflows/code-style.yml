@@ -18,7 +18,8 @@ jobs:
         uses: tj-actions/changed-files@v39
 
       - name: Run Laravel Pint
-        uses: sergotail/laravel-pint-action@v2
+        uses: aglipanci/laravel-pint-action@latest
         with:
           verboseMode: true
+          testMode: true
           configPath: ./pint.json
