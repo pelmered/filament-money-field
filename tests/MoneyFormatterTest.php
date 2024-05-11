@@ -218,13 +218,23 @@ final class MoneyFormatterTest extends TestCase
         );
     }
 
-    public static function testMoneyParserDecimal(): void
+    public function testMoneyParserDecimal(): void
     {
         // Tests for some parsing issues with small numbers such as "2,00" with "," left as thousands separator in the wrong place
         // See: https://github.com/pelmered/filament-money-field/issues/20
         self::assertSame(
             '20000',
             MoneyFormatter::parseDecimal('2,00', new Currency('USD'), 'en_US')
+        );
+    }
+
+    public function testInternationalCurrencySymbol()
+    {
+        config(['filament-money-field.intl_currency_symbol' => true]);
+
+        self::assertSame(
+            'USD 1,000.00',
+            MoneyFormatter::format(100000, new Currency('USD'), 'en_US')
         );
     }
 }

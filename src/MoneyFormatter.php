@@ -81,6 +81,16 @@ class MoneyFormatter
         $numberFormatter = new NumberFormatter($locale, $style);
         $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $config['fraction_digits']);
 
+        if ($config['intl_currency_symbol']) {
+            $intlCurrencySymbol = $numberFormatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
+            if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_PREFIX) !== '') {
+                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_PREFIX, $intlCurrencySymbol . ' ');
+            }
+            if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_SUFFIX) !== '') {
+                $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_SUFFIX, ' ' . $intlCurrencySymbol);
+            }
+        }
+
         return $numberFormatter;
     }
 }
