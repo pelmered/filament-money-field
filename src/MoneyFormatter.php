@@ -76,8 +76,10 @@ class MoneyFormatter
 
     private static function getNumberFormatter(string $locale, int $style): NumberFormatter
     {
+        $config = config('filament-money-field');
+
         $numberFormatter = new NumberFormatter($locale, $style);
-        $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
+        $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $config['fraction_digits']);
 
         return $numberFormatter;
     }
