@@ -65,6 +65,9 @@
         ],
         "test": [
             "@php vendor/bin/testbench package:test"
+        ],
+        "coverage": [
+            "@php vendor/bin/phpunit --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
         ]
     }
 }
