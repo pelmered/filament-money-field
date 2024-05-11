@@ -233,7 +233,7 @@ final class MoneyFormatterTest extends TestCase
         config(['filament-money-field.intl_currency_symbol' => true]);
 
         self::assertSame(
-            'USD 1,000.00',
+            self::replaceNonBreakingSpaces('USD 1,000.00'),
             MoneyFormatter::format(100000, new Currency('USD'), 'en_US')
         );
     }
