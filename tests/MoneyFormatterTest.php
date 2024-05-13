@@ -218,6 +218,17 @@ final class MoneyFormatterTest extends TestCase
         );
     }
 
+    #[DataProvider('provideDecimalDataUSD')]
+    public function testMoneyParserDecimalUsdIntlSymbol(mixed $input, string $expectedOutput): void
+    {
+        config(['filament-money-field.intl_currency_symbol' => true]);
+
+        self::assertSame(
+            $expectedOutput,
+            MoneyFormatter::parseDecimal($input, new Currency('USD'), 'en_US')
+        );
+    }
+
     public function testMoneyParserDecimal(): void
     {
         // Tests for some parsing issues with small numbers such as "2,00" with "," left as thousands separator in the wrong place
