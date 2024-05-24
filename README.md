@@ -18,8 +18,8 @@ This package would give "1 234,56 kr", while most other solutions probably would
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/pelmered/filament-money-field/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/pelmered/filament-money-field/?branch=main)
 
-[![Tested on PHP 8.2 to 8.3](https://img.shields.io/badge/tested%20on-PHP%208.2%20|%208.3-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
-[![Tested on OS:es Linux, MacOS, Windows](https://img.shields.io/badge/Tested%20on%20lastest%20versions%20of-%20Linux%20|%20MacOS%20|%20Windows-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![Tested on PHP 8.2 to 8.3](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![Tested on OS:es Linux, MacOS, Windows](https://img.shields.io/badge/Tested%20on%20lastest%20versions%20of-%20Ubuntu%20|%20MacOS%20|%20Windows-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 
 ## Requirements
 
