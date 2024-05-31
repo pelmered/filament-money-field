@@ -209,8 +209,6 @@ class FormInputTest extends TestCase
             ->components([
                 $field,
             ])->fill([$field->getName() => 2345345]);
-
-        dd($component, $component->getState());
         $this->assertEquals('2345345', $component->getState()['price']);
 
         $field     = (new MoneyInput('price'))->decimals(3);
