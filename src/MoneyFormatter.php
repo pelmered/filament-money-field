@@ -118,6 +118,6 @@ class MoneyFormatter
             return $decimals;
         }
 
-        return (int) config('filament-money-field.fraction_digits', 2);
+        return (int) config('filament-money-field.decimal_digits', 2);
     }
 }
