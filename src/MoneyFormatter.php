@@ -89,9 +89,9 @@ class MoneyFormatter
 
         $numberFormatter = new NumberFormatter($locale, $style);
 
-        $decimals = static::getDecimals($decimals);
+        $decimals = self::getDecimals($decimals);
 
-        if (static::getDecimals($decimals) < 0) {
+        if ($decimals < 0) {
             $numberFormatter->setAttribute(NumberFormatter::MAX_SIGNIFICANT_DIGITS, abs($decimals));
         } else {
             $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimals);
