@@ -40,7 +40,7 @@ class MoneyInput extends TextInput
 
         $this->dehydrateStateUsing(function (MoneyInput $component, $state): ?string {
             $currency = $component->getCurrency();
-            $state    = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale());
+            $state    = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale(), $this->decimals);
 
             if (! is_numeric($state)) {
                 return null;

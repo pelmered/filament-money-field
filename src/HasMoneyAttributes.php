@@ -14,6 +14,8 @@ trait HasMoneyAttributes
 
     protected string $locale;
 
+    protected ?int $decimals = null;
+
     protected ?string $monetarySeparator = null;
 
     public function getCurrency(): Currency
@@ -54,5 +56,13 @@ trait HasMoneyAttributes
         return $this;
     }
 
+    public function decimals(int|Closure $decimals): static
+    {
+        $this->decimals = $this->evaluate($decimals);
+
+        return $this;
+    }
+
+    // This should typically be provided by the Filament\Support\Concerns\EvaluatesClosures trait in Filament
     abstract protected function evaluate(string|Closure|null $value): mixed;
 }
