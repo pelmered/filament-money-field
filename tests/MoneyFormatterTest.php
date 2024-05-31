@@ -297,6 +297,7 @@ final class MoneyFormatterTest extends TestCase
             MoneyFormatter::format(123456789, new Currency('USD'), 'en_US')
         );
     }
+
     public function testGlobalDecimalsSek(): void
     {
         config(['filament-money-field.fraction_digits' => 0]);

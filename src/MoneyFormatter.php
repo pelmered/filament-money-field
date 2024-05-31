@@ -39,6 +39,7 @@ class MoneyFormatter
     ): string {
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
     }
+
     public static function parseDecimal(
         ?string $moneyString,
         Currency $currency,
