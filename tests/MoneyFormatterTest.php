@@ -239,7 +239,7 @@ final class MoneyFormatterTest extends TestCase
         );
     }
 
-    public function testInternationalCurrencySymbol()
+    public function testInternationalCurrencySymbol(): void
     {
         config(['filament-money-field.intl_currency_symbol' => true]);
 
@@ -249,13 +249,137 @@ final class MoneyFormatterTest extends TestCase
         );
     }
 
-    public function testInternationalCurrencySymbolSuffix()
+    public function testInternationalCurrencySymbolSuffix(): void
     {
         config(['filament-money-field.intl_currency_symbol' => true]);
 
         self::assertSame(
             self::replaceNonBreakingSpaces('1 000,00 SEK'),
-            MoneyFormatter::format(100000, new Currency('EUR'), 'sv_SE')
+            MoneyFormatter::format(100000, new Currency('SEK'), 'sv_SE')
+        );
+    }
+
+    public function testGlobalDecimals(): void
+    {
+        config(['filament-money-field.decimal_digits' => null]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,000'),
+            MoneyFormatter::format(100020, new Currency('USD'), 'en_US')
+        );
+
+        config(['filament-money-field.decimal_digits' => 0]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,000'),
+            MoneyFormatter::format(100020, new Currency('USD'), 'en_US')
+        );
+
+        config(['filament-money-field.decimal_digits' => 2]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,000.11'),
+            MoneyFormatter::format(100011, new Currency('USD'), 'en_US')
+        );
+
+        config(['filament-money-field.decimal_digits' => 4]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,000.7700'),
+            MoneyFormatter::format(100077, new Currency('USD'), 'en_US')
+        );
+
+        config(['filament-money-field.decimal_digits' => -2]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$120,000'),
+            MoneyFormatter::format(12345678, new Currency('USD'), 'en_US')
+        );
+
+        config(['filament-money-field.decimal_digits' => -4]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,235,000'),
+            MoneyFormatter::format(123456789, new Currency('USD'), 'en_US')
+        );
+    }
+
+    public function testGlobalDecimalsSek(): void
+    {
+        config(['filament-money-field.decimal_digits' => 0]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 000 kr'),
+            MoneyFormatter::format(100020, new Currency('SEK'), 'sv_SE')
+        );
+
+        config(['filament-money-field.decimal_digits' => 2]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 000,11 kr'),
+            MoneyFormatter::format(100011, new Currency('SEK'), 'sv_SE')
+        );
+
+        config(['filament-money-field.decimal_digits' => 4]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 000,7700 kr'),
+            MoneyFormatter::format(100077, new Currency('SEK'), 'sv_SE')
+        );
+
+        config(['filament-money-field.decimal_digits' => -2]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('120 000 kr'),
+            MoneyFormatter::format(12345678, new Currency('SEK'), 'sv_SE')
+        );
+
+        config(['filament-money-field.decimal_digits' => -4]);
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 235 000 kr'),
+            MoneyFormatter::format(123456789, new Currency('SEK'), 'sv_SE')
+        );
+    }
+
+    public function testDecimalsAsParameter(): void
+    {
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,234.56'),
+            MoneyFormatter::format(123456, new Currency('USD'), 'en_US')
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,235'),
+            MoneyFormatter::format(123456, new Currency('USD'), 'en_US', decimals: 0)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,000.12'),
+            MoneyFormatter::format(100012, new Currency('USD'), 'en_US', decimals: 2)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,000.5500'),
+            MoneyFormatter::format(100055, new Currency('USD'), 'en_US', decimals: 4)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$1,200'),
+            MoneyFormatter::format(123456, new Currency('USD'), 'en_US', decimals: -2)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('$123,500'),
+            MoneyFormatter::format(12345678, new Currency('USD'), 'en_US', decimals: -4)
+        );
+    }
+
+    public function testDecimalsAsParameterSek(): void
+    {
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 001 kr'),
+            MoneyFormatter::format(100060, new Currency('SEK'), 'sv_SE', decimals: 0)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 000,12 kr'),
+            MoneyFormatter::format(100012, new Currency('SEK'), 'sv_SE', decimals: 2)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 000,5500 kr'),
+            MoneyFormatter::format(100055, new Currency('SEK'), 'sv_SE', decimals: 4)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('1 200 kr'),
+            MoneyFormatter::format(123456, new Currency('SEK'), 'sv_SE', decimals: -2)
+        );
+        self::assertSame(
+            self::replaceNonBreakingSpaces('123 500 kr'),
+            MoneyFormatter::format(12345678, new Currency('SEK'), 'sv_SE', decimals: -4)
         );
     }
 }

@@ -63,7 +63,7 @@ MONEY_DEFAULT_CURRENCY=SEK
 php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider" --tag="config"
 ```
 
-## Additional Configuration
+## Global Configuration
 
 ### If you want to use the formatting mask on the `MoneyInput` component 
 
@@ -89,6 +89,33 @@ Possible options: `after`, `before`, `none`.
 ```env
 MONEY_UNIT_PLACEMENT=after // Defaults to before
 ```
+
+### Decimals and significant digits
+
+The number of decimals and significant digits can be set in the config file. Defaults to 2.
+
+```env
+//with input 123456
+MONEY_DECIMAL_DIGITS=0 // Gives 0 decimals, e.g. $1,235
+MONEY_DECIMAL_DIGITS=2 // Gives 2 decimals, e.g. $1,234.56
+```
+
+For significant digits, use negative values. For example -2 will give you 2 significant digits. 
+
+```env
+//with input 12345678
+MONEY_DECIMAL_DIGITS=-2 // Gives 2 significant digits, e.g. $120,000
+MONEY_DECIMAL_DIGITS=-4 // Gives 4 significant digits, e.g. $123,400
+```
+
+This can also be set on a per-field basis.
+
+```php
+MoneyInput::make('price')->decimalDigits(0);
+MoneyEntry::make('price')->decimalDigits(2);
+MoneyColumn::make('price')->decimalDigits(-2);
+```
+
 
 ## Usage
 
@@ -131,7 +158,9 @@ MoneyInput::make('price')
     ->currency('SEK')
     ->locale('sv_SE')
     ->minValue(0) // Do not allow negative values.
-    ->maxValue(10000); // Add min and max value (in minor units, i.e. cents) to the input field. In this case no values over 100
+    ->maxValue(10000) // Add min and max value (in minor units, i.e. cents) to the input field. In this case no values over 100
+    ->step(100) // Step value for the input field. In this case only multiples of 100 are allowed.
+    ->decimals(0)
 ```
 
 ### Table column

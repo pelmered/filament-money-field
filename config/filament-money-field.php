@@ -42,7 +42,7 @@ return [
     | The currency code to use if not set on the field.
     |
     */
-    'fraction_digits' => env('MONEY_FRACTION_DIGITS', 2),
+    'decimal_digits' => env('MONEY_DECIMAL_DIGITS', 2),
 
     /*
     |---------------------------------------------------------------------------

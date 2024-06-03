@@ -200,4 +200,31 @@ class FormInputTest extends TestCase
         $field = $component->getComponent('data.price');
         $this->assertEquals('Custom Label in Closure', $field->getLabel());
     }
+
+    public function testSetDecimalsOnField(): void
+    {
+        $field     = (new MoneyInput('price'))->decimals(1);
+        $component = ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([
+                $field,
+            ])->fill([$field->getName() => 2345345]);
+        $this->assertEquals('2345345', $component->getState()['price']);
+
+        $field     = (new MoneyInput('price'))->decimals(3);
+        $component = ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([
+                $field,
+            ])->fill([$field->getName() => 2345345]);
+        $this->assertEquals('2345345', $component->getState()['price']);
+
+        $field     = (new MoneyInput('price'))->decimals(-2);
+        $component = ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([
+                $field,
+            ])->fill([$field->getName() => 2345345]);
+        $this->assertEquals('2345345', $component->getState()['price']);
+    }
 }

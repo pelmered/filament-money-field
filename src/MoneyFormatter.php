@@ -16,35 +16,45 @@ class MoneyFormatter
         null|int|string $value,
         Currency $currency,
         string $locale,
-        int $outputStyle = NumberFormatter::CURRENCY
+        int $outputStyle = NumberFormatter::CURRENCY,
+        ?int $decimals = null,
     ): string {
         if ($value === '' || ! is_numeric($value)) {
             return '';
         }
 
-        $numberFormatter = self::getNumberFormatter($locale, $outputStyle);
+        $numberFormatter = self::getNumberFormatter($locale, $outputStyle, $decimals);
         $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
         $money = new Money((int) $value, $currency);
 
-        return $moneyFormatter->format($money);  // outputs $1.000,00
+        return $moneyFormatter->format($money);  // Outputs something like "$1.234,56"
     }
 
-    public static function formatAsDecimal(null|int|string $value, Currency $currency, string $locale): string
-    {
-        return static::format($value, $currency, $locale, NumberFormatter::DECIMAL); // outputs 1.000,00
+    public static function formatAsDecimal(
+        null|int|string $value,
+        Currency $currency,
+        string $locale,
+        ?int $decimals = null,
+    ): string {
+        return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
     }
 
-    public static function parseDecimal(?string $moneyString, Currency $currency, string $locale): string
-    {
+    public static function parseDecimal(
+        ?string $moneyString,
+        Currency $currency,
+        string $locale,
+        ?int $decimals = null
+    ): string {
         if (is_null($moneyString) || $moneyString === '') {
             return '';
         }
 
-        $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL);
+        $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
         $moneyParser     = new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies());
 
-        // Needed to fix some parsing issues with small numbers such as
+        // Remove grouping separator from the money string
+        // This is needed to fix some parsing issues with small numbers such as
         // "2,00" with "," left as thousands separator in the wrong place
         // See: https://github.com/pelmered/filament-money-field/issues/20
         $formattingRules = self::getFormattingRules($locale);
@@ -74,12 +84,19 @@ class MoneyFormatter
         );
     }
 
-    private static function getNumberFormatter(string $locale, int $style): NumberFormatter
+    private static function getNumberFormatter(string $locale, int $style, ?int $decimals = null): NumberFormatter
     {
         $config = config('filament-money-field');
 
         $numberFormatter = new NumberFormatter($locale, $style);
-        $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $config['fraction_digits']);
+
+        $decimals = self::getDecimals($decimals);
+
+        if ($decimals < 0) {
+            $numberFormatter->setAttribute(NumberFormatter::MAX_SIGNIFICANT_DIGITS, abs($decimals));
+        } else {
+            $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimals);
+        }
 
         if ($config['intl_currency_symbol']) {
             $intlCurrencySymbol = $numberFormatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
@@ -94,5 +111,14 @@ class MoneyFormatter
         }
 
         return $numberFormatter;
+    }
+
+    private static function getDecimals(?int $decimals = null): int
+    {
+        if (! is_null($decimals)) {
+            return $decimals;
+        }
+
+        return (int) config('filament-money-field.decimal_digits', 2);
     }
 }
