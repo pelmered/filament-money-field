@@ -35,12 +35,12 @@ class MoneyInput extends TextInput
                 return $state;
             }
 
-            return MoneyFormatter::formatAsDecimal((int) $state, $currency, $locale, $this->decimals);
+            return MoneyFormatter::formatAsDecimal((int) $state, $currency, $locale, $this->getDecimals());
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, $state): ?string {
             $currency = $component->getCurrency();
-            $state    = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale(), $this->decimals);
+            $state    = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale(), $this->getDecimals());
 
             if (! is_numeric($state)) {
                 return null;

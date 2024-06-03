@@ -63,6 +63,15 @@ trait HasMoneyAttributes
         return $this;
     }
 
+    private function getDecimals(): int
+    {
+        if (! is_null($this->decimals)) {
+            return $this->decimals;
+        }
+
+        return (int) config('filament-money-field.decimal_digits', 2);
+    }
+
     // This should typically be provided by the Filament\Support\Concerns\EvaluatesClosures trait in Filament
     abstract protected function evaluate(string|Closure|null $value): mixed;
 }

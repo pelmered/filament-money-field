@@ -17,7 +17,7 @@ class MoneyFormatter
         Currency $currency,
         string $locale,
         int $outputStyle = NumberFormatter::CURRENCY,
-        ?int $decimals = null,
+        int $decimals = 2,
     ): string {
         if ($value === '' || ! is_numeric($value)) {
             return '';
@@ -35,7 +35,7 @@ class MoneyFormatter
         null|int|string $value,
         Currency $currency,
         string $locale,
-        ?int $decimals = null,
+        int $decimals = 2,
     ): string {
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
     }
@@ -44,7 +44,7 @@ class MoneyFormatter
         ?string $moneyString,
         Currency $currency,
         string $locale,
-        ?int $decimals = null
+        int $decimals = 2
     ): string {
         if (is_null($moneyString) || $moneyString === '') {
             return '';
@@ -84,13 +84,11 @@ class MoneyFormatter
         );
     }
 
-    private static function getNumberFormatter(string $locale, int $style, ?int $decimals = null): NumberFormatter
+    private static function getNumberFormatter(string $locale, int $style, int $decimals = 2): NumberFormatter
     {
         $config = config('filament-money-field');
 
         $numberFormatter = new NumberFormatter($locale, $style);
-
-        $decimals = self::getDecimals($decimals);
 
         if ($decimals < 0) {
             $numberFormatter->setAttribute(NumberFormatter::MAX_SIGNIFICANT_DIGITS, abs($decimals));

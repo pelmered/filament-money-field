@@ -20,9 +20,9 @@ class FormInputTest extends TestCase
             ->statePath('data')
             ->components([
                 MoneyInput::make('price'),
-            ])->fill(['price' => 20]);
+            ])->fill(['price' => 123456]);
 
-        $this->assertEquals('20', $component->getState()['price']);
+        $this->assertEquals('123456', $component->getState()['price']);
     }
 
     public function testNullState(): void
