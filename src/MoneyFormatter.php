@@ -110,13 +110,4 @@ class MoneyFormatter
 
         return $numberFormatter;
     }
-
-    private static function getDecimals(?int $decimals = null): int
-    {
-        if (! is_null($decimals)) {
-            return $decimals;
-        }
-
-        return (int) config('filament-money-field.decimal_digits', 2);
-    }
 }
