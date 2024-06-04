@@ -63,32 +63,6 @@ MONEY_DEFAULT_CURRENCY=SEK
 php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider" --tag="config"
 ```
 
-## Global Configuration
-
-### If you want to use the formatting mask on the `MoneyInput` component 
-
-**This will auto format the input field as you type.**
-
-This is a bit experimental at the moment and is therefore disabled by default. Hopefully it will be improved in the future and enabled by default in the next major version. Please try it out and provide feedback.
-```env
-MONEY_USE_INPUT_MASK=true // Defaults to false
-```
-
-### Use international currency codes (ISO 4217)
-
-If you want to use international currency codes istead of their symbols or local short variants. For example USD instead of $, EUR instead of € or SEK instead of kr. 
-
-```env
-MONEY_INTL_CURRENCY_SYMBOL=true // Defaults to false
-```
-
-### Placement of currency symbol/code on input fields
-
-Possible options: `after`, `before`, `none`.
-
-```env
-MONEY_UNIT_PLACEMENT=after // Defaults to before
-```
 
 ### Decimals and significant digits
 
@@ -179,13 +153,74 @@ MoneyColumn::make('price')
     ->locale('sv_SE');
 ```
 
+
+## Global Configuration
+
+### If you want to use the formatting mask on the `MoneyInput` component 
+
+**This will auto format the input field as you type.**
+
+This is a bit experimental at the moment and is therefore disabled by default. Hopefully it will be improved in the future and enabled by default in the next major version. Please try it out and provide feedback.
+```env
+MONEY_USE_INPUT_MASK=true // Defaults to false
+```
+
+### Use international currency codes (ISO 4217)
+
+If you want to use international currency codes istead of their symbols or local short variants. For example USD instead of $, EUR instead of € or SEK instead of kr. 
+
+```env
+MONEY_INTL_CURRENCY_SYMBOL=true // Defaults to false
+```
+
+### Placement of currency symbol/code on input fields
+
+Possible options: `after`, `before`, `none`.
+
+```env
+MONEY_UNIT_PLACEMENT=after // Defaults to before
+```
+
+### Decimals and significant digits
+
+The number of decimals and significant digits can be set in the config file. Defaults to 2.
+
+```env
+//with input 123456
+MONEY_DECIMAL_DIGITS=0 // Gives 0 decimals, e.g. $1,235
+MONEY_DECIMAL_DIGITS=2 // Gives 2 decimals, e.g. $1,234.56
+```
+
+For significant digits, use negative values. For example -2 will give you 2 significant digits. 
+
+```env
+//with input 12345678
+MONEY_DECIMAL_DIGITS=-2 // Gives 2 significant digits, e.g. $120,000
+MONEY_DECIMAL_DIGITS=-4 // Gives 4 significant digits, e.g. $123,400
+```
+
+This can also be set on a per-field basis.
+
+```php
+MoneyInput::make('price')->decimalDigits(0);
+MoneyEntry::make('price')->decimalDigits(2);
+MoneyColumn::make('price')->decimalDigits(-2);
+
+// You can also pass a callback to the decimalDigits method.
+MoneyInput::make('price')->decimalDigits(function () {
+    return 0;
+});
+```
+
+
 ## Roadmap / Ideas for the future
 
 Contact me or create an issue if you want something of this, or something else. 
 I appreciate if you could tell me a bit about your use case for that feature as well. 
 
+- Improve the input mask.
 - Add support for dynamic currency and locale based on current user.
-- Currency conversions. Set what base currency the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case. 
+- Currency conversions. Set what base currency the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case.
 
 ## Contributing
 
@@ -196,3 +231,4 @@ When you are submitting a PR, I appreciate if you:
 - Add tests for your code. Not a strict requirement. Ask for guidance if you are unsure. I will try to help if I have time. 
 - Run the test suite and make sure it passes with `composer test`.
 - Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. 
+
