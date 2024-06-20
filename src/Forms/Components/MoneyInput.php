@@ -70,7 +70,7 @@ class MoneyInput extends TextInput
 
                 return RawJs::make(
                     strtr(
-                        '$money($input, \'\', \'{decimalSeparator}\', \'{groupingSeparator}\', {fractionDigits})',
+                        '$money($input, \'{decimalSeparator}\', \'{groupingSeparator}\', {fractionDigits})',
                         [
                             '{decimalSeparator}'  => $formattingRules->decimalSeparator,
                             '{groupingSeparator}' => $formattingRules->groupingSeparator,
