@@ -26,7 +26,7 @@ readonly class MinValueRule implements ValidationRule
                 $locale
             );
 
-            if ($minorValue <= $this->min) {
+            if ($minorValue < $this->min) {
                 $fail(
                     strtr(
                         'The {attribute} must be at least {value}.',
