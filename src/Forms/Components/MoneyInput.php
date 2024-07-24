@@ -62,7 +62,7 @@ class MoneyInput extends TextInput
         match ($symbolPlacement) {
             'before' => $this->prefix($getCurrencySymbol),
             'after'  => $this->suffix($getCurrencySymbol),
-            'none'   => null,
+            'hidden' => null,
         };
 
         if (config('filament-money-field.use_input_mask')) {
@@ -92,8 +92,8 @@ class MoneyInput extends TextInput
     {
         $this->symbolPlacement = $this->evaluate($symbolPlacement);
 
-        if (! in_array($this->symbolPlacement, ['before', 'after', 'none'])) {
-            throw new \InvalidArgumentException('Symbol placement must be either "before", "after" or "none".');
+        if (! in_array($this->symbolPlacement, ['before', 'after', 'hidden'])) {
+            throw new \InvalidArgumentException('Symbol placement must be either "before", "after" or "hidden".');
         }
 
         return $this;
