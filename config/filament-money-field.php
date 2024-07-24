@@ -59,7 +59,7 @@ return [
     | Currency symbol placement
     |---------------------------------------------------------------------------
     |
-    | Where the dunit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'none'.
+    | Where the dunit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'hidden'.
     | Note: In most non-English speaking European countries,
     | the currency symbol is after the amount and is preceded by a space (as in "10 €")
     |

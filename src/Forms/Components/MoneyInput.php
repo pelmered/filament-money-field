@@ -15,6 +15,8 @@ class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
 
+    protected ?string $symbolPlacement = null;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,21 +54,20 @@ class MoneyInput extends TextInput
 
     protected function prepare(): void
     {
-        $symbolPlacement = Config::get('filament-money-field.form_currency_symbol_placement', 'before');
-
+        $symbolPlacement   = $this->getSymbolPlacement();
         $getCurrencySymbol = function (MoneyInput $component) {
-            return MoneyFormatter::getFormattingRules($component->getLocale())->currencySymbol;
+            return MoneyFormatter::getFormattingRules($component->getLocale(), $component->getCurrency())->currencySymbol;
         };
 
-        if ($symbolPlacement === 'before') {
-            $this->prefix($getCurrencySymbol);
-        } else {
-            $this->suffix($getCurrencySymbol);
-        }
+        match ($symbolPlacement) {
+            'before' => $this->prefix($getCurrencySymbol)->suffix(null),
+            'after'  => $this->suffix($getCurrencySymbol)->prefix(null),
+            'hidden' => $this->suffix(null)->prefix(null),
+        };
 
         if (config('filament-money-field.use_input_mask')) {
             $this->mask(function (MoneyInput $component) {
-                $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale());
+                $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale(), $component->getCurrency());
 
                 return RawJs::make(
                     strtr(
@@ -80,6 +81,22 @@ class MoneyInput extends TextInput
                 );
             });
         }
+    }
+
+    public function getSymbolPlacement()
+    {
+        return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', 'before');
+    }
+
+    public function symbolPlacement(string|Closure|null $symbolPlacement = null): static
+    {
+        $this->symbolPlacement = $this->evaluate($symbolPlacement);
+
+        if (! in_array($this->symbolPlacement, ['before', 'after', 'hidden'])) {
+            throw new \InvalidArgumentException('Symbol placement must be either "before", "after" or "hidden".');
+        }
+
+        return $this;
     }
 
     public function minValue(mixed $value): static

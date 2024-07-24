@@ -135,6 +135,7 @@ MoneyInput::make('price')
     ->maxValue(10000) // Add min and max value (in minor units, i.e. cents) to the input field. In this case no values over 100
     ->step(100) // Step value for the input field. In this case only multiples of 100 are allowed.
     ->decimals(0)
+    ->getSymbolPlacement('after'), // Possible options: 'after', 'before', 'none'. Defaults to 'before'
 ```
 
 ### Table column
