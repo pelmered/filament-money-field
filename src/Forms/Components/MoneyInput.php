@@ -15,7 +15,7 @@ class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
 
-    protected string $symbolPlacement;
+    protected ?string $symbolPlacement = null;
 
     protected function setUp(): void
     {
@@ -60,9 +60,9 @@ class MoneyInput extends TextInput
         };
 
         match ($symbolPlacement) {
-            'before' => $this->prefix($getCurrencySymbol),
-            'after'  => $this->suffix($getCurrencySymbol),
-            'hidden' => null,
+            'before' => $this->prefix($getCurrencySymbol)->suffix(null),
+            'after'  => $this->suffix($getCurrencySymbol)->prefix(null),
+            'hidden' => $this->suffix(null)->prefix(null),
         };
 
         if (config('filament-money-field.use_input_mask')) {
@@ -85,7 +85,7 @@ class MoneyInput extends TextInput
 
     public function getSymbolPlacement()
     {
-        return $this->symbolPlacement ?? config('filament-money-field.default_symbol_placement');
+        return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', 'before');
     }
 
     public function symbolPlacement(string|Closure|null $symbolPlacement = null): static

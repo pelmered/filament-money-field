@@ -49,22 +49,23 @@ class FormInputTest extends TestCase
         $component->getState();
     }
 
-    public function testCurrencySymbolPlacementAfter()
+    public function testCurrencySymbolPlacementAfterInGlobalConfig()
     {
         config(['filament-money-field.form_currency_symbol_placement' => 'after']);
 
         $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => 20]);
+                                       ->statePath('data')
+                                       ->components([
+                                           MoneyInput::make('price'),
+                                       ])->fill(['price' => 20]);
 
+        /** @var MoneyInput $field */
         $field = $component->getComponent('data.price');
         $this->assertEquals('$', $field->getSuffixLabel());
         $this->assertNull($field->getPrefixLabel());
     }
 
-    public function testCurrencySymbolPlacementBefore()
+    public function testCurrencySymbolPlacementBeforeInGlobalConfig()
     {
         config(['filament-money-field.form_currency_symbol_placement' => 'before']);
 
@@ -76,6 +77,61 @@ class FormInputTest extends TestCase
 
         $field = $component->getComponent('data.price');
         $this->assertEquals('$', $field->getPrefixLabel());
+        $this->assertNull($field->getSuffixLabel());
+    }
+
+    public function testCurrencySymbolPlacementHiddenInGlobalConfig()
+    {
+        config(['filament-money-field.form_currency_symbol_placement' => 'hidden']);
+
+        $component = ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([
+                MoneyInput::make('price'),
+            ])->fill(['price' => 20]);
+
+        $field = $component->getComponent('data.price');
+        $this->assertNull($field->getPrefixLabel());
+        $this->assertNull($field->getSuffixLabel());
+    }
+
+    public function testCurrencySymbolPlacementAfterOnField()
+    {
+        $component = ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([
+                MoneyInput::make('price')->symbolPlacement('after'),
+            ])->fill(['price' => 20]);
+
+        $field = $component->getComponent('data.price');
+        //dd($field);
+        $this->assertEquals('$', $field->getSuffixLabel());
+        $this->assertNull($field->getPrefixLabel());
+    }
+
+    public function testCurrencySymbolPlacementBeforeOnField()
+    {
+        $component = ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([
+                MoneyInput::make('price')->symbolPlacement('before'),
+            ])->fill(['price' => 20]);
+
+        $field = $component->getComponent('data.price');
+        $this->assertEquals('$', $field->getPrefixLabel());
+        $this->assertNull($field->getSuffixLabel());
+    }
+
+    public function testCurrencySymbolPlacementHiddenOnField()
+    {
+        $component = ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([
+                MoneyInput::make('price')->symbolPlacement('hidden'),
+            ])->fill(['price' => 20]);
+
+        $field = $component->getComponent('data.price');
+        $this->assertNull($field->getPrefixLabel());
         $this->assertNull($field->getSuffixLabel());
     }
 
