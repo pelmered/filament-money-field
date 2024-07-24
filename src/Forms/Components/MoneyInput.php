@@ -5,7 +5,6 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\HasMoneyAttributes;
@@ -62,7 +61,7 @@ class MoneyInput extends TextInput
         match ($symbolPlacement) {
             'before' => $this->prefix($getCurrencySymbol)->suffix(null),
             'after'  => $this->suffix($getCurrencySymbol)->prefix(null),
-            'hidden' => $this->suffix(null)->prefix(null),
+            default  => $this->suffix(null)->prefix(null),
         };
 
         if (config('filament-money-field.use_input_mask')) {
@@ -83,12 +82,12 @@ class MoneyInput extends TextInput
         }
     }
 
-    public function getSymbolPlacement()
+    public function getSymbolPlacement(): string
     {
         return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', 'before');
     }
 
-    public function symbolPlacement(string|Closure|null $symbolPlacement = null): static
+    public function symbolPlacement(string|\Closure|null $symbolPlacement = null): static
     {
         $this->symbolPlacement = $this->evaluate($symbolPlacement);
 

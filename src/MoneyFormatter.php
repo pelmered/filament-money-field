@@ -57,7 +57,7 @@ class MoneyFormatter
         // This is needed to fix some parsing issues with small numbers such as
         // "2,00" with "," left as thousands separator in the wrong place
         // See: https://github.com/pelmered/filament-money-field/issues/20
-        $formattingRules = self::getFormattingRules($locale);
+        $formattingRules = self::getFormattingRules($locale, $currency);
         $moneyString     = str_replace($formattingRules->groupingSeparator, '', $moneyString);
 
         try {
@@ -67,7 +67,7 @@ class MoneyFormatter
         }
     }
 
-    public static function getFormattingRules(string $locale): MoneyFormattingRules
+    public static function getFormattingRules(string $locale, Currency $currency): MoneyFormattingRules
     {
         $config          = config('filament-money-field');
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);

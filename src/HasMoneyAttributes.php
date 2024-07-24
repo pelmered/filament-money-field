@@ -56,7 +56,6 @@ trait HasMoneyAttributes
         return $this;
     }
 
-
     public function decimals(int|Closure $decimals): static
     {
         $this->decimals = $this->evaluate($decimals);
