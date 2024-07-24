@@ -18,10 +18,16 @@ class MoneyEntry extends TextEntry
         $this->numeric();
 
         $this->formatStateUsing(function (MoneyEntry $component, $state): string {
-            $currency = $component->getCurrency();
-            $locale   = $component->getLocale();
-
-            return MoneyFormatter::format($state, $currency, $locale);
+            return MoneyFormatter::format($state, $component->getCurrency(), $component->getLocale());
         });
+    }
+
+    public function short()
+    {
+        $this->formatStateUsing(function (MoneyEntry $component, $state) {
+            return MoneyFormatter::formatShort($state, $component->getCurrency(), $component->getLocale());
+        });
+
+        return $this;
     }
 }

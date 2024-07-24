@@ -17,11 +17,17 @@ class MoneyColumn extends TextColumn
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyColumn $column, $state): string {
-            $currency = $column->getCurrency();
-            $locale   = $column->getLocale();
-
-            return MoneyFormatter::format($state, $currency, $locale);
+        $this->formatStateUsing(function (MoneyColumn $component, $state): string {
+            return MoneyFormatter::format($state, $component->getCurrency(), $component->getLocale());
         });
+    }
+
+    public function short()
+    {
+        $this->formatStateUsing(function (MoneyColumn $component, $state) {
+            return MoneyFormatter::formatShort($state, $component->getCurrency(), $component->getLocale());
+        });
+
+        return $this;
     }
 }

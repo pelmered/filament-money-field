@@ -93,25 +93,6 @@ MoneyColumn::make('price')->decimalDigits(-2);
 
 ## Usage
 
-### InfoList
-
-```php
-use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
-
-MoneyEntry::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
-
-// The default can be set in the Infolist class with:
-public static string $defaultCurrency = 'SEK';
-
-MoneyEntry::make('price')
-    ->currency('USD')
-    ->locale('en_US'),
-
-MoneyEntry::make('price')
-    ->currency('SEK')
-    ->locale('sv_SE'),
-```
-
 ### Form
 
 ```php
@@ -151,6 +132,31 @@ MoneyColumn::make('price')
 MoneyColumn::make('price')
     ->currency('SEK')
     ->locale('sv_SE'),
+
+MoneyColumn::make('price')
+    ->short(), // Short fromat, e.g. $1.23M instead of $1,234,567.89
+```
+
+### InfoList
+
+```php
+use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
+
+MoneyEntry::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
+
+// The default can be set in the Infolist class with:
+public static string $defaultCurrency = 'SEK';
+
+MoneyEntry::make('price')
+    ->currency('USD')
+    ->locale('en_US'),
+
+MoneyEntry::make('price')
+    ->currency('SEK')
+    ->locale('sv_SE'),
+
+MoneyEntry::make('price')
+    ->short(), // Short fromat, e.g. $1.23M instead of $1,234,567.89
 ```
 
 

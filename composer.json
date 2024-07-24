@@ -26,7 +26,7 @@
     "require": {
         "php": "^8.2",
         "ext-intl": "*",
-        "filament/support": "^3.0",
+        "filament/support": "^v3.2.50",
         "moneyphp/money": "^4.0"
     },
     "require-dev": {
