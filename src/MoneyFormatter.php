@@ -88,7 +88,7 @@ class MoneyFormatter
         // This is needed to fix some parsing issues with small numbers such as
         // "2,00" with "," left as thousands separator in the wrong place
         // See: https://github.com/pelmered/filament-money-field/issues/20
-        $formattingRules = self::getFormattingRules($locale);
+        $formattingRules = self::getFormattingRules($locale, $currency);
         $moneyString     = str_replace($formattingRules->groupingSeparator, '', $moneyString);
 
         try {
@@ -98,17 +98,15 @@ class MoneyFormatter
         }
     }
 
-    public static function getFormattingRules(string $locale): MoneyFormattingRules
+    public static function getFormattingRules(string $locale, Currency $currency): MoneyFormattingRules
     {
         $config          = config('filament-money-field');
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
+        $currencySymbol = static::getCurrencySymbol($locale, $currency);
+
         return new MoneyFormattingRules(
-            currencySymbol: $numberFormatter->getSymbol(
-                $config['intl_currency_symbol']
-                    ? NumberFormatter::INTL_CURRENCY_SYMBOL
-                    : NumberFormatter::CURRENCY_SYMBOL
-            ),
+            currencySymbol: $currencySymbol,
             fractionDigits: $numberFormatter->getAttribute(NumberFormatter::FRACTION_DIGITS),
             decimalSeparator: $numberFormatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL),
             groupingSeparator: $numberFormatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL),
@@ -140,5 +138,33 @@ class MoneyFormatter
         }
 
         return $numberFormatter;
+    }
+
+
+    public static function getCurrencySymbol(string $locale, Currency $currency): string
+    {
+        /*
+         currencySymbol: $numberFormatter->getSymbol(
+                $config['intl_currency_symbol']
+                    ? NumberFormatter::INTL_CURRENCY_SYMBOL
+                    : NumberFormatter::CURRENCY_SYMBOL
+            ),
+       */
+        $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+
+        // Prevent any extra spaces, etc. in formatted currency
+        $formatter->setPattern('*');
+
+        // Prevent significant digits (e.g. cents) in formatted currency
+        $formatter->setAttribute(\NumberFormatter::MAX_SIGNIFICANT_DIGITS, 0);
+
+        // Get the formatted price for '0'
+        $formattedPrice = $formatter->formatCurrency(0, $currency->getCode());
+
+        // Strip out the zeros to get the currency symbol lrft
+        $zero = $formatter->getSymbol(\NumberFormatter::ZERO_DIGIT_SYMBOL);
+        $currencySymbol = str_replace($zero, '', $formattedPrice);
+
+        return $currencySymbol;
     }
 }
