@@ -44,12 +44,26 @@ return [
     */
     'decimal_digits' => env('MONEY_DECIMAL_DIGITS', 2),
 
+
+
+    /*
+    |---------------------------------------------------------------------------
+    | Hide decimals if zero
+    |---------------------------------------------------------------------------
+    |
+    | Hide the decimal part of the amount if it is zero.
+    | For example, $23.00 becomes $23.
+    |
+    */
+    'hide_decimals_if_zero' => env('MONEY_HIDE_DECIMALS_IF_ZERO', false),
+
     /*
     |---------------------------------------------------------------------------
     | International currency symbol
     |---------------------------------------------------------------------------
     |
-    | Use international currency symbols. For example: USD, EUR, SEK instead of $, €, kr etc.
+    | Use international currency symbols.
+    | For example: USD, EUR, SEK instead of $, €, kr etc.
     |
     */
     'intl_currency_symbol' => env('MONEY_INTL_CURRENCY_SYMBOL', false),
@@ -65,5 +79,7 @@ return [
     |
     */
     'form_currency_symbol_placement' => env('MONEY_UNIT_PLACEMENT', 'before'),
+
+
 
 ];
