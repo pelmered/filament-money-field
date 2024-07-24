@@ -2,6 +2,7 @@
 
 namespace Pelmered\FilamentMoneyField;
 
+use Illuminate\Support\Number;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Exception\ParserException;
@@ -38,6 +39,36 @@ class MoneyFormatter
         int $decimals = 2,
     ): string {
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
+    }
+
+    public static function formatShort(
+        null|int|string $value,
+        Currency $currency,
+        string $locale,
+        int $decimals = 2,
+    ): string {
+        if (! is_numeric($value)){
+            return '';
+        }
+
+        // No need to abbreviate if the value is less than 1000
+        if ($value < 1000) {
+            return static::format($value, $currency, $locale, $decimals);
+        }
+
+        $abbreviated = Number::abbreviate($value);
+
+        // Split the number and the suffix
+        $r = preg_match('/^(?<number>[0-9]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1);
+
+        // Format the number
+        $formatted = static::format($matches1['number'], $currency, $locale);
+
+        // Find the formatted number
+        preg_match('/(?<number>[0-9\.,]+)/', $formatted, $matches2);
+
+        // Insert the suffix back
+        return substr_replace($formatted, $matches1['suffix'], strpos($formatted, $matches2['number'])+strlen($matches2['number']), 0);
     }
 
     public static function parseDecimal(

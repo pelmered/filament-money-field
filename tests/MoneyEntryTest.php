@@ -15,11 +15,11 @@ class MoneyEntryTest extends TestCase
         $component = ComponentContainer::make(InfolistTestComponent::make())
             ->components([
                 $entry,
-            ])->state([$entry->getName() => 1000000]);
+            ])->state([$entry->getName() => 100000000]);
 
         $entry = $component->getComponent('price');
 
-        $this->assertEquals('$10,000.00', $entry->formatState($entry->getState()));
+        $this->assertEquals('$1,000,000.00', $entry->formatState($entry->getState()));
     }
 
     public function testInfoListMoneyFormatSek(): void
@@ -27,14 +27,48 @@ class MoneyEntryTest extends TestCase
         $entry = MoneyEntry::make('price')->currency('SEK')->locale('sv_SE');
 
         $component = ComponentContainer::make(InfolistTestComponent::make())
-            ->components([
-                $entry,
-            ])->state([$entry->getName() => 1000000]);
+                                       ->components([
+                                           $entry,
+                                       ])->state([$entry->getName() => 1000000]);
 
         $entry = $component->getComponent('price');
 
         $this->assertEquals(
             static::replaceNonBreakingSpaces('10 000,00 kr'),
+            $entry->formatState($entry->getState())
+        );
+    }
+
+    public function testInfoListMoneyFormatShort(): void
+    {
+        $entry = MoneyEntry::make('price')->short();
+
+        $component = ComponentContainer::make(InfolistTestComponent::make())
+                                       ->components([
+                                           $entry,
+                                       ])->state([$entry->getName() => 123456789]);
+
+        $entry = $component->getComponent('price');
+
+        $this->assertEquals(
+            static::replaceNonBreakingSpaces('$1.23M'),
+            $entry->formatState($entry->getState())
+        );
+    }
+
+    public function testInfoListMoneyFormatShortSek(): void
+    {
+        $entry = MoneyEntry::make('price')->short()->currency('SEK')->locale('sv_SE');
+
+        $component = ComponentContainer::make(InfolistTestComponent::make())
+                                       ->components([
+                                           $entry,
+                                       ])->state([$entry->getName() => 123456]);
+
+        $entry = $component->getComponent('price');
+
+        $this->assertEquals(
+            static::replaceNonBreakingSpaces('1,23K kr'),
             $entry->formatState($entry->getState())
         );
     }
