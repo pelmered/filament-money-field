@@ -11,9 +11,7 @@ use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 readonly class MaxValueRule implements ValidationRule
 {
-    public function __construct(private int $max, private MoneyInput $component)
-    {
-    }
+    public function __construct(private int $max, private MoneyInput $component) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {

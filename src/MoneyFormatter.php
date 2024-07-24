@@ -24,7 +24,7 @@ class MoneyFormatter
         }
 
         $numberFormatter = self::getNumberFormatter($locale, $outputStyle, $decimals);
-        $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
+        $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
 
         $money = new Money((int) $value, $currency);
 
@@ -51,7 +51,7 @@ class MoneyFormatter
         }
 
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
-        $moneyParser     = new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies());
+        $moneyParser     = new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies);
 
         // Remove grouping separator from the money string
         // This is needed to fix some parsing issues with small numbers such as

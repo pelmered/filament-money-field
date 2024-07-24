@@ -40,7 +40,7 @@ trait HasMoneyAttributes
         /** @var non-empty-string $currencyCode */
         $currencyCode   = (string) $this->evaluate($currencyCode);
         $this->currency = new Currency($currencyCode);
-        $currencies     = new ISOCurrencies();
+        $currencies     = new ISOCurrencies;
 
         if (! $currencies->contains($this->currency)) {
             throw new UnsupportedCurrency($currencyCode);

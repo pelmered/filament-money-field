@@ -10,9 +10,7 @@ use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 readonly class MinValueRule implements ValidationRule
 {
-    public function __construct(private int $min, private MoneyInput $component)
-    {
-    }
+    public function __construct(private int $min, private MoneyInput $component) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
