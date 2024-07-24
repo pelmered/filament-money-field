@@ -17,8 +17,8 @@ class MoneyColumn extends TextColumn
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyColumn $column, $state): string {
-            return MoneyFormatter::format($state, $column->getCurrency(), $column->getLocale());
+        $this->formatStateUsing(function (MoneyColumn $component, $state): string {
+            return MoneyFormatter::format($state, $component->getCurrency(), $component->getLocale());
         });
     }
 
