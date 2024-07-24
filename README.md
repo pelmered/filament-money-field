@@ -105,11 +105,11 @@ public static string $defaultCurrency = 'SEK';
 
 MoneyEntry::make('price')
     ->currency('USD')
-    ->locale('en_US');
+    ->locale('en_US'),
 
 MoneyEntry::make('price')
     ->currency('SEK')
-    ->locale('sv_SE');
+    ->locale('sv_SE'),
 ```
 
 ### Form
@@ -121,12 +121,11 @@ MoneyInput::make('price'); // Defaults to USD and the current Laravel locale, or
 
 MoneyInput::make('price')
     ->currency('USD')
-    ->locale('en_US');
+    ->locale('en_US'),
 
 MoneyInput::make('price')
     ->currency('SEK')
-    ->locale('sv_SE');
-
+    ->locale('sv_SE'),
 
 MoneyInput::make('price')
     ->currency('SEK')
@@ -147,11 +146,11 @@ MoneyColumn::make('price'); // Defaults to USD and the current Laravel locale, o
 
 MoneyColumn::make('price')
     ->currency('USD')
-    ->locale('en_US');
+    ->locale('en_US'),
 
 MoneyColumn::make('price')
     ->currency('SEK')
-    ->locale('sv_SE');
+    ->locale('sv_SE'),
 ```
 
 
