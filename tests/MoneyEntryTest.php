@@ -13,9 +13,8 @@ class MoneyEntryTest extends TestCase
         $entry = MoneyEntry::make('price');
 
         $component = ComponentContainer::make(InfolistTestComponent::make())
-            ->components([
-                $entry,
-            ])->state([$entry->getName() => 100000000]);
+            ->components([$entry])
+            ->state([$entry->getName() => 100000000]);
 
         $entry = $component->getComponent('price');
 
@@ -27,9 +26,8 @@ class MoneyEntryTest extends TestCase
         $entry = MoneyEntry::make('price')->currency('SEK')->locale('sv_SE');
 
         $component = ComponentContainer::make(InfolistTestComponent::make())
-                                       ->components([
-                                           $entry,
-                                       ])->state([$entry->getName() => 1000000]);
+            ->components([$entry])
+            ->state([$entry->getName() => 1000000]);
 
         $entry = $component->getComponent('price');
 
@@ -44,9 +42,8 @@ class MoneyEntryTest extends TestCase
         $entry = MoneyEntry::make('price')->short();
 
         $component = ComponentContainer::make(InfolistTestComponent::make())
-                                       ->components([
-                                           $entry,
-                                       ])->state([$entry->getName() => 123456789]);
+            ->components([$entry])
+            ->state([$entry->getName() => 123456789]);
 
         $entry = $component->getComponent('price');
 
@@ -61,14 +58,29 @@ class MoneyEntryTest extends TestCase
         $entry = MoneyEntry::make('price')->short()->currency('SEK')->locale('sv_SE');
 
         $component = ComponentContainer::make(InfolistTestComponent::make())
-                                       ->components([
-                                           $entry,
-                                       ])->state([$entry->getName() => 123456]);
+            ->components([$entry])
+            ->state([$entry->getName() => 123456]);
 
         $entry = $component->getComponent('price');
 
         $this->assertEquals(
             static::replaceNonBreakingSpaces('1,23K kr'),
+            $entry->formatState($entry->getState())
+        );
+    }
+
+    public function testInfoListMoneyFormatSekNoDecimals(): void
+    {
+        $entry = MoneyEntry::make('price')->currency('SEK')->locale('sv_SE')->decimals(0);
+
+        $component = ComponentContainer::make(InfolistTestComponent::make())
+            ->components([$entry])
+            ->state([$entry->getName() => 1000000]);
+
+        $entry = $component->getComponent('price');
+
+        $this->assertEquals(
+            static::replaceNonBreakingSpaces('10 000 kr'),
             $entry->formatState($entry->getState())
         );
     }

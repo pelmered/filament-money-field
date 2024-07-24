@@ -18,14 +18,24 @@ class MoneyColumn extends TextColumn
         $this->numeric();
 
         $this->formatStateUsing(function (MoneyColumn $component, $state): string {
-            return MoneyFormatter::format($state, $component->getCurrency(), $component->getLocale());
+            return MoneyFormatter::format(
+                $state,
+                $component->getCurrency(),
+                $component->getLocale(),
+                decimals: $this->getDecimals()
+            );
         });
     }
 
     public function short()
     {
         $this->formatStateUsing(function (MoneyColumn $component, $state) {
-            return MoneyFormatter::formatShort($state, $component->getCurrency(), $component->getLocale());
+            return MoneyFormatter::formatShort(
+                $state,
+                $component->getCurrency(),
+                $component->getLocale(),
+                decimals: $this->getDecimals()
+            );
         });
 
         return $this;

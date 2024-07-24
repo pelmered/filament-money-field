@@ -18,9 +18,8 @@ class FormInputTest extends TestCase
     {
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => 123456]);
+            ->components([MoneyInput::make('price')])
+            ->fill(['price' => 123456]);
 
         $this->assertEquals('123456', $component->getState()['price']);
     }
@@ -29,9 +28,8 @@ class FormInputTest extends TestCase
     {
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => null]);
+            ->components([MoneyInput::make('price')])
+            ->fill(['price' => null]);
 
         $this->assertNull($component->getState()['price']);
     }
@@ -42,9 +40,8 @@ class FormInputTest extends TestCase
 
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => 'non_numeric']);
+            ->components([MoneyInput::make('price')])
+            ->fill(['price' => 'non_numeric']);
 
         $component->getState();
     }
@@ -55,9 +52,8 @@ class FormInputTest extends TestCase
 
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => 20]);
+            ->components([MoneyInput::make('price')])
+            ->fill(['price' => 20]);
 
         /** @var MoneyInput $field */
         $field = $component->getComponent('data.price');
@@ -71,9 +67,8 @@ class FormInputTest extends TestCase
 
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => 20]);
+            ->components([MoneyInput::make('price')])
+            ->fill(['price' => 20]);
 
         $field = $component->getComponent('data.price');
         $this->assertEquals('$', $field->getPrefixLabel());
@@ -86,9 +81,8 @@ class FormInputTest extends TestCase
 
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => 20]);
+            ->components([MoneyInput::make('price')])
+            ->fill(['price' => 20]);
 
         $field = $component->getComponent('data.price');
         $this->assertNull($field->getPrefixLabel());
@@ -99,9 +93,8 @@ class FormInputTest extends TestCase
     {
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price')->symbolPlacement('after'),
-            ])->fill(['price' => 20]);
+            ->components([ MoneyInput::make('price')->symbolPlacement('after')])
+            ->fill(['price' => 20]);
 
         $field = $component->getComponent('data.price');
         //dd($field);
@@ -113,9 +106,8 @@ class FormInputTest extends TestCase
     {
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price')->symbolPlacement('before'),
-            ])->fill(['price' => 20]);
+            ->components([MoneyInput::make('price')->symbolPlacement('before')])
+            ->fill(['price' => 20]);
 
         $field = $component->getComponent('data.price');
         $this->assertEquals('$', $field->getPrefixLabel());
@@ -126,13 +118,22 @@ class FormInputTest extends TestCase
     {
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price')->symbolPlacement('hidden'),
-            ])->fill(['price' => 20]);
+            ->components([MoneyInput::make('price')->symbolPlacement('hidden')])
+            ->fill(['price' => 20]);
 
         $field = $component->getComponent('data.price');
         $this->assertNull($field->getPrefixLabel());
         $this->assertNull($field->getSuffixLabel());
+    }
+
+    public function testCurrencySymbolPlacementInvalidOnField()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        ComponentContainer::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([MoneyInput::make('price')->symbolPlacement('invalid')])
+            ->fill(['price' => 20]);
     }
 
     public function testInputMask()
@@ -141,9 +142,8 @@ class FormInputTest extends TestCase
 
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                MoneyInput::make('price'),
-            ])->fill(['price' => 20]);
+            ->components([MoneyInput::make('price')])
+            ->fill(['price' => 20]);
 
         $this->assertStringContainsString('money($input', $component->getComponent('data.price')->getMask()->toHtml());
     }
@@ -153,9 +153,8 @@ class FormInputTest extends TestCase
         try {
             ComponentContainer::make(FormTestComponent::make())
                 ->statePath('data')
-                ->components([
-                    $field,
-                ])->fill([$field->getName() => $value])
+                ->components([$field])
+                ->fill([$field->getName() => $value])
                 ->validate();
         } catch (ValidationException $exception) {
             if ($assertsCallback) {
@@ -233,9 +232,8 @@ class FormInputTest extends TestCase
 
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                $field,
-            ])->fill([$field->getName() => 45345]);
+            ->components([$field])
+            ->fill([$field->getName() => 45345]);
 
         $field = $component->getComponent('data.price');
         $this->assertEquals('Custom Label', $field->getLabel());
@@ -249,9 +247,8 @@ class FormInputTest extends TestCase
 
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                $field,
-            ])->fill([$field->getName() => 45345]);
+            ->components([$field])
+            ->fill([$field->getName() => 45345]);
 
         $field = $component->getComponent('data.price');
         $this->assertEquals('Custom Label in Closure', $field->getLabel());
@@ -262,25 +259,22 @@ class FormInputTest extends TestCase
         $field     = (new MoneyInput('price'))->decimals(1);
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                $field,
-            ])->fill([$field->getName() => 2345345]);
+            ->components([$field])
+            ->fill([$field->getName() => 2345345]);
         $this->assertEquals('2345345', $component->getState()['price']);
 
         $field     = (new MoneyInput('price'))->decimals(3);
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                $field,
-            ])->fill([$field->getName() => 2345345]);
+            ->components([$field])
+            ->fill([$field->getName() => 2345345]);
         $this->assertEquals('2345345', $component->getState()['price']);
 
         $field     = (new MoneyInput('price'))->decimals(-2);
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([
-                $field,
-            ])->fill([$field->getName() => 2345345]);
+            ->components([$field])
+            ->fill([$field->getName() => 2345345]);
         $this->assertEquals('2345345', $component->getState()['price']);
     }
 }
