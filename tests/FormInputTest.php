@@ -93,7 +93,7 @@ class FormInputTest extends TestCase
     {
         $component = ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
-            ->components([ MoneyInput::make('price')->symbolPlacement('after')])
+            ->components([MoneyInput::make('price')->symbolPlacement('after')])
             ->fill(['price' => 20]);
 
         $field = $component->getComponent('data.price');

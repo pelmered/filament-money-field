@@ -27,7 +27,7 @@ class MoneyColumn extends TextColumn
         });
     }
 
-    public function short()
+    public function short(): static
     {
         $this->formatStateUsing(function (MoneyColumn $component, $state) {
             return MoneyFormatter::formatShort(

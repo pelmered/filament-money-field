@@ -47,7 +47,7 @@ class MoneyFormatter
         string $locale,
         int $decimals = 2,
     ): string {
-        if (! is_numeric($value)){
+        if (! is_numeric($value)) {
             return '';
         }
 
@@ -56,10 +56,10 @@ class MoneyFormatter
             return static::format($value, $currency, $locale, $decimals);
         }
 
-        $abbreviated = Number::abbreviate($value);
+        $abbreviated = (string) Number::abbreviate((int) $value);
 
         // Split the number and the suffix
-        $r = preg_match('/^(?<number>[0-9]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1);
+        preg_match('/^(?<number>[0-9]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1);
 
         // Format the number
         $formatted = static::format($matches1['number'], $currency, $locale);
@@ -68,7 +68,7 @@ class MoneyFormatter
         preg_match('/(?<number>[0-9\.,]+)/', $formatted, $matches2);
 
         // Insert the suffix back
-        return substr_replace($formatted, $matches1['suffix'], strpos($formatted, $matches2['number'])+strlen($matches2['number']), 0);
+        return substr_replace($formatted, $matches1['suffix'], strpos($formatted, $matches2['number']) + strlen($matches2['number']), 0);
     }
 
     public static function parseDecimal(
