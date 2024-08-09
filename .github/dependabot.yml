@@ -18,4 +18,6 @@ updates:
     labels:
       - "composer"
       - "dependencies"
-
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-minor", "vversion-update:semver-patch"]
