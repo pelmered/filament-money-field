@@ -85,9 +85,9 @@ MONEY_DECIMAL_DIGITS=-4 // Gives 4 significant digits, e.g. $123,400
 This can also be set on a per-field basis.
 
 ```php
-MoneyInput::make('price')->decimalDigits(0);
-MoneyEntry::make('price')->decimalDigits(2);
-MoneyColumn::make('price')->decimalDigits(-2);
+MoneyInput::make('price')->decimals(0);
+MoneyEntry::make('price')->decimals(2);
+MoneyColumn::make('price')->decimals(-2);
 ```
 
 
@@ -96,7 +96,7 @@ MoneyColumn::make('price')->decimalDigits(-2);
 ### Form
 
 ```php
-use Filament\Forms\Components\MoneyField;
+use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 
 MoneyInput::make('price'); // Defaults to USD and the current Laravel locale, or what you have set in your .env/config.
 
@@ -208,12 +208,12 @@ MONEY_DECIMAL_DIGITS=-4 // Gives 4 significant digits, e.g. $123,400
 This can also be set on a per-field basis.
 
 ```php
-MoneyInput::make('price')->decimalDigits(0);
-MoneyEntry::make('price')->decimalDigits(2);
-MoneyColumn::make('price')->decimalDigits(-2);
+MoneyInput::make('price')->decimals(0);
+MoneyEntry::make('price')->decimals(2);
+MoneyColumn::make('price')->decimals(-2);
 
-// You can also pass a callback to the decimalDigits method.
-MoneyInput::make('price')->decimalDigits(function () {
+// You can also pass a callback to the decimals method.
+MoneyInput::make('price')->decimals(function () {
     return 0;
 });
 ```
