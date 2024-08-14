@@ -38,7 +38,9 @@ This package would give "1 234,56 kr", while most other solutions probably would
 - Comprehensive test suite.
 - Configure currency and locale globally or per field.
 - Validation rules for valid numeric input, and min/max values.
-- A [money formatter class](https://github.com/pelmered/filament-money-field/blob/main/src/MoneyFormatter.php) that could be used in your project.
+- A [money formatter class](https://github.com/pelmered/filament-money-field/blob/main/src/MoneyFormatter.php) that could be used in your project. Any public method there is considered stable and will not change without major version update.
+
+**Are you using this package to make profits? Please consider [sponsoring me](https://github.com/sponsors/pelmered).**
 
 ## Installation
 
