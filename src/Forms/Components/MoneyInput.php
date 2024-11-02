@@ -118,11 +118,14 @@ class MoneyInput extends TextInput
             return $this->label->toHtml();
         }
 
-        return $this->evaluate($this->label)
-               ?? (string) str($this->getName())
-                   ->afterLast('.')
-                   ->kebab()
-                   ->replace(['-', '_'], ' ')
-                   ->title();
+        if ($label = parent::getLabel()) {
+            return $label;
+        }
+
+        return (string) str($this->getName())
+            ->afterLast('.')
+            ->kebab()
+            ->replace(['-', '_'], ' ')
+            ->title();
     }
 }
