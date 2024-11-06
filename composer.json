@@ -69,6 +69,10 @@
         ],
         "coverage": [
             "@php vendor/bin/phpunit --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
+        ],
+        "check" : [
+            "composer lint",
+            "composer test"
         ]
     }
 }
