@@ -4,6 +4,7 @@ namespace Pelmered\FilamentMoneyField\Forms\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Str;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
@@ -29,7 +30,7 @@ readonly class MinValueRule implements ValidationRule
                     strtr(
                         'The {attribute} must be at least {value}.',
                         [
-                            '{attribute}' => $attribute,
+                            '{attribute}' => Str::of($attribute)->afterLast('.')->snake(' ')->title(),
                             '{value}'     => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
                         ]
                     )
@@ -40,7 +41,7 @@ readonly class MinValueRule implements ValidationRule
                 strtr(
                     'The {attribute} must be a valid numeric value.',
                     [
-                        '{attribute}' => $attribute,
+                        '{attribute}' => Str::of($attribute)->afterLast('.')->snake(' ')->title(),
                     ]
                 )
             );
