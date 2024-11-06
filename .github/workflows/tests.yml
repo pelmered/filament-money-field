@@ -55,19 +55,17 @@ jobs:
           php-version: 8.3
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: pcov
+
       - name: Install dependencies
         run: composer update --prefer-stable --prefer-dist --no-interaction
-      - name: Execute tests
-        run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
-#      - name: Execute type coverage tests
-#        run: vendor/bin/pest --type-coverage --type-coverage-json=build/logs/pest-coverage.json
 
-      - name: Upload Test Coverage
+      - name: Execute tests
+        run: vendor/bin/phpunit --coverage-clover=reports/coverage/clover.xml
+
+      - name: Execute type coverage tests
+        run: vendor/bin/pest --type-coverage --type-coverage-json=reports/coverage/pest-types-coverage.json
+
+      - name: Upload Coverage Reports
         env:
           OTTERWISE_TOKEN: ${{ secrets.OTTERWISE_TOKEN }}
-        run: bash <(curl -s https://raw.githubusercontent.com/getOtterWise/bash-uploader/main/uploader.sh)
-
-#      - name: Upload Types Coverage
-#        env:
-#          OTTERWISE_TOKEN: ${{ secrets.OTTERWISE_TOKEN }}
-#        run: bash <(curl -s https://raw.githubusercontent.com/getOtterWise/bash-uploader/main/uploader.sh) --type-coverage-file build/logs/pest-coverage.json
+        run: bash <(curl -s https://raw.githubusercontent.com/getOtterWise/bash-uploader/main/uploader.sh) --file reports/coverage/test-coverage-clover.xml --type-coverage-file reports/coverage/pest-types-coverage.json
