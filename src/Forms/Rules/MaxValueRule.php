@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\MoneyFormatter;
+use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
 readonly class MaxValueRule implements ValidationRule
 {
