@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Illuminate\Support\Str;
