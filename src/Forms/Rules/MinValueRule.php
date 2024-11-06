@@ -29,7 +29,7 @@ readonly class MinValueRule implements ValidationRule
                     strtr(
                         'The {attribute} must be at least {value}.',
                         [
-                            '{attribute}' => ucwords($this->component->getLabel()),
+                            '{attribute}' => $attribute,
                             '{value}'     => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
                         ]
                     )
@@ -40,7 +40,7 @@ readonly class MinValueRule implements ValidationRule
                 strtr(
                     'The {attribute} must be a valid numeric value.',
                     [
-                        '{attribute}' => ucwords($this->component->getLabel()),
+                        '{attribute}' => $attribute,
                     ]
                 )
             );

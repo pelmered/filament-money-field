@@ -30,7 +30,7 @@ readonly class MaxValueRule implements ValidationRule
                     strtr(
                         'The {attribute} must be less than or equal to {value}.',
                         [
-                            '{attribute}' => Str::of($this->component->getLabel())->title(),
+                            '{attribute}' => $attribute,
                             '{value}'     => MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale),
                         ]
                     )
@@ -41,7 +41,7 @@ readonly class MaxValueRule implements ValidationRule
                 strtr(
                     'The {attribute} must be a valid numeric value.',
                     [
-                        '{attribute}' => Str::title($this->component->getLabel()),
+                        '{attribute}' => $attribute,
                     ]
                 )
             );

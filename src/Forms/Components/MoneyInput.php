@@ -111,18 +111,4 @@ class MoneyInput extends TextInput
 
         return $this;
     }
-
-    public function getLabel(): string
-    {
-        if ($this->label instanceof Htmlable) {
-            return $this->label->toHtml();
-        }
-
-        return $this->evaluate($this->label)
-               ?? (string) str($this->getName())
-                   ->afterLast('.')
-                   ->kebab()
-                   ->replace(['-', '_'], ' ')
-                   ->title();
-    }
 }
