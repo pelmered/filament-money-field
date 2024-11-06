@@ -4,7 +4,6 @@ namespace Pelmered\FilamentMoneyField\Forms\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Str;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
