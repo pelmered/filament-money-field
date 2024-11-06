@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField;
+namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
 use Filament\Infolists\Infolist;
