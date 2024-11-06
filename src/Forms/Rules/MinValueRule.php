@@ -6,11 +6,14 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 use Money\Exception\ParserException;
+use Pelmered\FilamentMoneyField\Concerns\FormatsAttributes;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 readonly class MinValueRule implements ValidationRule
 {
+    use FormatsAttributes;
+
     public function __construct(private int $min, private MoneyInput $component) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
@@ -30,7 +33,7 @@ readonly class MinValueRule implements ValidationRule
                     strtr(
                         'The {attribute} must be at least {value}.',
                         [
-                            '{attribute}' => Str::of($attribute)->afterLast('.')->snake(' ')->title(),
+                            '{attribute}' => $this->formatAttribute($attribute),
                             '{value}'     => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
                         ]
                     )
@@ -41,7 +44,7 @@ readonly class MinValueRule implements ValidationRule
                 strtr(
                     'The {attribute} must be a valid numeric value.',
                     [
-                        '{attribute}' => Str::of($attribute)->afterLast('.')->snake(' ')->title(),
+                        '{attribute}' => $this->formatAttribute($attribute),
                     ]
                 )
             );
