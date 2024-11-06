@@ -4,7 +4,6 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
-use Illuminate\Contracts\Support\Htmlable;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\HasMoneyAttributes;
@@ -110,19 +109,5 @@ class MoneyInput extends TextInput
         $this->rule(new MaxValueRule((int) $this->evaluate($value), $this));
 
         return $this;
-    }
-
-    public function getLabel(): string
-    {
-        if ($this->label instanceof Htmlable) {
-            return $this->label->toHtml();
-        }
-
-        return $this->evaluate($this->label)
-               ?? (string) str($this->getName())
-                   ->afterLast('.')
-                   ->kebab()
-                   ->replace(['-', '_'], ' ')
-                   ->title();
     }
 }
