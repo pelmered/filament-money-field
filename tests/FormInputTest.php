@@ -214,3 +214,14 @@ it('sets decimals on field', function () {
         ->fill([$field->getName() => 2345345]);
     expect($component->getState()['price'])->toEqual('2345345');
 });
+
+
+it('accepts form input money with money cast', function () {
+    $component = ComponentContainer::make(FormTestComponent::make())
+                                   ->statePath('data')
+                                   ->components([MoneyInput::make('price_cast')])
+                                   ->fill(['price_cast' => 123456]);
+
+    dd($component->getState());
+    expect($component->getState()['price_cast'])->toEqual('123456');
+});

@@ -33,11 +33,15 @@ class MoneyFormatter
     }
 
     public static function formatAsDecimal(
-        null|int|string $value,
+        null|int|string|Money $value,
         Currency $currency,
         string $locale,
         int $decimals = 2,
     ): string {
+        if ($value instanceof Money) {
+            $currency = $value->getCurrency();
+            $value = $value->getAmount();
+        }
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
     }
 

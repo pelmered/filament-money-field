@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Pelmered\FilamentMoneyField\Casts\MoneyCast;
 use Pelmered\FilamentMoneyField\Tests\Database\Factories\PostFactory;
 
 class Post extends Model
@@ -16,6 +17,7 @@ class Post extends Model
     protected $casts = [
         'is_published' => 'boolean',
         'tags'         => 'array',
+        'price_cast'   => MoneyCast::class,
     ];
 
     protected $guarded = [];
