@@ -32,5 +32,6 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
             $this->index([$name, "{$name}_currency"], $indexName);
         });
+
     }
 }
