@@ -1,48 +1,40 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\Tests;
-
+uses(\Pelmered\FilamentMoneyField\Tests\TestCase::class);
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 
-class MoneyColumnTest extends TestCase
-{
-    public function testMoneyColumn(): void
-    {
-        $column = MoneyColumn::make('price');
-        $this->assertEquals('$25.00', $column->formatState(2500));
-        $this->assertEquals('$2,500.00', $column->formatState(250000));
-        $this->assertEquals('$25,000.01', $column->formatState(2500001));
-    }
 
-    public function testMoneyColumnWithEur(): void
-    {
-        $column = MoneyColumn::make('price')->currency('EUR');
-        $this->assertEquals('€25.00', $column->formatState(2500));
-        $this->assertEquals('€2,500.00', $column->formatState(250000));
-        $this->assertEquals('€25,000.01', $column->formatState(2500001));
-    }
+it('formats money column state with default currency (USD)', function () {
+    $column = MoneyColumn::make('price');
+    expect($column->formatState(2500))->toEqual('$25.00');
+    expect($column->formatState(250000))->toEqual('$2,500.00');
+    expect($column->formatState(2500001))->toEqual('$25,000.01');
+});
 
-    public function testMoneyColumnWithSek(): void
-    {
-        $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE');
-        $this->assertEquals(static::replaceNonBreakingSpaces('25,00 kr'), $column->formatState(2500));
-        $this->assertEquals(static::replaceNonBreakingSpaces('2 500,00 kr'), $column->formatState(250000));
-        $this->assertEquals(static::replaceNonBreakingSpaces('25 000,01 kr'), $column->formatState(2500001));
-    }
+it('formats money column state with eur', function () {
+    $column = MoneyColumn::make('price')->currency('EUR');
+    expect($column->formatState(2500))->toEqual('€25.00');
+    expect($column->formatState(250000))->toEqual('€2,500.00');
+    expect($column->formatState(2500001))->toEqual('€25,000.01');
+});
 
-    public function testMoneyColumnShort(): void
-    {
-        $column = MoneyColumn::make('price')->short();
-        $this->assertEquals('$2.50', $column->formatState(250));
-        $this->assertEquals('$2.50K', $column->formatState(250056));
-        $this->assertEquals('$0.25M', $column->formatState(24604231));
-    }
+it('formats money column state with sek', function () {
+    $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE');
+    expect($column->formatState(2500))->toEqual(replaceNonBreakingSpaces('25,00 kr'));
+    expect($column->formatState(250000))->toEqual(replaceNonBreakingSpaces('2 500,00 kr'));
+    expect($column->formatState(2500001))->toEqual(replaceNonBreakingSpaces('25 000,01 kr'));
+});
 
-    public function testMoneyColumnShortSek(): void
-    {
-        $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE')->short();
-        $this->assertEquals(static::replaceNonBreakingSpaces('6,51 kr'), $column->formatState(651));
-        $this->assertEquals(static::replaceNonBreakingSpaces('2,35K kr'), $column->formatState(235235));
-        $this->assertEquals(static::replaceNonBreakingSpaces('0,24M kr'), $column->formatState(23523562));
-    }
-}
+it('formats money column state to short format with default currency (USD)', function () {
+    $column = MoneyColumn::make('price')->short();
+    expect($column->formatState(250))->toEqual('$2.50');
+    expect($column->formatState(250056))->toEqual('$2.50K');
+    expect($column->formatState(24604231))->toEqual('$0.25M');
+});
+
+it('formats money column state to short format with sek', function () {
+    $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE')->short();
+    expect($column->formatState(651))->toEqual(replaceNonBreakingSpaces('6,51 kr'));
+    expect($column->formatState(235235))->toEqual(replaceNonBreakingSpaces('2,35K kr'));
+    expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('0,24M kr'));
+});

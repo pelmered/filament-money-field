@@ -26,17 +26,18 @@
     "require": {
         "php": "^8.2",
         "ext-intl": "*",
-        "filament/support": "^v3.2.21",
+        "filament/support": "^v3.2.39",
         "moneyphp/money": "^4.0",
-        "illuminate/support": "^10.35 || ^11.0"
+        "illuminate/support": "^11.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5 || ^11",
-        "filament/filament": "v3.2.21",
-        "orchestra/testbench": "^8.8 || ^9.0",
+        "filament/filament": "^3.2",
+        "orchestra/testbench": "^9.0",
         "phpstan/phpstan": "^1.10",
-        "nunomaduro/collision": "^7.6 || ^8.0",
-        "laravel/pint": "^1.15"
+        "nunomaduro/collision": "^8.0",
+        "laravel/pint": "^1.16",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-drift": "^3.0"
     },
     "extra": {
         "laravel": {
@@ -68,11 +69,16 @@
             "@php vendor/bin/testbench package:test"
         ],
         "coverage": [
-            "@php vendor/bin/phpunit --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
+            "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
         ],
         "check" : [
             "composer lint",
             "composer test"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
