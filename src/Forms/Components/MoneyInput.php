@@ -67,7 +67,7 @@ class MoneyInput extends TextInput
                 return MoneyFormatter::parseDecimal($state->getAmount(), $state->getCurrency(), $component->getLocale(), $this->getDecimals());
             }
 
-            $state    = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale(), $this->getDecimals());
+            $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale(), $this->getDecimals());
 
             if (! is_numeric($state)) {
                 return null;
