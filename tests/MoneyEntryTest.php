@@ -5,7 +5,6 @@ use Filament\Infolists\ComponentContainer;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tests\Components\InfolistTestComponent;
 
-
 it('formats infolist money in usd', function () {
     $entry = MoneyEntry::make('price');
 

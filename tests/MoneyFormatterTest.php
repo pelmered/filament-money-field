@@ -1,9 +1,12 @@
 <?php
 
+namespace Pelmered\FilamentMoneyField\Tests;
+
 use Money\Currency;
-use Pelmered\FilamentMoneyField\MoneyFormatter;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
+use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 use PHPUnit\Framework\Attributes\DataProvider;
+
 uses(TestCase::class);
 
 function provideMoneyDataSek(): array

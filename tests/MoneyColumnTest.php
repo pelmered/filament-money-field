@@ -3,7 +3,6 @@
 uses(\Pelmered\FilamentMoneyField\Tests\TestCase::class);
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 
-
 it('formats money column state with default currency (USD)', function () {
     $column = MoneyColumn::make('price');
     expect($column->formatState(2500))->toEqual('$25.00');
