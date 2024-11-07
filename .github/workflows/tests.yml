@@ -36,9 +36,7 @@ jobs:
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
       - name: Execute tests
-        run: vendor/bin/phpunit --testsuite=default
-      - name: Execute tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/pest --testsuite=default
 
   report-metrics:
     runs-on: ubuntu-latest
@@ -60,7 +58,7 @@ jobs:
         run: composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/phpunit --coverage-clover=reports/coverage/clover.xml
+        run: vendor/bin/pest --coverage-clover=reports/coverage/clover.xml
 
       - name: Execute type coverage tests
         run: vendor/bin/pest --type-coverage --type-coverage-json=reports/coverage/pest-types-coverage.json

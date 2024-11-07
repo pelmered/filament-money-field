@@ -43,12 +43,4 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         return $reflection->getValue($object);
     }
-
-    /**
-     * Replaces all non-breaking spaces in the given string with the Unicode character for non-breaking space.
-     */
-    public static function replaceNonBreakingSpaces(string $string): string
-    {
-        return preg_replace('/\s/', "\xc2\xa0", $string);
-    }
 }
