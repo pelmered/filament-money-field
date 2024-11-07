@@ -46,7 +46,6 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-
 /**
  * Replaces all non-breaking spaces in the given string with the Unicode character for non-breaking space.
  */
@@ -59,10 +58,10 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 {
     try {
         ComponentContainer::make(FormTestComponent::make())
-                          ->statePath('data')
-                          ->components([$field])
-                          ->fill([$field->getName() => $value])
-                          ->validate();
+            ->statePath('data')
+            ->components([$field])
+            ->fill([$field->getName() => $value])
+            ->validate();
     } catch (ValidationException $exception) {
         if ($assertsCallback) {
             $assertsCallback($exception, $field);

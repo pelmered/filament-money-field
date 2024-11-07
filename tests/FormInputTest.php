@@ -1,7 +1,6 @@
 <?php
 
 use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Field;
 use Illuminate\Validation\ValidationException;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
@@ -12,7 +11,6 @@ use Pelmered\FilamentMoneyField\Tests\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 uses(TestCase::class);
-
 
 it('accepts form input money in numeric format', function () {
     $component = ComponentContainer::make(FormTestComponent::make())
@@ -137,7 +135,6 @@ it('makes input mask', function () {
 
     $this->assertStringContainsString('money($input', $component->getComponent('data.price')->getMask()->toHtml());
 });
-
 
 it('validates min and max values', function () {
     expect(validationTester((new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000), 20))->toBeTrue();

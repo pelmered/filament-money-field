@@ -63,8 +63,8 @@
             "@php vendor/bin/testbench serve"
         ],
         "lint": [
-            "composer phpstan",
-            "composer pint"
+            "composer pint",
+            "composer phpstan"
         ],
         "test": [
             "@php vendor/bin/testbench package:test"

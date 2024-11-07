@@ -3,7 +3,7 @@
 use Money\Currency;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
+
 uses(TestCase::class);
 
 function provideMoneyDataSek(): array

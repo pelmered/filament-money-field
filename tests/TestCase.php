@@ -43,5 +43,4 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         return $reflection->getValue($object);
     }
-
 }

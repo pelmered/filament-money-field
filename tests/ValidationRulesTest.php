@@ -4,6 +4,7 @@ use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
+
 uses(TestCase::class);
 
 it('validates min value', function () {
