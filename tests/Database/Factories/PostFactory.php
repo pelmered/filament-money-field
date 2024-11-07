@@ -19,6 +19,7 @@ class PostFactory extends Factory
             'title'        => $this->faker->sentence(),
             'rating'       => $this->faker->numberBetween(1, 10),
             'price'        => $this->faker->numberBetween(100, 10000),
+            'price_cast'   => $this->faker->numberBetween(100, 10000),
         ];
     }
 }

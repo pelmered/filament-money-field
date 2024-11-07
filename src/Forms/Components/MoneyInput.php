@@ -4,6 +4,7 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
+use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
@@ -40,7 +41,12 @@ class MoneyInput extends TextInput
 
         $this->dehydrateStateUsing(function (MoneyInput $component, $state): ?string {
             $currency = $component->getCurrency();
-            $state    = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale(), $this->getDecimals());
+
+            if ($state instanceof Money) {
+                return MoneyFormatter::parseDecimal($state->getAmount(), $state->getCurrency(), $component->getLocale(), $this->getDecimals());
+            }
+
+            $state = MoneyFormatter::parseDecimal($state, $currency, $component->getLocale(), $this->getDecimals());
 
             if (! is_numeric($state)) {
                 return null;

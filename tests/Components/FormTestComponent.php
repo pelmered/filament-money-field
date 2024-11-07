@@ -28,6 +28,9 @@ class FormTestComponent extends Component implements HasForms
                 MoneyInput::make('price')
                     ->minValue(100)
                     ->maxValue(1000),
+                MoneyInput::make('price_cast')
+                    ->minValue(100)
+                    ->maxValue(1000),
             ]);
     }
 
