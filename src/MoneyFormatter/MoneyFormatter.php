@@ -40,8 +40,9 @@ class MoneyFormatter
     ): string {
         if ($value instanceof Money) {
             $currency = $value->getCurrency();
-            $value = $value->getAmount();
+            $value    = $value->getAmount();
         }
+
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
     }
 

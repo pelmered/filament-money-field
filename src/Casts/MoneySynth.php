@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Casts;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
@@ -24,7 +25,7 @@ class MoneySynth extends Synth
 
     public function hydrate($value)
     {
-        if($value === null) {
+        if ($value === null) {
             return null;
         }
 

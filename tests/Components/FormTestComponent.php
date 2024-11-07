@@ -26,11 +26,11 @@ class FormTestComponent extends Component implements HasForms
         return $form
             ->schema([
                 MoneyInput::make('price')
-                          ->minValue(100)
-                          ->maxValue(1000),
+                    ->minValue(100)
+                    ->maxValue(1000),
                 MoneyInput::make('price_cast')
-                          ->minValue(100)
-                          ->maxValue(1000),
+                    ->minValue(100)
+                    ->maxValue(1000),
             ]);
     }
 

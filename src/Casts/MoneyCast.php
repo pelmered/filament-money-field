@@ -1,6 +1,6 @@
 <?php
-namespace Pelmered\FilamentMoneyField\Casts;
 
+namespace Pelmered\FilamentMoneyField\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
