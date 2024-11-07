@@ -1,9 +1,6 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\Tests;
-
 use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Field;
 use Illuminate\Validation\ValidationException;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
@@ -11,270 +8,206 @@ use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\Tests\Components\FormTestComponent;
+use Pelmered\FilamentMoneyField\Tests\TestCase;
 
-class FormInputTest extends TestCase
-{
-    public function testFormInputMoneyFormat(): void
-    {
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')])
-            ->fill(['price' => 123456]);
+uses(TestCase::class);
 
-        $this->assertEquals('123456', $component->getState()['price']);
-    }
+it('accepts form input money in numeric format', function () {
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')])
+        ->fill(['price' => 123456]);
 
-    public function testNullState(): void
-    {
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')])
-            ->fill(['price' => null]);
+    expect($component->getState()['price'])->toEqual('123456');
+});
 
-        $this->assertNull($component->getState()['price']);
-    }
+it('accepts null state and returns null', function () {
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')])
+        ->fill(['price' => null]);
 
-    public function testNonNumericState(): void
-    {
-        $this->expectException(ParserException::class);
+    expect($component->getState()['price'])->toBeNull();
+});
 
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')])
-            ->fill(['price' => 'non_numeric']);
+it('triggers exception for non-numeric state', function () {
+    $this->expectException(ParserException::class);
 
-        $component->getState();
-    }
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')])
+        ->fill(['price' => 'non_numeric']);
 
-    public function testCurrencySymbolPlacementAfterInGlobalConfig()
-    {
-        config(['filament-money-field.form_currency_symbol_placement' => 'after']);
+    $component->getState();
+});
 
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')])
-            ->fill(['price' => 20]);
+it('sets currency symbol placement after with global config', function () {
+    config(['filament-money-field.form_currency_symbol_placement' => 'after']);
 
-        /** @var MoneyInput $field */
-        $field = $component->getComponent('data.price');
-        $this->assertEquals('$', $field->getSuffixLabel());
-        $this->assertNull($field->getPrefixLabel());
-    }
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')])
+        ->fill(['price' => 20]);
 
-    public function testCurrencySymbolPlacementBeforeInGlobalConfig()
-    {
-        config(['filament-money-field.form_currency_symbol_placement' => 'before']);
+    /** @var MoneyInput $field */
+    $field = $component->getComponent('data.price');
+    expect($field->getSuffixLabel())->toEqual('$');
+    expect($field->getPrefixLabel())->toBeNull();
+});
 
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')])
-            ->fill(['price' => 20]);
+it('sets currency symbol placement before with global config', function () {
+    config(['filament-money-field.form_currency_symbol_placement' => 'before']);
 
-        $field = $component->getComponent('data.price');
-        $this->assertEquals('$', $field->getPrefixLabel());
-        $this->assertNull($field->getSuffixLabel());
-    }
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')])
+        ->fill(['price' => 20]);
 
-    public function testCurrencySymbolPlacementHiddenInGlobalConfig()
-    {
-        config(['filament-money-field.form_currency_symbol_placement' => 'hidden']);
+    $field = $component->getComponent('data.price');
+    expect($field->getPrefixLabel())->toEqual('$');
+    expect($field->getSuffixLabel())->toBeNull();
+});
 
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')])
-            ->fill(['price' => 20]);
+it('hides currency symbol with global config', function () {
+    config(['filament-money-field.form_currency_symbol_placement' => 'hidden']);
 
-        $field = $component->getComponent('data.price');
-        $this->assertNull($field->getPrefixLabel());
-        $this->assertNull($field->getSuffixLabel());
-    }
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')])
+        ->fill(['price' => 20]);
 
-    public function testCurrencySymbolPlacementAfterOnField()
-    {
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')->symbolPlacement('after')])
-            ->fill(['price' => 20]);
+    $field = $component->getComponent('data.price');
+    expect($field->getPrefixLabel())->toBeNull();
+    expect($field->getSuffixLabel())->toBeNull();
+});
 
-        $field = $component->getComponent('data.price');
-        //dd($field);
-        $this->assertEquals('$', $field->getSuffixLabel());
-        $this->assertNull($field->getPrefixLabel());
-    }
+it('sets currency symbol placement after with on field config', function () {
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')->symbolPlacement('after')])
+        ->fill(['price' => 20]);
 
-    public function testCurrencySymbolPlacementBeforeOnField()
-    {
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')->symbolPlacement('before')])
-            ->fill(['price' => 20]);
+    $field = $component->getComponent('data.price');
 
-        $field = $component->getComponent('data.price');
-        $this->assertEquals('$', $field->getPrefixLabel());
-        $this->assertNull($field->getSuffixLabel());
-    }
+    //dd($field);
+    expect($field->getSuffixLabel())->toEqual('$');
+    expect($field->getPrefixLabel())->toBeNull();
+});
 
-    public function testCurrencySymbolPlacementHiddenOnField()
-    {
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')->symbolPlacement('hidden')])
-            ->fill(['price' => 20]);
+it('sets currency symbol placement before with on field config', function () {
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')->symbolPlacement('before')])
+        ->fill(['price' => 20]);
 
-        $field = $component->getComponent('data.price');
-        $this->assertNull($field->getPrefixLabel());
-        $this->assertNull($field->getSuffixLabel());
-    }
+    $field = $component->getComponent('data.price');
+    expect($field->getPrefixLabel())->toEqual('$');
+    expect($field->getSuffixLabel())->toBeNull();
+});
 
-    public function testCurrencySymbolPlacementInvalidOnField()
-    {
-        $this->expectException(\InvalidArgumentException::class);
+it('hides currency symbol with on field config', function () {
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')->symbolPlacement('hidden')])
+        ->fill(['price' => 20]);
 
-        ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')->symbolPlacement('invalid')])
-            ->fill(['price' => 20]);
-    }
+    $field = $component->getComponent('data.price');
+    expect($field->getPrefixLabel())->toBeNull();
+    expect($field->getSuffixLabel())->toBeNull();
+});
 
-    public function testInputMask()
-    {
-        config(['filament-money-field.use_input_mask' => true]);
+it('throws exception when currency symbol placement in invalid on field', function () {
+    $this->expectException(\InvalidArgumentException::class);
 
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([MoneyInput::make('price')])
-            ->fill(['price' => 20]);
+    ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')->symbolPlacement('invalid')])
+        ->fill(['price' => 20]);
+});
 
-        $this->assertStringContainsString('money($input', $component->getComponent('data.price')->getMask()->toHtml());
-    }
+it('makes input mask', function () {
+    config(['filament-money-field.use_input_mask' => true]);
 
-    public function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
-    {
-        try {
-            ComponentContainer::make(FormTestComponent::make())
-                ->statePath('data')
-                ->components([$field])
-                ->fill([$field->getName() => $value])
-                ->validate();
-        } catch (ValidationException $exception) {
-            if ($assertsCallback) {
-                $assertsCallback($exception, $field);
-            }
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([MoneyInput::make('price')])
+        ->fill(['price' => 20]);
 
-            return [
-                'errors' => $exception->validator->errors()->toArray()[$field->getStatePath()],
-                'failed' => $exception->validator->failed()[$field->getStatePath()],
-            ];
-        }
+    $this->assertStringContainsString('money($input', $component->getComponent('data.price')->getMask()->toHtml());
+});
 
-        return true;
-    }
+it('validates min and max values', function () {
+    expect(validationTester((new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000), 20))->toBeTrue();
 
-    public function testMinAndMaxValues(): void
-    {
-        $this->assertTrue($this->validationTester(
-            (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000),
-            20,
-        ));
+    validationTester((new MoneyInput('amount'))->required()->minValue(100)->maxValue(10000), 20, function (ValidationException $exception, MoneyInput $field) {
+        expect($exception->validator->failed()[$field->getStatePath()])->toHaveKey(MinValueRule::class);
+        expect($exception->validator->errors()->toArray()[$field->getStatePath()][0])->toEqual('The Amount must be less than or equal to 100.00.');
+    });
 
-        $this->validationTester(
-            (new MoneyInput('amount'))->required()->minValue(100)->maxValue(10000),
-            20,
-            function (ValidationException $exception, MoneyInput $field) {
-                $this->assertArrayHasKey(MinValueRule::class, $exception->validator->failed()[$field->getStatePath()]);
-                $this->assertEquals(
-                    'The Amount must be less than or equal to 100.00.',
-                    $exception->validator->errors()->toArray()[$field->getStatePath()][0]
-                );
-            }
-        );
+    validationTester((new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000), 200, function (ValidationException $exception, MoneyInput $field) {
+        expect($exception->validator->failed()[$field->getStatePath()])->toHaveKey(MaxValueRule::class);
+        expect($exception->validator->errors()->toArray()[$field->getStatePath()][0])->toEqual('The Total Amount must be less than or equal to 100.00.');
+    });
 
-        $this->validationTester(
-            (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000),
-            200,
-            function (ValidationException $exception, MoneyInput $field) {
-                $this->assertArrayHasKey(MaxValueRule::class, $exception->validator->failed()[$field->getStatePath()]);
-                $this->assertEquals(
-                    'The Total Amount must be less than or equal to 100.00.',
-                    $exception->validator->errors()->toArray()[$field->getStatePath()][0]
-                );
-            }
-        );
+    validationTester((new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000), 'random string', function (ValidationException $exception, MoneyInput $field) {
+        $failed = $exception->validator->failed()[$field->getStatePath()];
 
-        $this->validationTester(
-            (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000),
-            'random string',
-            function (ValidationException $exception, MoneyInput $field) {
-                $failed = $exception->validator->failed()[$field->getStatePath()];
+        expect($failed)->toHaveKey(MinValueRule::class);
+        expect($failed)->toHaveKey(MaxValueRule::class);
+        expect($exception->validator->errors()->toArray()[$field->getStatePath()][0])->toEqual('The Total Amount must be a valid numeric value.');
+    });
+});
 
-                $this->assertArrayHasKey(MinValueRule::class, $failed);
-                $this->assertArrayHasKey(MaxValueRule::class, $failed);
-                $this->assertEquals(
-                    'The Total Amount must be a valid numeric value.',
-                    $exception->validator->errors()->toArray()[$field->getStatePath()][0]
-                );
-            }
-        );
-    }
+it('throws exception with unsupported currency', function () {
+    $this->expectException(UnsupportedCurrency::class);
+    validationTester((new MoneyInput('totalAmount'))->currency('SOMETHING'), 20);
+});
 
-    public function testUnsupportedCurrency(): void
-    {
-        $this->expectException(UnsupportedCurrency::class);
-        $this->validationTester(
-            (new MoneyInput('totalAmount'))->currency('SOMETHING'),
-            20,
-        );
-    }
+it('allows label to be overrided', function () {
+    $field = (new MoneyInput('price'))->label('Custom Label');
 
-    public function testAllowLabelToBeOverrided(): void
-    {
-        $field = (new MoneyInput('price'))->label('Custom Label');
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([$field])
+        ->fill([$field->getName() => 45345]);
 
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([$field])
-            ->fill([$field->getName() => 45345]);
+    $field = $component->getComponent('data.price');
+    expect($field->getLabel())->toEqual('Custom Label');
+});
 
-        $field = $component->getComponent('data.price');
-        $this->assertEquals('Custom Label', $field->getLabel());
-    }
+it('resolves label closures', function () {
+    $field = (new MoneyInput('price'))->label(function () {
+        return 'Custom Label in Closure';
+    });
 
-    public function testResolveLabelClosures(): void
-    {
-        $field = (new MoneyInput('price'))->label(function () {
-            return 'Custom Label in Closure';
-        });
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([$field])
+        ->fill([$field->getName() => 45345]);
 
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([$field])
-            ->fill([$field->getName() => 45345]);
+    $field = $component->getComponent('data.price');
+    expect($field->getLabel())->toEqual('Custom Label in Closure');
+});
 
-        $field = $component->getComponent('data.price');
-        $this->assertEquals('Custom Label in Closure', $field->getLabel());
-    }
+it('sets decimals on field', function () {
+    $field     = (new MoneyInput('price'))->decimals(1);
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([$field])
+        ->fill([$field->getName() => 2345345]);
+    expect($component->getState()['price'])->toEqual('2345345');
 
-    public function testSetDecimalsOnField(): void
-    {
-        $field     = (new MoneyInput('price'))->decimals(1);
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([$field])
-            ->fill([$field->getName() => 2345345]);
-        $this->assertEquals('2345345', $component->getState()['price']);
+    $field     = (new MoneyInput('price'))->decimals(3);
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([$field])
+        ->fill([$field->getName() => 2345345]);
+    expect($component->getState()['price'])->toEqual('2345345');
 
-        $field     = (new MoneyInput('price'))->decimals(3);
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([$field])
-            ->fill([$field->getName() => 2345345]);
-        $this->assertEquals('2345345', $component->getState()['price']);
-
-        $field     = (new MoneyInput('price'))->decimals(-2);
-        $component = ComponentContainer::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([$field])
-            ->fill([$field->getName() => 2345345]);
-        $this->assertEquals('2345345', $component->getState()['price']);
-    }
-}
+    $field     = (new MoneyInput('price'))->decimals(-2);
+    $component = ComponentContainer::make(FormTestComponent::make())
+        ->statePath('data')
+        ->components([$field])
+        ->fill([$field->getName() => 2345345]);
+    expect($component->getState()['price'])->toEqual('2345345');
+});

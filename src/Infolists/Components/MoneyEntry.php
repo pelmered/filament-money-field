@@ -3,7 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Infolists\Components;
 
 use Filament\Infolists\Components\TextEntry;
-use Pelmered\FilamentMoneyField\HasMoneyAttributes;
+use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
 class MoneyEntry extends TextEntry
