@@ -3,7 +3,7 @@
 namespace Pelmered\FilamentMoneyField;
 
 use Livewire\Livewire;
-use Pelmered\FilamentMoneyField\Casts\MoneySynth;
+use Pelmered\FilamentMoneyField\Casts\MoneySynthesizer;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -23,6 +23,6 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             __DIR__.'/../config/filament-money-field.php' => config_path('filament-money-field.php'),
         ], 'config');
 
-        Livewire::propertySynthesizer(MoneySynth::class);
+        Livewire::propertySynthesizer(MoneySynthesizer::class);
     }
 }

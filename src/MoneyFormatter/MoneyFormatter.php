@@ -14,7 +14,7 @@ use NumberFormatter;
 class MoneyFormatter
 {
     public static function format(
-        null|int|string $value,
+        null|int|string|Money $value,
         Currency $currency,
         string $locale,
         int $outputStyle = NumberFormatter::CURRENCY,
@@ -64,13 +64,17 @@ class MoneyFormatter
         $abbreviated = (string) Number::abbreviate((int) $value);
 
         // Split the number and the suffix
-        preg_match('/^(?<number>[0-9]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1);
+        if (preg_match('/^(?<number>[0-9]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1) !== 1) {
+            throw new \RuntimeException('Invalid format');
+        }
 
         // Format the number
         $formatted = static::format($matches1['number'], $currency, $locale);
 
         // Find the formatted number
-        preg_match('/(?<number>[0-9\.,]+)/', $formatted, $matches2);
+        if (preg_match('/(?<number>[0-9\.,]+)/', $formatted, $matches2) !== 1) {
+            throw new \RuntimeException('Invalid format');
+        }
 
         // Insert the suffix back
         return substr_replace($formatted, $matches1['suffix'], strpos($formatted, $matches2['number']) + strlen($matches2['number']), 0);
