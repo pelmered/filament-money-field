@@ -49,6 +49,10 @@ This package would give "1 234,56 kr", while most other solutions probably would
 composer require pelmered/filament-money-field
 ```
 
+## Upgrade to 2.* from 1.*
+
+See [upgrade guide](UPGRADE.md).
+
 ## Configure your locale
 
 ### Set the default currency and locale
