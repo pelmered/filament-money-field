@@ -53,9 +53,11 @@ composer require pelmered/filament-money-field
 
 See [upgrade guide](UPGRADE.md).
 
-## Configure your locale
+## Configuration
 
-### Set the default currency and locale
+### Configure your locale
+
+#### Set the default currency and locale
 
 **Set the default options for currency and locale so that you don't have to set them for every field.**
 
@@ -71,7 +73,7 @@ php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoney
 ```
 
 
-### Decimals and significant digits
+#### Decimals and significant digits
 
 The number of decimals and significant digits can be set in the config file. Defaults to 2.
 
@@ -82,6 +84,7 @@ MONEY_DECIMAL_DIGITS=2 // Gives 2 decimals, e.g. $1,234.56
 ```
 
 For significant digits, use negative values. For example -2 will give you 2 significant digits. 
+This is only for displaying the amount. The amount will always be saved with full precision. 
 
 ```env
 //with input 12345678
@@ -97,6 +100,15 @@ MoneyEntry::make('price')->decimals(2);
 MoneyColumn::make('price')->decimals(-2);
 ```
 
+### Configuration for saving currency per field in database (Recommended, especially for multi-currency applications) 
+
+#### Migrations
+
+TODO: Add docs
+
+#### Casts
+
+TODO: Add docs
 
 ## Usage
 
