@@ -33,7 +33,7 @@ class MoneyInput extends TextInput
 
         $this->prepare();
 
-        $this->formatStateUsing(function (MoneyInput $component, $record, $state): ?string {
+        $this->formatStateUsing(function (MoneyInput $component, $record, null|int|string $state): ?string {
 
             $this->prepare();
 
@@ -54,7 +54,7 @@ class MoneyInput extends TextInput
             return MoneyFormatter::formatAsDecimal((int) $state, $currency, $locale, $this->getDecimals());
         });
 
-        $this->dehydrateStateUsing(function (MoneyInput $component, $record, $state): ?string {
+        $this->dehydrateStateUsing(function (MoneyInput $component, $record, null|int|string $state): ?string {
             $currency = $component->getCurrency();
 
             if ($state instanceof Money) {
