@@ -2,14 +2,14 @@
 
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
+use Closure;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\MoneyFormatter;
-use Closure;
+use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {

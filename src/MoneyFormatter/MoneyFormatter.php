@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField;
+namespace Pelmered\FilamentMoneyField\MoneyFormatter;
 
 use Illuminate\Support\Number;
 use Money\Currencies\ISOCurrencies;
