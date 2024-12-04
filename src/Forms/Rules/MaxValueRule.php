@@ -27,7 +27,7 @@ readonly class MaxValueRule implements ValidationRule
                 $locale
             );
 
-            if ($minorValue >= $this->max) {
+            if ($minorValue > $this->max) {
                 $fail(
                     strtr(
                         'The {attribute} must be less than or equal to {value}.',
