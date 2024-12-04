@@ -17,7 +17,7 @@ class MoneyEntry extends TextEntry
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyEntry $component, $state): string {
+        $this->formatStateUsing(function (MoneyEntry $component, null|int|string $state): string {
             return MoneyFormatter::format(
                 $state,
                 $component->getCurrency(),
@@ -29,7 +29,7 @@ class MoneyEntry extends TextEntry
 
     public function short(): static
     {
-        $this->formatStateUsing(function (MoneyEntry $component, $state) {
+        $this->formatStateUsing(function (MoneyEntry $component, null|int|string $state) {
             return MoneyFormatter::formatShort(
                 $state,
                 $component->getCurrency(),

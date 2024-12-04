@@ -72,6 +72,9 @@
         "coverage": [
             "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
         ],
+        "types": [
+            "@php vendor/bin/pest --type-coverage"
+        ],
         "check" : [
             "composer lint",
             "composer test"
