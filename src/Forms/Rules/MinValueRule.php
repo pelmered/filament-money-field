@@ -21,7 +21,7 @@ readonly class MinValueRule implements ValidationRule
         $locale       = $this->component->getLocale();
 
         try {
-            $minorValue = MoneyFormatter::parseDecimal(
+            $minorValue = (int) MoneyFormatter::parseDecimal(
                 $value,
                 $currencyCode,
                 $locale
