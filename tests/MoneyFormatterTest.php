@@ -3,9 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Tests;
 
 use Money\Currency;
-use Pelmered\FilamentMoneyField\Tests\TestCase;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-use PHPUnit\Framework\Attributes\DataProvider;
+use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 uses(TestCase::class);
 
