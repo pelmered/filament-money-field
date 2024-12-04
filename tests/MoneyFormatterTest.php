@@ -3,7 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Tests;
 
 use Money\Currency;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 uses(TestCase::class);
 

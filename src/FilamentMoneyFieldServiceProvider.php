@@ -4,6 +4,7 @@ namespace Pelmered\FilamentMoneyField;
 
 use Livewire\Livewire;
 use Pelmered\FilamentMoneyField\Casts\MoneySynthesizer;
+use Illuminate\Database\Schema\Blueprint;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -24,5 +25,12 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
         ], 'config');
 
         Livewire::propertySynthesizer(MoneySynthesizer::class);
+
+        Blueprint::macro('money', function (string $name, ?string $indexName = null) {
+            $this->unsignedBigInteger($name);
+            $this->string("{$name}_currency");
+
+            $this->index([$name, "{$name}_currency"], $indexName);
+        });
     }
 }

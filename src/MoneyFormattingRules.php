@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\MoneyFormatter;
+namespace Pelmered\FilamentMoneyField;
 
 class MoneyFormattingRules
 {

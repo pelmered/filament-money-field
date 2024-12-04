@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Concerns\FormatsAttributes;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\FilamentMoneyField\MoneyFormatter;
 
 readonly class MaxValueRule implements ValidationRule
 {
@@ -27,7 +27,7 @@ readonly class MaxValueRule implements ValidationRule
                 $locale
             );
 
-            if ($minorValue >= $this->max) {
+            if ($minorValue > $this->max) {
                 $fail(
                     strtr(
                         'The {attribute} must be less than or equal to {value}.',

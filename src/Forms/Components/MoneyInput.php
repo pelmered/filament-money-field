@@ -8,13 +8,24 @@ use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\FilamentMoneyField\MoneyFormatter;
+use Closure;
 
 class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
 
     protected ?string $symbolPlacement = null;
+
+    /**
+     * @var scalar | Closure | null
+     */
+    protected $maxValue = null;
+
+    /**
+     * @var scalar | Closure | null
+     */
+    protected $minValue = null;
 
     protected function setUp(): void
     {
@@ -105,14 +116,30 @@ class MoneyInput extends TextInput
 
     public function minValue(mixed $value): static
     {
-        $this->rule(new MinValueRule((int) $this->evaluate($value), $this));
+        $this->minValue = $value;
+
+        $this->rule(
+            static function (MoneyInput $component) {
+                $value = $component->getMinValue();
+                return new MinValueRule($value, $component);
+            },
+            static fn (MoneyInput $component): bool => filled($component->getMinValue())
+        );
 
         return $this;
     }
 
     public function maxValue(mixed $value): static
     {
-        $this->rule(new MaxValueRule((int) $this->evaluate($value), $this));
+        $this->maxValue = $value;
+
+        $this->rule(
+            static function (MoneyInput $component) {
+                $value = $component->getMaxValue();
+                return new MaxValueRule($value, $component);
+            },
+            static fn (MoneyInput $component): bool => filled($component->getMaxValue())
+        );
 
         return $this;
     }
