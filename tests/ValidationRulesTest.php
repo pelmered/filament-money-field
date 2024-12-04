@@ -7,26 +7,79 @@ use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 uses(TestCase::class);
 
-it('validates min value', function () {
-    $rule = new MinValueRule(10000, new MoneyInput('totalAmount'));
+it('validates min value', function ($data, $rules, bool $expected, $errors = null) {
 
-    $rule->validate('totalAmount', 16, function ($message) {
-        expect($message)->toEqual('The Total Amount must be at least 100.00.');
-    });
+    $validator = Validator::make(
+        $data,
+        $rules,
+    );
 
-    $rule->validate('amount', 'invalid', function ($message) {
-        expect($message)->toEqual('The Amount must be a valid numeric value.');
-    });
-});
+    expect($validator->passes())->toBe($expected);
 
-it('validates max value', function () {
-    $rule = new MaxValueRule(10000, new MoneyInput('amount'));
+    if ($errors) {
+        expect($validator->errors()->toArray())->toEqual($errors);
+    }
 
-    $rule->validate('totalAmount', 30000, function ($message) {
-        expect($message)->toEqual('The Total Amount must be less than or equal to 100.00.');
-    });
+})->with([
+    'same value' => [
+        ['total' => 100],
+        ['total' => new MinValueRule(10000, new MoneyInput('total'))],
+        true
+    ],
+    'higher value' => [
+        ['amount' => 200],
+        ['amount' => new MinValueRule(11000, new MoneyInput('amount'))],
+        true,
+    ],
+    'lower value' => [
+        ['total' => 100],
+        ['total' => new MinValueRule(15000, new MoneyInput('total'))],
+        false,
+        ['total' => ['The Total must be at least 150.00.']]
+    ],
+    'invalid value' => [
+        ['totalAmount' => 'invalid'],
+        ['totalAmount' => new MinValueRule(10000, new MoneyInput('totalAmount'))],
+        false,
+        ['totalAmount' => ['The Total Amount must be a valid numeric value.']]
+    ],
+]);
 
-    $rule->validate('amount', 'invalid', function ($message) {
-        expect($message)->toEqual('The Amount must be a valid numeric value.');
-    });
-});
+
+it('validates max value', function ($data, $rules, bool $expected, $errors = null) {
+
+    $validator = Validator::make(
+        $data,
+        $rules,
+    );
+
+    expect($validator->passes())->toBe($expected);
+
+    if ($errors) {
+        expect($validator->errors()->toArray())->toEqual($errors);
+    }
+
+})->with([
+    'same value' => [
+        ['total' => 100],
+        ['total' => new MaxValueRule(10000, new MoneyInput('total'))],
+        true
+    ],
+    'higher value' => [
+        ['amount' => 200],
+        ['amount' => new MaxValueRule(11000, new MoneyInput('amount'))],
+        false,
+        ['amount' => ['The Amount must be less than or equal to 110.00.']]
+    ],
+    'lower value' => [
+        ['total' => 90],
+        ['total' => new MaxValueRule(9900, new MoneyInput('total'))],
+        true,
+    ],
+    'invalid value' => [
+        ['totalAmount' => 'invalid'],
+        ['totalAmount' => new MaxValueRule(10000, new MoneyInput('totalAmount'))],
+        false,
+        ['totalAmount' => ['The Total Amount must be a valid numeric value.']]
+    ],
+]);
