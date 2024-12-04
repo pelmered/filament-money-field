@@ -2,13 +2,13 @@
 
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
+use Closure;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\MoneyFormatter;
-use Closure;
 
 class MoneyInput extends TextInput
 {
@@ -114,8 +114,7 @@ class MoneyInput extends TextInput
 
         $this->rule(
             static function (MoneyInput $component) {
-                $value = $component->getMinValue();
-                return new MinValueRule($value, $component);
+                return new MinValueRule($component->getMinValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMinValue())
         );
@@ -129,8 +128,7 @@ class MoneyInput extends TextInput
 
         $this->rule(
             static function (MoneyInput $component) {
-                $value = $component->getMaxValue();
-                return new MaxValueRule($value, $component);
+                return new MaxValueRule($component->getMaxValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMaxValue())
         );
