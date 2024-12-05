@@ -63,7 +63,7 @@ class MoneyFormatter
         null|int|string $value,
         Currency $currency,
         string $locale,
-        int $precision = 2,
+        int $decimals = 2,
         bool $showCurrencySymbol = true
     ): string {
         if (! is_numeric($value)) {
@@ -72,24 +72,24 @@ class MoneyFormatter
 
         // No need to abbreviate if the value is less than 1000
         if ($value < 100000) {
-            return static::format($value, $currency, $locale, $precision);
+            return static::format($value, $currency, $locale, $decimals);
         }
 
-        $abbreviated = (string) Number::abbreviate((int) $value/100, 0, abs($precision));
+        $abbreviated = (string) Number::abbreviate((int) $value/100, 0, abs($decimals));
 
         // Split the number and the suffix
         if (preg_match('/^(?<number>[0-9.]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1) !== 1) {
             throw new \RuntimeException('Invalid format');
         }
 
-        $formattedNumber = static::numberFormat($matches1['number'], $currency, $locale, decimals: $precision);
+        $formattedNumber = static::numberFormat($matches1['number'], $currency, $locale, decimals: $decimals);
 
         if (!$showCurrencySymbol) {
             return $formattedNumber . $matches1['suffix'];
         }
 
         // Format the number
-        $formattedCurrency = static::format($matches1['number']*100, $currency, $locale, decimals: $precision);
+        $formattedCurrency = static::format($matches1['number']*100, $currency, $locale, decimals: $decimals);
 
         // Find the formatted number
         if (preg_match('/(?<number>[0-9\.,]+)/', $formattedCurrency, $matches2) !== 1) {
