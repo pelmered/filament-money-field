@@ -27,7 +27,7 @@ class MoneyColumn extends TextColumn
         });
     }
 
-    public function short($showCurrencySymbol = true): static
+    public function short(bool $showCurrencySymbol = true): static
     {
         $this->formatStateUsing(function (MoneyColumn $component, null|int|string $state) use ($showCurrencySymbol) {
             return MoneyFormatter::formatShort(

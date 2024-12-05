@@ -27,7 +27,7 @@ class MoneyEntry extends TextEntry
         });
     }
 
-    public function short($showCurrencySymbol = true): static
+    public function short(bool $showCurrencySymbol = true): static
     {
         $this->formatStateUsing(function (MoneyEntry $component, null|int|string $state) use ($showCurrencySymbol) {
             return MoneyFormatter::formatShort(
