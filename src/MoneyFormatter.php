@@ -70,8 +70,10 @@ class MoneyFormatter
         if ($value < 100000) {
             if (! $showCurrencySymbol) {
                 dump($value);
+
                 return static::numberFormat((int) $value / 100, $currency, $locale, decimals: $decimals);
             }
+
             return static::format($value, $currency, $locale, $decimals);
         }
 

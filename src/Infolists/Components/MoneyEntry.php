@@ -46,7 +46,7 @@ class MoneyEntry extends TextEntry
 
     public function hideCurrencySymbol(bool $hideCurrencySymbol = true): static
     {
-        $this->showCurrencySymbol = !$hideCurrencySymbol;
+        $this->showCurrencySymbol = ! $hideCurrencySymbol;
 
         return $this;
     }
