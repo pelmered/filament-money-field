@@ -34,7 +34,7 @@ class MoneyColumn extends TextColumn
                 $state,
                 $component->getCurrency(),
                 $component->getLocale(),
-                decimals: $this->getDecimals()
+                precision: $this->getDecimals()
             );
         });
 

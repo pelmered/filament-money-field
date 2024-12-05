@@ -153,7 +153,15 @@ MoneyColumn::make('price')
     ->locale('sv_SE'),
 
 MoneyColumn::make('price')
-    ->short(), // Short fromat, e.g. $1.23M instead of $1,234,567.89
+    ->short(), // Short format, e.g. $1.23M instead of $1,234,567.89
+
+MoneyColumn::make('price')
+    ->decimals(4)
+    ->short(), // $1.2345M
+
+MoneyColumn::make('price')
+    ->decimals(-3) // 3 significant digits
+    ->short(), // $1.23K or $23.1M
 ```
 
 ### InfoList
