@@ -192,58 +192,156 @@ it('formats to international currency symbol', function () {
 it('formats tointernational currency symbol as suffix', function () {
     config(['filament-money-field.intl_currency_symbol' => true]);
 
-    self::assertSame(
-        replaceNonBreakingSpaces('1 000,00 SEK'),
-        MoneyFormatter::format(100000, new Currency('SEK'), 'sv_SE')
-    );
+    expect(MoneyFormatter::format(100000, new Currency('SEK'), 'sv_SE'))
+        ->toBe(replaceNonBreakingSpaces('1 000,00 SEK'));
 });
 
-it('formats with decimal parameter', function () {
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,234.56'),
-        MoneyFormatter::format(123456, new Currency('USD'), 'en_US')
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,235'),
-        MoneyFormatter::format(123456, new Currency('USD'), 'en_US', decimals: 0)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,000.12'),
-        MoneyFormatter::format(100012, new Currency('USD'), 'en_US', decimals: 2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,000.5500'),
-        MoneyFormatter::format(100055, new Currency('USD'), 'en_US', decimals: 4)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,200'),
-        MoneyFormatter::format(123456, new Currency('USD'), 'en_US', decimals: -2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$123,500'),
-        MoneyFormatter::format(12345678, new Currency('USD'), 'en_US', decimals: -4)
-    );
-});
+it('formats with decimal parameter', function ($amount, $decimals, $expected) {
+    expect(MoneyFormatter::format($amount, new Currency('USD'), 'en_US', decimals: $decimals))
+        ->toBe(replaceNonBreakingSpaces($expected));
+})->with([
+    [123456, 2, '$1,234.56'],
+    [123456, 0, '$1,235'],
+    [100012, 2, '$1,000.12'],
+    [100055, 4, '$1,000.5500'],
+    [123456, -2, '$1,200'],
+    [12345678, -4, '$123,500'],
+]);
 
-it('formats with decimal parameter in sek', function () {
-    self::assertSame(
-        replaceNonBreakingSpaces('1 001 kr'),
-        MoneyFormatter::format(100060, new Currency('SEK'), 'sv_SE', decimals: 0)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('1 000,12 kr'),
-        MoneyFormatter::format(100012, new Currency('SEK'), 'sv_SE', decimals: 2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('1 000,5500 kr'),
-        MoneyFormatter::format(100055, new Currency('SEK'), 'sv_SE', decimals: 4)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('1 200 kr'),
-        MoneyFormatter::format(123456, new Currency('SEK'), 'sv_SE', decimals: -2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('123 500 kr'),
-        MoneyFormatter::format(12345678, new Currency('SEK'), 'sv_SE', decimals: -4)
-    );
-});
+it('formats with decimal parameter in sek', function ($amount, $decimals, $expected) {
+
+    expect(MoneyFormatter::format($amount, new Currency('SEK'), 'sv_SE', decimals: $decimals))
+        ->toBe(replaceNonBreakingSpaces($expected));
+
+})->with([
+    [100060, 0, '1 001 kr'],
+    [100012, 2, '1 000,12 kr'],
+    [100055, 4, '1 000,5500 kr'],
+    [123456, -2, '1 200 kr'],
+    [12345678, -4, '123 500 kr'],
+]);
+
+it('formats to short format', function (mixed $input, string $expectedOutput) {
+    expect(MoneyFormatter::formatShort($input, new Currency('USD'), 'en_US'))
+        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+})->with([
+    'invalid' => [
+        'invalid',
+        '',
+    ],
+    'small 1' => [
+        123,
+        '$1.23',
+    ],
+    'small 2' => [
+        12300,
+        '$123.00',
+    ],
+    'thousands' => [
+        123456,
+        '$1.23K',
+    ],
+    'millions' => [
+        1234567890,
+        '$12.35M',
+    ],
+    'billions' => [
+        100000000,
+        '$1.00M',
+    ],
+]);
+
+it('formats to short format with decimals', function (mixed $input, int $decimals, string $expectedOutput) {
+    expect(MoneyFormatter::formatShort($input, new Currency('USD'), 'en_US', decimals: $decimals))
+        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+})->with([
+    'thousands with 0 decimals' => [
+        123456,
+        0,
+        '$1K',
+    ],
+    'thousands with 2 decimals' => [
+        123456,
+        2,
+        '$1.23K',
+    ],
+    'thousands with 4 decimals' => [
+        123456,
+        4,
+        '$1.2346K',
+    ],
+    'thousands with -2 decimals' => [
+        123456,
+        -2,
+        '$1.2K',
+    ],
+    'thousands with -4 decimals' => [
+        123456,
+        -4,
+        '$1.235K',
+    ],
+    'millions' => [
+        1234567890,
+        2,
+        '$12.35M',
+    ],
+    'billions' => [
+        100000000,
+        2,
+        '$1.00M',
+    ],
+]);
+
+it('formats to short format with SEK', function (mixed $input, string $expectedOutput) {
+    expect(MoneyFormatter::formatShort($input, new Currency('SEK'), 'sv_SE'))
+        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+})->with([
+    'thousands' => [
+        123456,
+        '1,23K kr',
+    ],
+    'millions' => [
+        1234567890,
+        '12,35M kr',
+    ],
+    'billions' => [
+        100100000,
+        '1,00M kr',
+    ],
+]);
+
+it('formats to short format with USD and hidden currency symbol', function (mixed $input, string $expectedOutput) {
+    expect(MoneyFormatter::formatShort($input, new Currency('USD'), 'en_US', showCurrencySymbol: false))
+        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+})->with([
+    'thousands' => [
+        123456,
+        '1.23K',
+    ],
+    'millions' => [
+        1234567890,
+        '12.35M',
+    ],
+    'billions' => [
+        100000000,
+        '1.00M',
+    ],
+]);
+
+it('formats to short format with SEK and hidden currency symbol', function (mixed $input, string $expectedOutput) {
+    expect(MoneyFormatter::formatShort($input, new Currency('SEK'), 'sv_SE', showCurrencySymbol: false))
+        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+})->with([
+    'thousands' => [
+        123456,
+        '1,23K',
+    ],
+    'millions' => [
+        1234567890,
+        '12,35M',
+    ],
+    'billions' => [
+        100000000,
+        '1,00M',
+    ],
+]);

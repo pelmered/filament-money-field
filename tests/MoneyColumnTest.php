@@ -28,12 +28,14 @@ it('formats money column state to short format with default currency (USD)', fun
     $column = MoneyColumn::make('price')->short();
     expect($column->formatState(250))->toEqual('$2.50');
     expect($column->formatState(250056))->toEqual('$2.50K');
-    expect($column->formatState(24604231))->toEqual('$0.25M');
+    expect($column->formatState(24604231))->toEqual('$246.04K');
+    expect($column->formatState(2460523122))->toEqual('$24.61M');
 });
 
 it('formats money column state to short format with sek', function () {
     $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE')->short();
     expect($column->formatState(651))->toEqual(replaceNonBreakingSpaces('6,51 kr'));
     expect($column->formatState(235235))->toEqual(replaceNonBreakingSpaces('2,35K kr'));
-    expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('0,24M kr'));
+    expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('235,24K kr'));
+    //expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('235,24K kr'));
 });

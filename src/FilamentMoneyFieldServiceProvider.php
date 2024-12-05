@@ -2,7 +2,6 @@
 
 namespace Pelmered\FilamentMoneyField;
 
-use Illuminate\Database\Schema\Blueprint;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
