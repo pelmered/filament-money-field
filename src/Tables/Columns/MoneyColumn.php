@@ -10,6 +10,8 @@ class MoneyColumn extends TextColumn
 {
     use HasMoneyAttributes;
 
+    protected bool $showCurrencySymbol = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,9 +36,17 @@ class MoneyColumn extends TextColumn
                 $state,
                 $component->getCurrency(),
                 $component->getLocale(),
-                decimals: $this->getDecimals()
+                decimals: $this->getDecimals(),
+                showCurrencySymbol: $component->showCurrencySymbol,
             );
         });
+
+        return $this;
+    }
+
+    public function hideCurrencySymbol(bool $hideCurrencySymbol = true): static
+    {
+        $this->showCurrencySymbol = !$hideCurrencySymbol;
 
         return $this;
     }

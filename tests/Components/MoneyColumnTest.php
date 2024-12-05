@@ -39,3 +39,12 @@ it('formats money column state to short format with sek', function () {
     expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('235,24K kr'));
     //expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('235,24K kr'));
 });
+
+it('formats money column state to short format with sek and hide currency symbol', function () {
+    $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE')->short()->hideCurrencySymbol();
+    expect($column->formatState(651))->toEqual(replaceNonBreakingSpaces('6,51'));
+    expect($column->formatState(235235))->toEqual(replaceNonBreakingSpaces('2,35K'));
+    expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('235,24K'));
+    expect($column->formatState(2352356254))->toEqual(replaceNonBreakingSpaces('23,52M'));
+});
+
