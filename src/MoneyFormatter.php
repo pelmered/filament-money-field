@@ -41,34 +41,53 @@ class MoneyFormatter
         return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
     }
 
-    public static function formatShort(
+    public static function numberFormat(
         null|int|string $value,
         Currency $currency,
         string $locale,
         int $decimals = 2,
+    )
+    {
+        $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
+        $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
+
+        return $numberFormatter->format($value);  // Outputs something like "$1.234,56"
+    }
+
+    public static function formatShort(
+        null|int|string $value,
+        Currency $currency,
+        string $locale,
+        int $precision = 2,
+        bool $showCurrencySymbol = true
     ): string {
         if (! is_numeric($value)) {
             return '';
         }
 
         // No need to abbreviate if the value is less than 1000
-        if ($value < 1000) {
-            return static::format($value, $currency, $locale, $decimals);
+        if ($value < 100000) {
+            return static::format($value, $currency, $locale, $precision);
         }
 
-        $abbreviated = (string) Number::abbreviate((int) $value);
+        $abbreviated = (string) Number::abbreviate((int) $value/100, 0, abs($precision));
 
         // Split the number and the suffix
-        preg_match('/^(?<number>[0-9]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1);
+        preg_match('/^(?<number>[0-9.]+)(?<suffix>[A-Z])$/', $abbreviated, $matches1);
+
+        $formattedNumber = static::numberFormat($matches1['number'], $currency, $locale, decimals: $precision);
+
+        if (!$showCurrencySymbol) {
+            return $formattedNumber . $matches1['suffix'];
+        }
 
         // Format the number
-        $formatted = static::format($matches1['number'], $currency, $locale);
+        $formattedCurrency = static::format($matches1['number']*100, $currency, $locale, decimals: $precision);
 
         // Find the formatted number
-        preg_match('/(?<number>[0-9\.,]+)/', $formatted, $matches2);
+        preg_match('/(?<number>[0-9\.,]+)/', $formattedCurrency, $matches2);
 
-        // Insert the suffix back
-        return substr_replace($formatted, $matches1['suffix'], strpos($formatted, $matches2['number']) + strlen($matches2['number']), 0);
+        return str_replace($matches2['number'], $formattedNumber . $matches1['suffix'], $formattedCurrency);
     }
 
     public static function parseDecimal(
