@@ -345,5 +345,3 @@ it('formats to short format with SEK and hidden currency symbol', function (mixe
         '1,00M',
     ],
 ]);
-
-
