@@ -252,7 +252,7 @@ it('formats to short format', function (mixed $input, string $expectedOutput) {
 ]);
 
 it('formats to short format with decimals', function (mixed $input, int $decimals, string $expectedOutput) {
-    expect(MoneyFormatter::formatShort($input, new Currency('USD'), 'en_US', precision: $decimals))
+    expect(MoneyFormatter::formatShort($input, new Currency('USD'), 'en_US', decimals: $decimals))
         ->toBe(replaceNonBreakingSpaces($expectedOutput));
 })->with([
     'thousands with 0 decimals' => [
