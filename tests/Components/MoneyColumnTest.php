@@ -47,4 +47,3 @@ it('formats money column state to short format with sek and hide currency symbol
     expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('235,24K'));
     expect($column->formatState(2352356254))->toEqual(replaceNonBreakingSpaces('23,52M'));
 });
-
