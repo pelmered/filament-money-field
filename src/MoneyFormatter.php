@@ -42,7 +42,7 @@ class MoneyFormatter
     }
 
     public static function numberFormat(
-        null|int|string $value,
+        null|int|float|string $value,
         Currency $currency,
         string $locale,
         int $decimals = 2,
@@ -68,6 +68,12 @@ class MoneyFormatter
 
         // No need to abbreviate if the value is less than 1000
         if ($value < 100000) {
+            if (! $showCurrencySymbol) {
+                dump($value);
+
+                return static::numberFormat((int) $value / 100, $currency, $locale, decimals: $decimals);
+            }
+
             return static::format($value, $currency, $locale, $decimals);
         }
 
