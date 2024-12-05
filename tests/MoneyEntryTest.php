@@ -33,12 +33,24 @@ it('formats infolist money in short format in USD', function () {
     $entry = MoneyEntry::make('price')->short();
 
     $component = ComponentContainer::make(InfolistTestComponent::make())
-        ->components([$entry])
-        ->state([$entry->getName() => 123456789]);
+                                   ->components([$entry])
+                                   ->state([$entry->getName() => 123456789]);
 
     $entry = $component->getComponent('price');
 
     expect($entry->formatState($entry->getState()))->toEqual(replaceNonBreakingSpaces('$1.23M'));
+});
+
+it('formats infolist money in short format with decimals in USD', function () {
+    $entry = MoneyEntry::make('price')->short()->decimals(4);
+
+    $component = ComponentContainer::make(InfolistTestComponent::make())
+                                   ->components([$entry])
+                                   ->state([$entry->getName() => 123456789]);
+
+    $entry = $component->getComponent('price');
+
+    expect($entry->formatState($entry->getState()))->toEqual(replaceNonBreakingSpaces('$1.2346M'));
 });
 
 it('formats infolist money in short format in sek', function () {
@@ -53,12 +65,13 @@ it('formats infolist money in short format in sek', function () {
     expect($entry->formatState($entry->getState()))->toEqual(replaceNonBreakingSpaces('1,23K kr'));
 });
 
+
 it('formats infolist money in sek with no decimals', function () {
     $entry = MoneyEntry::make('price')->currency('SEK')->locale('sv_SE')->decimals(0);
 
     $component = ComponentContainer::make(InfolistTestComponent::make())
-        ->components([$entry])
-        ->state([$entry->getName() => 1000000]);
+                                   ->components([$entry])
+                                   ->state([$entry->getName() => 1000000]);
 
     $entry = $component->getComponent('price');
 

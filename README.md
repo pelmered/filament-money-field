@@ -140,8 +140,7 @@ MoneyColumn::make('price')
     ->short(), // Short format, e.g. $1.23M instead of $1,234,567.89
 
 MoneyColumn::make('price')
-    ->short()
-    ->hideCurrencySymbol(), // Short format without currency symbol, e.g. 1.23M instead of $1.23M
+    ->short(showCurrencySymbol: false), // Short format without currency symbol, e.g. 1.23M instead of $1.23M
 
 MoneyColumn::make('price')
     ->decimals(4)

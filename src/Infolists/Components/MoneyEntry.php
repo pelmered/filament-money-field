@@ -10,8 +10,6 @@ class MoneyEntry extends TextEntry
 {
     use HasMoneyAttributes;
 
-    protected bool $showCurrencySymbol = true;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,24 +27,17 @@ class MoneyEntry extends TextEntry
         });
     }
 
-    public function short(): static
+    public function short($showCurrencySymbol = true): static
     {
-        $this->formatStateUsing(function (MoneyEntry $component, null|int|string $state) {
+        $this->formatStateUsing(function (MoneyEntry $component, null|int|string $state) use ($showCurrencySymbol) {
             return MoneyFormatter::formatShort(
                 $state,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals(),
-                showCurrencySymbol: $component->showCurrencySymbol,
+                showCurrencySymbol: $showCurrencySymbol,
             );
         });
-
-        return $this;
-    }
-
-    public function hideCurrencySymbol(bool $hideCurrencySymbol = true): static
-    {
-        $this->showCurrencySymbol = ! $hideCurrencySymbol;
 
         return $this;
     }

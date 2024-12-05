@@ -41,7 +41,7 @@ it('formats money column state to short format with sek', function () {
 });
 
 it('formats money column state to short format with sek and hide currency symbol', function () {
-    $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE')->short()->hideCurrencySymbol();
+    $column = MoneyColumn::make('price')->currency('SEK')->locale('sv_SE')->short(showCurrencySymbol: false);
     expect($column->formatState(651))->toEqual(replaceNonBreakingSpaces('6,51'));
     expect($column->formatState(235235))->toEqual(replaceNonBreakingSpaces('2,35K'));
     expect($column->formatState(23523562))->toEqual(replaceNonBreakingSpaces('235,24K'));
