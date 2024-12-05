@@ -124,7 +124,7 @@ class MoneyInput extends TextInput
 
         $this->rule(
             static function (MoneyInput $component) {
-                return new MinValueRule($component->getMinValue(), $component);
+                return new MinValueRule((int) $component->getMinValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMinValue())
         );
@@ -138,7 +138,7 @@ class MoneyInput extends TextInput
 
         $this->rule(
             static function (MoneyInput $component) {
-                return new MaxValueRule($component->getMaxValue(), $component);
+                return new MaxValueRule((int) $component->getMaxValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMaxValue())
         );
