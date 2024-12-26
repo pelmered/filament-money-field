@@ -218,6 +218,5 @@ it('accepts form input money with money cast', function () {
         ->components([MoneyInput::make('price_cast')])
         ->fill(['price_cast' => 123456]);
 
-    dd($component->getState());
     expect($component->getState()['price_cast'])->toEqual('123456');
 });
