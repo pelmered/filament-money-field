@@ -16,7 +16,7 @@
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Field;
 use Illuminate\Validation\ValidationException;
-use Pelmered\FilamentMoneyField\Tests\Components\FormTestComponent;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 
 pest()->project()->github('pelmered/filament-money-field');
 

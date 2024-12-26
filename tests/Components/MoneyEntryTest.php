@@ -1,9 +1,10 @@
 <?php
 
 uses(\Pelmered\FilamentMoneyField\Tests\TestCase::class);
+
 use Filament\Infolists\ComponentContainer;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
-use Pelmered\FilamentMoneyField\Tests\Components\InfolistTestComponent;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
 
 it('formats infolist money in usd', function () {
     $entry = MoneyEntry::make('price');

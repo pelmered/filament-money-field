@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\Tests\Components;
+namespace Pelmered\FilamentMoneyField\Tests\Support\Components;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;

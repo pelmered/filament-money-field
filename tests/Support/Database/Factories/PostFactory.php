@@ -1,9 +1,9 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\Tests\Database\Factories;
+namespace Pelmered\FilamentMoneyField\Tests\Support\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Pelmered\FilamentMoneyField\Tests\Models\Post;
+use Pelmered\FilamentMoneyField\Tests\Support\Models\Post;
 
 class PostFactory extends Factory
 {

@@ -7,7 +7,7 @@ use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\Tests\Components\FormTestComponent;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 uses(TestCase::class);
