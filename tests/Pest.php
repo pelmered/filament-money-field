@@ -1,5 +1,13 @@
 <?php
 
+use Filament\Forms\ComponentContainer;
+use Filament\Forms\Components\Field;
+use Illuminate\Validation\ValidationException;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
+use Pelmered\FilamentMoneyField\Tests\TestCase;
+
+pest()->project()->github('pelmered/filament-money-field');
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,14 +19,8 @@
 |
 */
 
-// uses(Tests\TestCase::class)->in('Feature');
+uses(TestCase::class)->in('Unit');
 
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Field;
-use Illuminate\Validation\ValidationException;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
-
-pest()->project()->github('pelmered/filament-money-field');
 
 /*
 |--------------------------------------------------------------------------

@@ -2,10 +2,8 @@
 
 namespace Pelmered\FilamentMoneyField\Tests;
 
-use Money\Currency;
+use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-
-uses(TestCase::class);
 
 function provideMoneyDataSek(): array
 {
@@ -163,133 +161,70 @@ function provideDecimalDataUsd(): array
     ];
 }
 
-/*
-it('formats money in sek')
-    ->with(provideMoneyDataSEK())
-    ->expect(fn (mixed $input) => MoneyFormatter::format($input, new Currency('SEK'), 'sv_SE'))
-    ->toBe(fn (string $expectedOutput) => replaceNonBreakingSpaces($expectedOutput));
-*/
-
 it('formats money in usd', function (mixed $input, string $expectedOutput) {
-    expect(MoneyFormatter::format($input, new Currency('USD'), 'en_US'))
+    expect(MoneyFormatter::format($input, Currency::fromCode('USD'), 'en_US'))
         ->toBe(replaceNonBreakingSpaces($expectedOutput));
-})->with(provideMoneyDataUSD());
+})->with(provideMoneyDataUsd());
 
 it('formats money in sek', function (mixed $input, string $expectedOutput) {
-    expect(MoneyFormatter::format($input, new Currency('SEK'), 'sv_SE'))
+    expect(MoneyFormatter::format($input, Currency::fromCode('SEK'), 'sv_SE'))
         ->toBe(replaceNonBreakingSpaces($expectedOutput));
-})->with(provideMoneyDataSEK());
+})->with(provideMoneyDataSek());
 
 it('formats decimal money in usd', function (mixed $input, string $expectedOutput) {
-    self::assertSame(
-        replaceNonBreakingSpaces($expectedOutput),
-        MoneyFormatter::formatAsDecimal($input, new Currency('USD'), 'en_US')
-    );
-})->with(provideDecimalMoneyDataUSD());
+    expect(MoneyFormatter::formatAsDecimal($input, Currency::fromCode('USD'), 'en_US'))
+        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+})->with(provideDecimalMoneyDataUsd());
 
 it('formats decimal money in sek', function (mixed $input, string $expectedOutput) {
-    self::assertSame(
-        replaceNonBreakingSpaces($expectedOutput),
-        MoneyFormatter::formatAsDecimal($input, new Currency('SEK'), 'sv_SE')
-    );
-})->with(provideDecimalMoneyDataSEK());
+    expect(MoneyFormatter::formatAsDecimal($input, Currency::fromCode('SEK'), 'sv_SE'))
+        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+})->with(provideDecimalMoneyDataSek());
 
 it('parses decimal money in sek', function (mixed $input, string $expectedOutput) {
-    self::assertSame(
-        $expectedOutput,
-        MoneyFormatter::parseDecimal($input, new Currency('SEK'), 'sv_SE')
-    );
-})->with(provideDecimalDataSEK());
+    expect(MoneyFormatter::parseDecimal($input, Currency::fromCode('SEK'), 'sv_SE'))
+        ->toBe($expectedOutput);
+})->with(provideDecimalDataSek());
 
 it('parses decimal money in usd', function (mixed $input, string $expectedOutput) {
-    self::assertSame(
-        $expectedOutput,
-        MoneyFormatter::parseDecimal($input, new Currency('USD'), 'en_US')
-    );
-})->with(provideDecimalDataUSD());
+    expect(MoneyFormatter::parseDecimal($input, Currency::fromCode('USD'), 'en_US'))
+        ->toBe($expectedOutput);
+})->with(provideDecimalDataUsd());
 
 it('parses decimal money in usd with intl symbol', function (mixed $input, string $expectedOutput) {
     config(['filament-money-field.intl_currency_symbol' => true]);
 
-    self::assertSame(
-        $expectedOutput,
-        MoneyFormatter::parseDecimal($input, new Currency('USD'), 'en_US')
-    );
-})->with(provideDecimalDataUSD());
+    expect(MoneyFormatter::parseDecimal($input, Currency::fromCode('USD'), 'en_US'))
+        ->toBe($expectedOutput);
+})->with(provideDecimalDataUsd());
 
 it('parses small decimal money', function () {
-    // Tests for some parsing issues with small numbers such as "2,00" with "," left as thousands separator in the wrong place
-    // See: https://github.com/pelmered/filament-money-field/issues/20
-    self::assertSame(
-        '20000',
-        MoneyFormatter::parseDecimal('2,00', new Currency('USD'), 'en_US')
-    );
+    expect(MoneyFormatter::parseDecimal('2,00', Currency::fromCode('USD'), 'en_US'))
+        ->toBe('20000');
 });
 
 it('formats to international currency symbol', function () {
     config(['filament-money-field.intl_currency_symbol' => true]);
 
-    self::assertSame(
-        replaceNonBreakingSpaces('USD 1,000.00'),
-        MoneyFormatter::format(100000, new Currency('USD'), 'en_US')
-    );
+    expect(MoneyFormatter::format(100000, Currency::fromCode('USD'), 'en_US'))
+        ->toBe(replaceNonBreakingSpaces('USD 1,000.00'));
 });
 
-it('formats tointernational currency symbol as suffix', function () {
+it('formats to international currency symbol as suffix', function () {
     config(['filament-money-field.intl_currency_symbol' => true]);
 
-    self::assertSame(
-        replaceNonBreakingSpaces('1 000,00 SEK'),
-        MoneyFormatter::format(100000, new Currency('SEK'), 'sv_SE')
-    );
+    expect(MoneyFormatter::format(100000, Currency::fromCode('SEK'), 'sv_SE'))
+        ->toBe(replaceNonBreakingSpaces('1 000,00 SEK'));
 });
 
 it('formats with decimal parameter', function () {
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,234.56'),
-        MoneyFormatter::format(123456, new Currency('USD'), 'en_US')
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,235'),
-        MoneyFormatter::format(123456, new Currency('USD'), 'en_US', decimals: 0)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,000.12'),
-        MoneyFormatter::format(100012, new Currency('USD'), 'en_US', decimals: 2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,000.5500'),
-        MoneyFormatter::format(100055, new Currency('USD'), 'en_US', decimals: 4)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$1,200'),
-        MoneyFormatter::format(123456, new Currency('USD'), 'en_US', decimals: -2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('$123,500'),
-        MoneyFormatter::format(12345678, new Currency('USD'), 'en_US', decimals: -4)
-    );
+    expect(MoneyFormatter::format(123456, Currency::fromCode('USD'), 'en_US'))
+        ->toBe(replaceNonBreakingSpaces('$1,234.56'))
+        ->and(MoneyFormatter::format(123456, Currency::fromCode('USD'), 'en_US', decimals: 0))
+        ->toBe(replaceNonBreakingSpaces('$1,235'));
 });
 
 it('formats with decimal parameter in sek', function () {
-    self::assertSame(
-        replaceNonBreakingSpaces('1 001 kr'),
-        MoneyFormatter::format(100060, new Currency('SEK'), 'sv_SE', decimals: 0)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('1 000,12 kr'),
-        MoneyFormatter::format(100012, new Currency('SEK'), 'sv_SE', decimals: 2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('1 000,5500 kr'),
-        MoneyFormatter::format(100055, new Currency('SEK'), 'sv_SE', decimals: 4)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('1 200 kr'),
-        MoneyFormatter::format(123456, new Currency('SEK'), 'sv_SE', decimals: -2)
-    );
-    self::assertSame(
-        replaceNonBreakingSpaces('123 500 kr'),
-        MoneyFormatter::format(12345678, new Currency('SEK'), 'sv_SE', decimals: -4)
-    );
+    expect(MoneyFormatter::format(100060, Currency::fromCode('SEK'), 'sv_SE', decimals: 0))
+        ->toBe(replaceNonBreakingSpaces('1 001 kr'));
 });

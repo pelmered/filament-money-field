@@ -28,7 +28,8 @@
         "ext-intl": "*",
         "filament/support": "^v3.2.39",
         "moneyphp/money": "^4.0",
-        "illuminate/support": "^11.0"
+        "illuminate/support": "^11.0",
+        "php-static-analysis/attributes": "^0.3.1 | ^0.4.0"
     },
     "require-dev": {
         "filament/filament": "^3.2",
@@ -38,7 +39,9 @@
         "pestphp/pest": "^3.0",
         "pestphp/pest-plugin-drift": "^3.0",
         "pestphp/pest-plugin-type-coverage": "^3.0",
-        "larastan/larastan": "^2.0"
+        "larastan/larastan": "^3.0",
+        "php-static-analysis/phpstan-extension": "^0.4.0",
+        "spatie/laravel-ray": "^1.39"
     },
     "extra": {
         "laravel": {

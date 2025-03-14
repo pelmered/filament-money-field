@@ -16,6 +16,7 @@ class Post extends Model
     protected $casts = [
         'is_published' => 'boolean',
         'tags'         => 'array',
+        'price'        => MoneyCast::class,
         'price_cast'   => MoneyCast::class,
     ];
 

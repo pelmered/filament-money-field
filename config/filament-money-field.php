@@ -1,6 +1,13 @@
 <?php
 
+use Money\Currencies\ISOCurrencies;
+
 return [
+
+    'store' => [
+        'format' => 'int' // Allowed values: 'int' or 'decimal'
+
+    ],
 
     /*
     |---------------------------------------------------------------------------
@@ -66,4 +73,66 @@ return [
     */
     'form_currency_symbol_placement' => env('MONEY_UNIT_PLACEMENT', 'before'),
 
+    /*
+    |---------------------------------------------------------------------------
+    | Currency list
+    |---------------------------------------------------------------------------
+    |
+    | Provide your own custom currency list provider.
+    | It must implement the Money\Currencies interface
+    |
+    */
+    'currency_provider' => ISOCurrencies::class,
+
+    /*
+    |---------------------------------------------------------------------------
+    | Available Currencies list
+    |---------------------------------------------------------------------------
+    |
+    | Provide a list of available currencies for selection.
+    | It should be a list of ISO 4217 currency codes.
+    | For example: ['USD', 'EUR']
+    |
+    */
+    'available_currencies' => [
+        'USD',
+        'EUR',
+        'SEK',
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Caching
+    |---------------------------------------------------------------------------
+    |
+    | Set to false to disable the currency cache.
+    |
+    */
+    'currency_cache' => [
+        'type' => env('MONEY_CURRENCY_CACHE', 'flexible'), // 'remember', 'flexible', 'forever', false
+        'ttl'  => env('MONEY_CURRENCY_CACHE_TTL', [2592000, 31556926]), // 1 month, 1 year
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Load crypto currencies
+    |---------------------------------------------------------------------------
+    |
+    | Set to true to enable support for crypto currencies.
+    |
+    */
+    'load_crypto_currencies' => env('MONEY_LOAD_CRYPTO_CURRENCIES', false),
+
+    /*
+    |---------------------------------------------------------------------------
+    | Currency cast
+    |---------------------------------------------------------------------------
+    |
+    | Which currency object shouldPelmered\FilamentMoneyField\Casts\CurrencyCast should cast to?
+    | Supported values are:
+    | - 'Pelmered\FilamentMoneyField\Currencies\Currency::class'
+    | - 'Money\Currency::class'
+    |
+    */
+    'currency_cast_to' => env('MONEY_CURRENCY_CAST', Pelmered\FilamentMoneyField\Currencies\Currency::class),
 ];

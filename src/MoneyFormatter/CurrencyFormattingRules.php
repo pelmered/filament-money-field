@@ -2,7 +2,7 @@
 
 namespace Pelmered\FilamentMoneyField\MoneyFormatter;
 
-class MoneyFormattingRules
+class CurrencyFormattingRules
 {
     public function __construct(
         public string $currencySymbol,

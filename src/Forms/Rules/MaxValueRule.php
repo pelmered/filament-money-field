@@ -17,6 +17,7 @@ readonly class MaxValueRule implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        dd($this->component->getRecord());
         $currencyCode = $this->component->getCurrency();
         $locale       = $this->component->getLocale();
 

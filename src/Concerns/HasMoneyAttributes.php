@@ -5,22 +5,31 @@ namespace Pelmered\FilamentMoneyField\Concerns;
 use Closure;
 use Filament\Infolists\Infolist;
 use Money\Currencies\ISOCurrencies;
-use Money\Currency;
+use Pelmered\FilamentMoneyField\Currencies\Currency;
+use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 
 trait HasMoneyAttributes
 {
     protected Currency $currency;
+    protected string $currencyColumn;
 
     protected string $locale;
 
     protected ?int $decimals = null;
 
+    protected bool $inMinor = true;
+
     protected ?string $monetarySeparator = null;
 
     public function getCurrency(): Currency
     {
-        return $this->currency ?? $this->getDefaultCurrency();
+        //dd($this->currencyColumn, $this->getRecord(), $this->getRecord()->{$this->currencyColumn});
+
+        return $this->currency
+               //?? Currency::fromCode($this->getRecord()->{$this->currencyColumn})
+               ?? ($this->getRecord() && isset($this->currencyColumn) ? Currency::fromCode($this->getRecord()->{$this->currencyColumn}) : null)
+               ?? $this->getDefaultCurrency();
     }
 
     protected function getDefaultCurrency(): Currency
@@ -39,12 +48,40 @@ trait HasMoneyAttributes
     {
         /** @var non-empty-string $currencyCode */
         $currencyCode   = (string) $this->evaluate($currencyCode);
-        $this->currency = new Currency($currencyCode);
-        $currencies     = new ISOCurrencies;
+        $currency = Currency::fromCode($currencyCode);
 
-        if (! $currencies->contains($this->currency)) {
-            throw new UnsupportedCurrency($currencyCode);
+        if (!CurrencyRepository::isValid($currency))
+        {
+            throw new UnsupportedCurrency($currency->getCode());
         }
+
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function inMajorUnits(): static
+    {
+        $this->inMinor = false;
+
+        return $this;
+    }
+
+    public function notInMinor(): static
+    {
+        return $this->inMajorUnits();
+    }
+
+    public function inMinor(): static
+    {
+        $this->inMinor = true;
+
+        return $this;
+    }
+
+    public function currencyColumn(string | Closure $column): static
+    {
+        $this->currencyColumn = $this->evaluate($column);
 
         return $this;
     }

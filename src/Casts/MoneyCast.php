@@ -34,14 +34,42 @@ class MoneyCast implements CastsAttributes
      * @param  Money|string|null  $value
      * @param  array<string, mixed>  $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
+    public function set(Model $model, string $key, mixed $value, array $attributes)
     {
-        if ($value instanceof Money) {
-            //$model->{$key.'_currency'} = $value->getCurrency();
-            return $value->getAmount();
-        }
+        //return $this->getAmount($model, $key, $value);
+
+        /*
+        ray([
+            $key => $this->getAmount($model, $key, $value),
+            $key.'_currency' => $this->getCurrency($model, $key, $value),
+        ]);
+        */
+
+
+        return [
+            $key => $this->getAmount($model, $key, $value),
+            $key.'_currency' => $this->getCurrency($model, $key, $value),
+        ];
 
         return $value;
+    }
+
+    protected function getAmount($model, $key, $value): ?int
+    {
+        return match (true) {
+            $value instanceof Money => $value->getAmount(),
+            is_array($value) => $value['amount'] ?? $value[0],
+            default => $value,
+        };
+    }
+
+    public function getCurrency($model, $key, $value): string
+    {
+        return match (true) {
+            $value instanceof Money => $value->getCurrency(),
+            is_array($value) => $value['currency'] ?? $value[1],
+            default => $this->getCurrencyFromModel($model, $key)->getCode(),
+        };
     }
 
     public function getCurrencyFromModel(Model $model, string $name): Currency

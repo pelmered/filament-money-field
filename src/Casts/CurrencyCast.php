@@ -4,8 +4,8 @@ namespace Pelmered\FilamentMoneyField\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Money\Currency;
 use Money\Money;
+use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Spatie\LaravelData\Casts\Cast;
 
 /**
@@ -19,13 +19,16 @@ class CurrencyCast implements CastsAttributes
      * @param  ?non-empty-string  $value
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): ?Currency
+    public function get(Model $model, string $key, mixed $value, array $attributes): Currency|\Money\Currency|null
     {
         if ($value === null) {
             return null;
         }
 
-        return new Currency($value);
+        return match(config('filament-money-field.currency_cast_to')) {
+            \Money\Currency::class => new \Money\Currency($value),
+            default => Currency::fromCode($value)
+        };
     }
 
     /**
@@ -34,12 +37,19 @@ class CurrencyCast implements CastsAttributes
      * @param  Currency|string  $value
      * @param  array<string, mixed>  $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
+        if ($value === null) {
+            return null;
+        }
+
+        if ($value instanceof \Money\Currency) {
+            return $value->getCode();
+        }
         if ($value instanceof Currency) {
             return $value->getCode();
         }
 
-        return $value;
+        return (string) $value;
     }
 }

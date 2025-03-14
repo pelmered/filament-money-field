@@ -4,12 +4,12 @@ namespace Pelmered\FilamentMoneyField\MoneyFormatter;
 
 use Illuminate\Support\Number;
 use Money\Currencies\ISOCurrencies;
-use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 use Money\Parser\IntlLocalizedDecimalParser;
 use NumberFormatter;
+use Pelmered\FilamentMoneyField\Currencies\Currency;
 
 class MoneyFormatter
 {
@@ -27,7 +27,7 @@ class MoneyFormatter
         $numberFormatter = self::getNumberFormatter($locale, $outputStyle, $decimals);
         $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
 
-        $money = new Money((int) $value, $currency);
+        $money = new Money((int) $value, $currency->toMoneyCurrency());
 
         return $moneyFormatter->format($money);  // Outputs something like "$1.234,56"
     }
@@ -75,8 +75,6 @@ class MoneyFormatter
         // No need to abbreviate if the value is less than 1000
         if ($value < 100000) {
             if (! $showCurrencySymbol) {
-                dump($value);
-
                 return static::numberFormat((int) $value / 100, $currency, $locale, decimals: $decimals);
             }
 
@@ -109,7 +107,7 @@ class MoneyFormatter
         }
 
         /** @var array{number: string} $matches2 */
-        return str_replace($matches2['number'], $formattedNumber . $$suffix, $formattedCurrency);
+        return str_replace($matches2['number'], $formattedNumber . $suffix, $formattedCurrency);
     }
 
     public static function parseDecimal(
@@ -133,18 +131,18 @@ class MoneyFormatter
         $moneyString     = str_replace($formattingRules->groupingSeparator, '', $moneyString);
 
         try {
-            return $moneyParser->parse($moneyString, $currency)->getAmount();
+            return $moneyParser->parse($moneyString, $currency->toMoneyCurrency())->getAmount();
         } catch (ParserException) {
             throw new ParserException('The value must be a valid numeric value.');
         }
     }
 
-    public static function getFormattingRules(string $locale, Currency $currency): MoneyFormattingRules
+    public static function getFormattingRules(string $locale, Currency $currency): CurrencyFormattingRules
     {
         $config          = config('filament-money-field');
-        $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+        $numberFormatter = new NumberFormatter($locale.'@currency='.$currency->getCode(), NumberFormatter::CURRENCY);
 
-        return new MoneyFormattingRules(
+        return new CurrencyFormattingRules(
             currencySymbol: $numberFormatter->getSymbol(
                 $config['intl_currency_symbol']
                     ? NumberFormatter::INTL_CURRENCY_SYMBOL

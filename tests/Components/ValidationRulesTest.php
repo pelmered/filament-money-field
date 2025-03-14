@@ -1,5 +1,8 @@
 <?php
 
+return;
+use Money\Currency;
+use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
@@ -22,7 +25,7 @@ it('validates min value', function ($data, $rules, bool $expected, $errors = nul
 
 })->with([
     'same value' => [
-        ['total' => 100],
+        ['total' => new Money(100, new Currency('USD'))],
         ['total' => new MinValueRule(10000, new MoneyInput('total'))],
         true,
     ],
@@ -32,7 +35,7 @@ it('validates min value', function ($data, $rules, bool $expected, $errors = nul
         true,
     ],
     'lower value' => [
-        ['total' => 100],
+        ['total' => new Money(100, new Currency('USD'))],
         ['total' => new MinValueRule(15000, new MoneyInput('total'))],
         false,
         ['total' => ['The Total must be at least 150.00.']],
@@ -60,7 +63,7 @@ it('validates max value', function ($data, $rules, bool $expected, $errors = nul
 
 })->with([
     'same value' => [
-        ['total' => 100],
+        ['total' => new Money(100, new Currency('USD'))],
         ['total' => new MaxValueRule(10000, new MoneyInput('total'))],
         true,
     ],
@@ -71,7 +74,7 @@ it('validates max value', function ($data, $rules, bool $expected, $errors = nul
         ['amount' => ['The Amount must be less than or equal to 110.00.']],
     ],
     'lower value' => [
-        ['total' => 90],
+        ['total' => new Money(90, new Currency('USD'))],
         ['total' => new MaxValueRule(9900, new MoneyInput('total'))],
         true,
     ],

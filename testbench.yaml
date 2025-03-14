@@ -1,0 +1,17 @@
+
+providers:
+
+
+workbench:
+  install: true
+  discovers:
+    web: true
+    api: false
+    commands: false
+    components: false
+    views: false
+    config: true
+
+  build:
+    - create-sqlite-db
+    - migrate:refresh
