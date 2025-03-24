@@ -36,16 +36,6 @@ class MoneyCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes)
     {
-        //return $this->getAmount($model, $key, $value);
-
-        /*
-        ray([
-            $key => $this->getAmount($model, $key, $value),
-            $key.'_currency' => $this->getCurrency($model, $key, $value),
-        ]);
-        */
-
-
         return [
             $key => $this->getAmount($model, $key, $value),
             $key.'_currency' => $this->getCurrency($model, $key, $value),

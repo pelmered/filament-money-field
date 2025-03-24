@@ -24,12 +24,17 @@ trait HasMoneyAttributes
 
     public function getCurrency(): Currency
     {
-        //dd($this->currencyColumn, $this->getRecord(), $this->getRecord()->{$this->currencyColumn});
+        if(isset($this->currency))
+        {
+            return $this->currency;
+        }
 
-        return $this->currency
-               //?? Currency::fromCode($this->getRecord()->{$this->currencyColumn})
-               ?? ($this->getRecord() && isset($this->currencyColumn) ? Currency::fromCode($this->getRecord()->{$this->currencyColumn}) : null)
-               ?? $this->getDefaultCurrency();
+        if ($this->getRecord() && isset($this->currencyColumn))
+        {
+            return Currency::fromCode($this->getRecord()->{$this->currencyColumn});
+        }
+
+        return $this->getDefaultCurrency();
     }
 
     protected function getDefaultCurrency(): Currency

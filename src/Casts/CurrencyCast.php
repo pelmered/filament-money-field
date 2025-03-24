@@ -19,16 +19,18 @@ class CurrencyCast implements CastsAttributes
      * @param  ?non-empty-string  $value
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): Currency|\Money\Currency|null
+    public function get(Model $model, string $key, mixed $value, array $attributes)//: Currency|\Money\Currency|null
     {
         if ($value === null) {
             return null;
         }
 
-        return match(config('filament-money-field.currency_cast_to')) {
+        $c = match(config('filament-money-field.currency_cast_to')) {
             \Money\Currency::class => new \Money\Currency($value),
             default => Currency::fromCode($value)
         };
+
+        return $c->getCode();
     }
 
     /**

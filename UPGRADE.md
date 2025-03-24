@@ -1,10 +1,7 @@
 
-# Upgrade from 1.*
+# Upgrade from 1.* to 2.*
 
-### For full support, add Money casts for your money fields.
-
-
-### Add Model cats (optional but strongly recommended)
+### Add Model cats for money fields (optional but strongly recommended)
 
 _As of now, this is required, will be made optional in the future.
 
@@ -33,7 +30,6 @@ Or as a property:
         'another_price_currency' => CurrencyCast::class,
     ];
 ```
-
 
 ### Add currency columns
 
