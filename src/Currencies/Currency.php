@@ -12,11 +12,10 @@ class Currency
     public function __construct(
         public string $code,
         public string $name,
-        ?int $minorUnit = null,
+        public ?int $minorUnit = null,
 
     ) {
         $this->code = strtoupper($code);
-
 
         //$this->formattingRules = CurrencyFormattingRules::fromCode($code, $minorUnit);
     }
@@ -24,7 +23,9 @@ class Currency
     public static function fromCode(string $currencyCode): self
     {
         $currencyCode = strtoupper($currencyCode);
-        return CurrencyRepository::getAvailableCurrencies()->get($currencyCode) ?? throw new UnsupportedCurrency($currencyCode);
+
+        return CurrencyRepository::getAvailableCurrencies()->get($currencyCode)
+               ?? throw new UnsupportedCurrency($currencyCode);
     }
 
     public static function fromMoneyCurrency(MoneyCurrency $currency): self

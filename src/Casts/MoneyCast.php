@@ -4,9 +4,9 @@ namespace Pelmered\FilamentMoneyField\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Money\Currency;
+use Money\Currency as MoneyCurrency;
 use Money\Money;
-use Spatie\LaravelData\Casts\Cast;
+use Pelmered\FilamentMoneyField\Currencies\Currency;
 
 /**
  * @implements CastsAttributes<Money, Money>
@@ -25,7 +25,13 @@ class MoneyCast implements CastsAttributes
             return null;
         }
 
-        return new Money($value, $this->getCurrencyFromModel($model, $key));
+        $currency = $this->getCurrencyFromModel($model, $key);
+
+        $value = (int) (config('filament-money-field.store.format') === 'decimal'
+            ? $value * 10**$this->getDecimals($currency->getCode())
+            : $value);
+
+        return new Money($value, $currency);
     }
 
     /**
@@ -34,14 +40,15 @@ class MoneyCast implements CastsAttributes
      * @param  Money|string|null  $value
      * @param  array<string, mixed>  $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes)
+    public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
-        return [
-            $key => $this->getAmount($model, $key, $value),
-            $key.'_currency' => $this->getCurrency($model, $key, $value),
-        ];
+        $amount = $this->getAmount($model, $key, $value);
+        $currency = $this->getCurrency($model, $key, $value);
 
-        return $value;
+        return [
+            $key => config('filament-money-field.store.format') === 'decimal' ? $amount/10**$this->getDecimals($currency) : $amount,
+            $key.'_currency' => $currency,
+        ];
     }
 
     protected function getAmount($model, $key, $value): ?int
@@ -62,10 +69,20 @@ class MoneyCast implements CastsAttributes
         };
     }
 
-    public function getCurrencyFromModel(Model $model, string $name): Currency
+    public function getCurrencyFromModel(Model $model, string $name): MoneyCurrency
     {
         $currency = $model->{$name.'_currency'} ?? (string) (config('filament-money-field.default_currency'));
 
-        return $currency instanceof Currency ? $currency : new Currency($currency);
+        return $currency instanceof MoneyCurrency ? $currency : new MoneyCurrency($currency);
+    }
+
+    public function getDecimals(string $currencyCode): int
+    {
+        $currency = Currency::fromCode($currencyCode);
+
+        if ($currency->minorUnit) {
+            return $currency->minorUnit;
+        }
+        return 2;
     }
 }
