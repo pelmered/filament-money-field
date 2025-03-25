@@ -1,12 +1,15 @@
 <?php
 namespace Pelmered\FilamentMoneyField\Currencies;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency as MoneyCurrency;
+use Pelmered\FilamentMoneyField\Currencies\Providers\CryptoCurrenciesProvider;
+use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use PhpStaticAnalysis\Attributes\Param;
 use PhpStaticAnalysis\Attributes\Type;
@@ -44,53 +47,35 @@ class CurrencyRepository
         };
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     private static function loadAvailableCurrencies(): CurrencyCollection
     {
-        $currencyProvider    = Config::get('filament-money-field.currency_provider', ISOCurrencies::class);
+        $currencyProvider    = Config::get('filament-money-field.currency_provider', ISOCurrenciesProvider::class);
         $availableCurrencies = Config::get('filament-money-field.available_currencies', []);
 
-        $isoCurrencies = static::loadISOCurrencies();
+        $currencies = app()->make($currencyProvider)->loadCurrencies();
 
         if (! $availableCurrencies) {
-            $availableCurrencies = array_keys($isoCurrencies);
+            $availableCurrencies = array_keys($currencies);
         }
 
         if (Config::get('filament-money-field.load_crypto_currencies', false)) {
-            $availableCurrencies = array_merge(array_keys($isoCurrencies), static::loadCryptoCurrencies());
+            $availableCurrencies = array_merge(
+                array_keys($currencies),
+                app()->make(CryptoCurrenciesProvider::class)->loadCurrencies()
+            );
         }
 
-        return new CurrencyCollection(Arr::mapWithKeys($availableCurrencies,function ($currencyCode) use ($isoCurrencies) {
+        return new CurrencyCollection(Arr::mapWithKeys($availableCurrencies,function ($currencyCode) use ($currencies) {
             return [
                 $currencyCode => new Currency(
                     strtoupper($currencyCode),
-                    $isoCurrencies[$currencyCode]['currency'],
-                    $isoCurrencies[$currencyCode]['minorUnit'],
+                    $currencies[$currencyCode]['currency'],
+                    $currencies[$currencyCode]['minorUnit'],
                 )
             ];
         }));
-    }
-
-    #[Type('array<string, array{alphabeticCode: string, currency: string, minorUnit: int, numericCode: int}>')]
-    private static function loadISOCurrencies(): array
-    {
-        $file = base_path('vendor/moneyphp/money/resources/currency.php');
-
-        if (is_file($file)) {
-            return require $file;
-        }
-
-        throw new RuntimeException('Failed to load ISO currencies.');
-    }
-
-    #[Type('array<string, array{alphabeticCode: string, currency: string, minorUnit: int, numericCode: int}>')]
-    private static function loadCryptoCurrencies(): array
-    {
-        $file = base_path('vendor/moneyphp/money/resources/binance.php');
-
-        if (is_file($file)) {
-            return require $file;
-        }
-
-        throw new RuntimeException('Failed to load crypto currencies.');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Money\Currencies\ISOCurrencies;
+use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
 
 return [
 
@@ -90,7 +90,7 @@ return [
     | It must implement the Money\Currencies interface
     |
     */
-    'currency_provider' => ISOCurrencies::class,
+    'currency_provider' => ISOCurrenciesProvider::class,
 
     /*
     |---------------------------------------------------------------------------

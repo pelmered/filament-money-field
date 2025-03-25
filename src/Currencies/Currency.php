@@ -7,8 +7,6 @@ use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 
 class Currency
 {
-    public CurrencyFormattingRules $formattingRules;
-
     public function __construct(
         public string $code,
         public string $name,
