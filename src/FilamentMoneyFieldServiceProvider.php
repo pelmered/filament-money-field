@@ -38,38 +38,40 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
         Livewire::propertySynthesizer(MoneySynthesizer::class);
 
-        Blueprint::macro('money', function (string $name, ?string $indexName = null) {
+        $currencySuffix = config('filament-money-field.currency_column_suffix');
+
+        Blueprint::macro('money', function (string $name, ?string $indexName = null) use($currencySuffix) {
             $column = $this->unsignedBigInteger($name);
-            $this->string("{$name}_currency");
+            $this->string($name.$currencySuffix);
 
-            $this->index(["{$name}_currency", $name], $indexName);
+            $this->index([$name.$currencySuffix, $name], $indexName);
 
             return $column;
         });
 
-        Blueprint::macro('nullableMoney', function (string $name, ?string $indexName = null) {
+        Blueprint::macro('nullableMoney', function (string $name, ?string $indexName = null) use($currencySuffix) {
             $column = $this->unsignedBigInteger($name)->nullable();
-            $this->string("{$name}_currency")->nullable();
+            $this->string($name.$currencySuffix)->nullable();
 
-            $this->index(["{$name}_currency", $name], $indexName);
+            $this->index([$name.$currencySuffix, $name], $indexName);
 
             return $column;
         });
 
-        Blueprint::macro('smallMoney', function (string $name, ?string $indexName = null) {
+        Blueprint::macro('smallMoney', function (string $name, ?string $indexName = null) use($currencySuffix) {
             $column = $this->unsignedSmallInteger($name)->nullable();
-            $this->string("{$name}_currency")->nullable();
+            $this->string($name.$currencySuffix)->nullable();
 
-            $this->index(["{$name}_currency", $name], $indexName);
+            $this->index([$name.$currencySuffix, $name], $indexName);
 
             return $column;
         });
 
-        Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) {
+        Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) use($currencySuffix) {
             $column = $this->bigInteger($name)->nullable();
-            $this->string("{$name}_currency")->nullable();
+            $this->string($name.$currencySuffix)->nullable();
 
-            $this->index(["{$name}_currency", $name], $indexName);
+            $this->index([$name.$currencySuffix, $name], $indexName);
 
             return $column;
         });
@@ -78,8 +80,6 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
     public function register(): void
     {
         $this->app->bind(CurrencyCollection::class, function () {
-
-
             return new CurrencyCollection();
         });
 

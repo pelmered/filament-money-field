@@ -136,7 +136,7 @@ class MoneyInput extends TextInput
 
     protected function prepare(): void
     {
-        $this->currencyColumn = $this->name.'_currency';
+        $this->currencyColumn = $this->name.config('currency_column_suffix');
         //$symbolPlacement   = $this->getSymbolPlacement();
         $getCurrencySymbol = function (MoneyInput $component) {
 

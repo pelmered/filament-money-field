@@ -4,6 +4,14 @@ use Money\Currencies\ISOCurrencies;
 
 return [
 
+    /*
+    |---------------------------------------------------------------------------
+    | Store format
+    |---------------------------------------------------------------------------
+    |
+    | The format to store the value in the database.
+    |
+    */
     'store' => [
         'format' => 'int' // Allowed values: 'int' or 'decimal'
 
@@ -99,6 +107,18 @@ return [
         'EUR',
         'SEK',
     ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Currency column suffix
+    |---------------------------------------------------------------------------
+    |
+    | Provide a suffix for the currency column.
+    | For example: if the money amount is stored as 'amount', the currency column
+    | would be 'amount_currency' with the default suffix.
+    |
+    */
+    'currency_column_suffix' => env('MONEY_CURRENCY_COLUMN_SUFFIX', '_currency'),
 
     /*
     |---------------------------------------------------------------------------
