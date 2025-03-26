@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\Casts;
+namespace Pelmered\FilamentMoneyField\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Money\Currency;
@@ -16,7 +16,7 @@ class MoneySynthesizer extends Synth
     }
 
     /**
-     * @return array<int, array<string, Currency|string>>
+     * @return Currency
      */
     public function dehydrate(Money $target): array
     {

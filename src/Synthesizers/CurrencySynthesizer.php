@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelmered\FilamentMoneyField\Casts;
+namespace Pelmered\FilamentMoneyField\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Pelmered\FilamentMoneyField\Currencies\Currency;

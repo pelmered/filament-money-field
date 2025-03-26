@@ -35,6 +35,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             clear: ClearCacheCommand::class,
         );
 
+        Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
 
         $currencySuffix = config('filament-money-field.currency_column_suffix');
