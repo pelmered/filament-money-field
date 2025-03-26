@@ -20,7 +20,7 @@ class TestModel extends Model
 
 class CurrencyCastTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         config(['filament-money-field.currency_cast_to' => Currency::class]);
@@ -57,7 +57,7 @@ class CurrencyCastTest extends TestCase
     #[Test]
     public function it_sets_currency_from_currency_instance()
     {
-        $model = new TestModel();
+        $model           = new TestModel;
         $model->currency = Currency::fromCode('SEK');
 
         $this->assertEquals('SEK', $model->getAttributes()['currency']);
@@ -66,7 +66,7 @@ class CurrencyCastTest extends TestCase
     #[Test]
     public function it_sets_currency_from_money_currency_instance()
     {
-        $model = new TestModel();
+        $model           = new TestModel;
         $model->currency = new MoneyCurrency('GBP');
 
         $this->assertEquals('GBP', $model->getAttributes()['currency']);

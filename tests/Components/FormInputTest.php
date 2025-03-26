@@ -10,7 +10,6 @@ use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
-use Pelmered\FilamentMoneyField\Tests\Support\Models\Post;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 uses(TestCase::class);
@@ -19,7 +18,7 @@ it('accepts form input money in numeric format', function () {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
-        //->fill(['price' => 'test']);
+        // ->fill(['price' => 'test']);
         ->fill(['price' => new Money(12345600, new Currency('USD'))]);
 
     expect($component->getState()['price']->getAmount())->toEqual('12345600');
@@ -236,7 +235,7 @@ it('allows setting a currency column', function () {
         ->statePath('data')
         ->components([
             MoneyInput::make('price')
-                      ->currencyColumn('price_currency')->in
+                ->currencyColumn('price_currency')->in,
         ])
         ->fill(['price' => new Money(123456, new Currency('EUR'))]);
 

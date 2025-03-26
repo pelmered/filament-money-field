@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Closure;
@@ -15,14 +16,12 @@ use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
-use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 
 class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
 
-    //protected ?string $symbolPlacement = null;
+    // protected ?string $symbolPlacement = null;
 
     /**
      * @var scalar | Closure | null
@@ -40,38 +39,38 @@ class MoneyInput extends TextInput
 
         $this->prepare();
 
-        //$this->container = new ComponentContainer();
-        //$this->currencyColumn = 'currency';
+        // $this->container = new ComponentContainer();
+        // $this->currencyColumn = 'currency';
 
         $currencies = CurrencyRepository::getAvailableCurrencies();
 
         if ($this->shouldHaveCurrencySwitcher()) {
             $this->suffixAction(
                 Action::make('changeCurrency')
-                      ->icon('heroicon-m-arrow-path')
-                      ->tooltip('Change currency')
-                      ->form([
-                          Select::make('currency')
-                                ->label('Currency')
-                                ->options($currencies->toSelectArray())
-                                ->required()
-                                ->live(),
-                          Checkbox::make('convert')
-                                ->label('Convert amount to selected currency')
-                                ->helperText(function(Get $get) {
+                    ->icon('heroicon-m-arrow-path')
+                    ->tooltip('Change currency')
+                    ->form([
+                        Select::make('currency')
+                            ->label('Currency')
+                            ->options($currencies->toSelectArray())
+                            ->required()
+                            ->live(),
+                        Checkbox::make('convert')
+                            ->label('Convert amount to selected currency')
+                            ->helperText(function (Get $get) {
 
-                                    if (! $get('convert')) {
-                                        return null;
-                                    }
+                                if (! $get('convert')) {
+                                    return null;
+                                }
 
-                                    $currentCurrency = $this->getCurrency();
-                                    $newCurrency = $get('currency');
+                                $currentCurrency = $this->getCurrency();
+                                $newCurrency     = $get('currency');
 
-                                    $rate = 1.2234;
+                                $rate = 1.2234;
 
-                                    return 'Conversion rate from ' . $currentCurrency->getCode() . ' to ' . $newCurrency.':'.$rate;
+                                return 'Conversion rate from '.$currentCurrency->getCode().' to '.$newCurrency.':'.$rate;
 
-                                    /*
+                                /*
                                     $exchange = new SwapExchange($swap);
 
                                     $converter = new Converter(new ISOCurrencies(), $exchange);
@@ -79,20 +78,20 @@ class MoneyInput extends TextInput
                                     $usd125 = $converter->convert($eur100, new Currency('USD'));
                                     [$usd125, $pair] = $converter->convertAndReturnWithCurrencyPair($eur100, new Currency('USD'));
                                     */
-                                })
-                                ->default(false),
-                      ])
-                      ->action(function (array $data, MoneyInput $component, Model $record, Form $form) {
-                          $money = $record->{$component->name};
-                          $currency = $data['currency'];
+                            })
+                            ->default(false),
+                    ])
+                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form) {
+                        $money    = $record->{$component->name};
+                        $currency = $data['currency'];
 
-                          $record->{$component->name} = new Money(
-                              $money->getAmount(),
-                              Currency::fromCode($currency)->toMoneyCurrency()
-                          );
+                        $record->{$component->name} = new Money(
+                            $money->getAmount(),
+                            Currency::fromCode($currency)->toMoneyCurrency()
+                        );
 
-                          $record->save();
-                      })
+                        $record->save();
+                    })
             );
         }
 
@@ -100,14 +99,11 @@ class MoneyInput extends TextInput
 
             $this->prepare();
 
-
-            if (is_null($state) || !$state instanceof Money) {
+            if (is_null($state) || ! $state instanceof Money) {
                 return '';
             }
 
-            //dump($state);
-
-            $amount = $state->getAmount();
+            $amount   = $state->getAmount();
             $currency = Currency::fromMoney($state) ?? $component->getCurrency();
             $locale   = $component->getLocale();
 
@@ -122,7 +118,7 @@ class MoneyInput extends TextInput
             */
 
             $currency = $component->getCurrency();
-            $amount = MoneyFormatter::parseDecimal((string)$state, $currency, $component->getLocale(), $this->getDecimals());
+            $amount   = MoneyFormatter::parseDecimal((string) $state, $currency, $component->getLocale(), $this->getDecimals());
 
             return new Money((int) $amount, $currency->toMoneyCurrency());
         });
@@ -133,11 +129,10 @@ class MoneyInput extends TextInput
         return true;
     }
 
-
     protected function prepare(): void
     {
         $this->currencyColumn = $this->name.config('currency_column_suffix');
-        //$symbolPlacement   = $this->getSymbolPlacement();
+        // $symbolPlacement   = $this->getSymbolPlacement();
         $getCurrencySymbol = function (MoneyInput $component) {
 
             /*
@@ -151,15 +146,15 @@ class MoneyInput extends TextInput
                 )->currencySymbol
             );
             */
-            //ray($component->getLocale(), $component->getCurrency());
-            //ray(MoneyFormatter::getFormattingRules($component->getLocale(), $component->getCurrency()));
+            // ray($component->getLocale(), $component->getCurrency());
+            // ray(MoneyFormatter::getFormattingRules($component->getLocale(), $component->getCurrency()));
             return MoneyFormatter::getFormattingRules(
                 $component->getLocale(),
                 $component->getCurrency()
             )->currencySymbol;
         };
 
-        //ray($symbolPlacement, $getCurrencySymbol($this));
+        // ray($symbolPlacement, $getCurrencySymbol($this));
 
         /*
         match ($symbolPlacement) {
@@ -190,7 +185,6 @@ class MoneyInput extends TextInput
             });
         }
     }
-
 
     /*
     public function getSymbolPlacement(): string

@@ -2,10 +2,9 @@
 
 namespace Pelmered\FilamentMoneyField;
 
-use Livewire\Livewire;
-use Money\Currencies\ISOCurrencies;
-use Pelmered\FilamentMoneyField\Casts\MoneySynthesizer;
 use Illuminate\Database\Schema\Blueprint;
+use Livewire\Livewire;
+use Pelmered\FilamentMoneyField\Casts\MoneySynthesizer;
 use Pelmered\FilamentMoneyField\Commands\CacheCommand;
 use Pelmered\FilamentMoneyField\Commands\ClearCacheCommand;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyCollection;
@@ -40,7 +39,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
         $currencySuffix = config('filament-money-field.currency_column_suffix');
 
-        Blueprint::macro('money', function (string $name, ?string $indexName = null) use($currencySuffix) {
+        Blueprint::macro('money', function (string $name, ?string $indexName = null) use ($currencySuffix) {
             $column = $this->unsignedBigInteger($name);
             $this->string($name.$currencySuffix);
 
@@ -49,7 +48,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             return $column;
         });
 
-        Blueprint::macro('nullableMoney', function (string $name, ?string $indexName = null) use($currencySuffix) {
+        Blueprint::macro('nullableMoney', function (string $name, ?string $indexName = null) use ($currencySuffix) {
             $column = $this->unsignedBigInteger($name)->nullable();
             $this->string($name.$currencySuffix)->nullable();
 
@@ -58,7 +57,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             return $column;
         });
 
-        Blueprint::macro('smallMoney', function (string $name, ?string $indexName = null) use($currencySuffix) {
+        Blueprint::macro('smallMoney', function (string $name, ?string $indexName = null) use ($currencySuffix) {
             $column = $this->unsignedSmallInteger($name)->nullable();
             $this->string($name.$currencySuffix)->nullable();
 
@@ -67,7 +66,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             return $column;
         });
 
-        Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) use($currencySuffix) {
+        Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) use ($currencySuffix) {
             $column = $this->bigInteger($name)->nullable();
             $this->string($name.$currencySuffix)->nullable();
 
@@ -80,7 +79,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
     public function register(): void
     {
         $this->app->bind(CurrencyCollection::class, function () {
-            return new CurrencyCollection();
+            return new CurrencyCollection;
         });
 
     }

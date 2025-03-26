@@ -10,6 +10,5 @@ class UnsupportedCurrency extends RuntimeException
     {
         parent::__construct('Currency not supported: '.$currencyCode.'. You might need to configure this currency in your `filament-money-field.php` config file.');
 
-
     }
 }

@@ -1,17 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
-use Money\Currency as MoneyCurrency;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
-use Pelmered\FilamentMoneyField\Currencies\CurrencyCollection;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
-
-
 
 it('loads configured currencies', function () {
     config(['filament-money-field.currencies' => ['USD', 'EUR', 'SEK']]);
 
-    $collection = (new CurrencyRepository())->getAvailableCurrencies();
+    $collection = (new CurrencyRepository)->getAvailableCurrencies();
 
     expect($collection->count())->toBe(3);
     expect($collection->get('USD'))->toBeInstanceOf(Currency::class);
@@ -26,7 +22,7 @@ it('loads configured currencies', function () {
 it('can create a subset of configured currencies', function () {
     config(['filament-money-field.currencies' => ['USD', 'EUR', 'SEK']]);
 
-    $collection = (new CurrencyRepository())->getAvailableCurrencies();
+    $collection = (new CurrencyRepository)->getAvailableCurrencies();
 
     expect($collection)->toHaveCount(3);
     expect($collection->get('USD'))->toBeInstanceOf(Currency::class);
@@ -36,7 +32,7 @@ it('can create a subset of configured currencies', function () {
 it('loads all configured currencies', function () {
     config(['filament-money-field.currencies' => ['USD', 'EUR', 'SEK']]);
 
-    $collection = (new CurrencyRepository())->getAvailableCurrencies();
+    $collection = (new CurrencyRepository)->getAvailableCurrencies();
 
     expect($collection->count())->toBe(3);
     expect($collection->get('USD'))->toBeInstanceOf(Currency::class);
@@ -54,7 +50,7 @@ it('can load ISO currencies', function () {
     Config::set('filament-money-field.load_iso_currencies', true);
     Config::set('filament-money-field.currency_provider', \Money\Currencies\ISOCurrencies::class);
 
-    $collection = (new CurrencyRepository())->getAvailableCurrencies();
+    $collection = (new CurrencyRepository)->getAvailableCurrencies();
 
     expect($collection->count())->toBeGreaterThan(100)
         ->and($collection->get('USD'))->toBeInstanceOf(Currency::class)
@@ -73,7 +69,7 @@ it('can create a subset of ISO currencies', function () {
     Config::set('filament-money-field.available_currencies', $currencyList);
     Config::set('filament-money-field.currency_provider', \Money\Currencies\ISOCurrencies::class);
 
-    $collection = (new CurrencyRepository())->getAvailableCurrencies();
+    $collection = (new CurrencyRepository)->getAvailableCurrencies();
 
     expect($collection)->toHaveCount(3)
         ->and($collection->get('USD'))->toBeInstanceOf(Currency::class)

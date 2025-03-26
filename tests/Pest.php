@@ -21,7 +21,6 @@ pest()->project()->github('pelmered/filament-money-field');
 
 uses(TestCase::class)->in('Unit');
 
-
 /*
 |--------------------------------------------------------------------------
 | Expectations

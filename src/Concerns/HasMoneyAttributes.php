@@ -4,7 +4,6 @@ namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
 use Filament\Infolists\Infolist;
-use Money\Currencies\ISOCurrencies;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
@@ -12,6 +11,7 @@ use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 trait HasMoneyAttributes
 {
     protected Currency $currency;
+
     protected string $currencyColumn;
 
     protected string $locale;
@@ -24,13 +24,11 @@ trait HasMoneyAttributes
 
     public function getCurrency(): Currency
     {
-        if(isset($this->currency))
-        {
+        if (isset($this->currency)) {
             return $this->currency;
         }
 
-        if ($this->getRecord() && isset($this->currencyColumn))
-        {
+        if ($this->getRecord() && isset($this->currencyColumn)) {
             return Currency::fromCode($this->getRecord()->{$this->currencyColumn});
         }
 
@@ -52,11 +50,10 @@ trait HasMoneyAttributes
     public function currency(string|Closure $currencyCode): static
     {
         /** @var non-empty-string $currencyCode */
-        $currencyCode   = (string) $this->evaluate($currencyCode);
-        $currency = Currency::fromCode($currencyCode);
+        $currencyCode = (string) $this->evaluate($currencyCode);
+        $currency     = Currency::fromCode($currencyCode);
 
-        if (!CurrencyRepository::isValid($currency))
-        {
+        if (! CurrencyRepository::isValid($currency)) {
             throw new UnsupportedCurrency($currency->getCode());
         }
 
@@ -84,7 +81,7 @@ trait HasMoneyAttributes
         return $this;
     }
 
-    public function currencyColumn(string | Closure $column): static
+    public function currencyColumn(string|Closure $column): static
     {
         $this->currencyColumn = $this->evaluate($column);
 

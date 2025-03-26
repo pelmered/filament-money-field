@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Currencies;
 
 use Illuminate\Support\Collection;
@@ -11,9 +12,8 @@ class CurrencyCollection extends Collection
     {
         return $this->mapWithKeys(function (Currency $currency) {
             return [
-                $currency->code => $currency->name
+                $currency->code => $currency->name,
             ];
         })->toArray();
     }
-
 }

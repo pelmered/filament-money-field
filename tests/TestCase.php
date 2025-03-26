@@ -7,13 +7,14 @@ use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Support\SupportServiceProvider;
+use Illuminate\Contracts\Config\Repository;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
-use Illuminate\Contracts\Config\Repository;
+
 use function Orchestra\Testbench\artisan;
 
-//#[WithMigration('laravel', 'cache', 'queue')]
+// #[WithMigration('laravel', 'cache', 'queue')]
 
 #[WithMigration]
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -33,6 +34,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             FilamentMoneyFieldServiceProvider::class,
         ];
     }
+
     /**
      * Define environment setup.
      *

@@ -28,7 +28,7 @@ class MoneyCast implements CastsAttributes
         $currency = $this->getCurrencyFromModel($model, $key);
 
         $value = (int) (config('filament-money-field.store.format') === 'decimal'
-            ? $value * 10**$this->getDecimals($currency->getCode())
+            ? $value * 10 ** $this->getDecimals($currency->getCode())
             : $value);
 
         return new Money($value, $currency);
@@ -42,11 +42,13 @@ class MoneyCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
-        $amount = $this->getAmount($model, $key, $value);
+        $amount   = $this->getAmount($model, $key, $value);
         $currency = $this->getCurrency($model, $key, $value);
 
         return [
-            $key => config('filament-money-field.store.format') === 'decimal' ? $amount/10**$this->getDecimals($currency) : $amount,
+            $key => config('filament-money-field.store.format') === 'decimal'
+                ? $amount / 10 ** $this->getDecimals($currency)
+                : $amount,
             $key.config('currency_column_suffix') => $currency,
         ];
     }
@@ -55,8 +57,8 @@ class MoneyCast implements CastsAttributes
     {
         return match (true) {
             $value instanceof Money => $value->getAmount(),
-            is_array($value) => $value['amount'] ?? $value[0],
-            default => $value,
+            is_array($value)  => $value['amount'] ?? $value[0],
+            default                 => $value,
         };
     }
 
@@ -64,8 +66,8 @@ class MoneyCast implements CastsAttributes
     {
         return match (true) {
             $value instanceof Money => $value->getCurrency(),
-            is_array($value) => $value['currency'] ?? $value[1],
-            default => $this->getCurrencyFromModel($model, $key)->getCode(),
+            is_array($value)        => $value['currency'] ?? $value[1],
+            default                 => $this->getCurrencyFromModel($model, $key)->getCode(),
         };
     }
 
@@ -83,6 +85,7 @@ class MoneyCast implements CastsAttributes
         if ($currency->minorUnit) {
             return $currency->minorUnit;
         }
+
         return 2;
     }
 }

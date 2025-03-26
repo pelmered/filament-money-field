@@ -56,7 +56,7 @@ class MoneyFormatter
             return '';
         }
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
-        //$moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
+        // $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
 
         return (string) $numberFormatter->format((float) $value);  // Outputs something like "1.234,56"
     }
@@ -95,11 +95,11 @@ class MoneyFormatter
         $formattedNumber = static::numberFormat($abbreviatedNumber, $currency, $locale, decimals: $decimals);
 
         if (! $showCurrencySymbol) {
-            return $formattedNumber . $suffix ;
+            return $formattedNumber.$suffix;
         }
 
         // Format the number
-        $formattedCurrency = static::format($abbreviatedNumber*100, $currency, $locale, decimals: $decimals);
+        $formattedCurrency = static::format($abbreviatedNumber * 100, $currency, $locale, decimals: $decimals);
 
         // Find the formatted number
         if (preg_match('/(?<number>[0-9\.,]+)/', $formattedCurrency, $matches2) !== 1) {
@@ -107,7 +107,7 @@ class MoneyFormatter
         }
 
         /** @var array{number: string} $matches2 */
-        return str_replace($matches2['number'], $formattedNumber . $suffix, $formattedCurrency);
+        return str_replace($matches2['number'], $formattedNumber.$suffix, $formattedCurrency);
     }
 
     public static function parseDecimal(

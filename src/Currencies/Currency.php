@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Currencies;
 
 use Money\Currency as MoneyCurrency;
@@ -14,8 +15,6 @@ class Currency
 
     ) {
         $this->code = strtoupper($code);
-
-        //$this->formattingRules = CurrencyFormattingRules::fromCode($code, $minorUnit);
     }
 
     public static function fromCode(string $currencyCode): self

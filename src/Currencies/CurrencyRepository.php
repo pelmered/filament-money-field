@@ -1,20 +1,13 @@
 <?php
+
 namespace Pelmered\FilamentMoneyField\Currencies;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Money\Currencies\ISOCurrencies;
-use Money\Currency as MoneyCurrency;
 use Pelmered\FilamentMoneyField\Currencies\Providers\CryptoCurrenciesProvider;
 use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
-use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
-use PhpStaticAnalysis\Attributes\Param;
-use PhpStaticAnalysis\Attributes\Type;
-use RuntimeException;
-
 
 class CurrencyRepository
 {
@@ -39,7 +32,7 @@ class CurrencyRepository
             return static::loadAvailableCurrencies();
         };
 
-        return match($config['type']) {
+        return match ($config['type']) {
             'remember' => Cache::remember('filament_money_currencies', $config['ttl'], $callback),
             'flexible' => Cache::flexible('filament_money_currencies', $config['ttl'], $callback),
             'forever'  => Cache::forever('filament_money_currencies', $callback),
@@ -68,13 +61,13 @@ class CurrencyRepository
             );
         }
 
-        return new CurrencyCollection(Arr::mapWithKeys($availableCurrencies,function ($currencyCode) use ($currencies) {
+        return new CurrencyCollection(Arr::mapWithKeys($availableCurrencies, function ($currencyCode) use ($currencies) {
             return [
                 $currencyCode => new Currency(
                     strtoupper($currencyCode),
                     $currencies[$currencyCode]['currency'],
                     $currencies[$currencyCode]['minorUnit'],
-                )
+                ),
             ];
         }));
     }
