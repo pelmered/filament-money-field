@@ -9,80 +9,51 @@ use Pelmered\FilamentMoneyField\Casts\MoneyCast;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Tests\Support\Models\Post;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
-/*
-class TestModel extends Model
-{
-    protected $casts = [
-        //'price'          => MoneyCast::class,
-        'price2'          => MoneyCast::class,
-        'price_currency'  => CurrencyCast::class,
-        'amount'          => MoneyCast::class,
-        'amount_currency' => CurrencyCast::class,
-    ];
+beforeEach(function() {
+    config(['filament-money-field.currency_cast_to' => Currency::class]);
+});
 
-    protected $fillable = ['price', 'price_currency'];
-}
-*/
-class CurrencyCastTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
-        config(['filament-money-field.currency_cast_to' => Currency::class]);
-    }
+it('casts to currency object', function() {
+    $post = Post::factory()->make([
+        'price'          => 23523,
+        'price_currency' => 'USD'
+    ]);
 
-    #[Test]
-    public function it_casts_to_currency_object()
-    {
-        $post = Post::factory()->make([
-            'price'          => 23523,
-            'price_currency' => 'USD'
-        ]);
+    expect($post->price_currency)
+        ->toBeInstanceOf(Currency::class)
+        ->and($post->price_currency->getCode())->toBe('USD');
+});
 
-        //$model = TestModel::(['amount' => 23523, 'price_currency' => 'SEK']);
+it('casts to money currency when configured', function() {
+    config(['filament-money-field.currency_cast_to' => MoneyCurrency::class]);
 
-        //$postdd($model, $model->getAttributes());
+    $model = Post::factory()->make(['price_currency' => 'EUR']);
 
-        $this->assertInstanceOf(Currency::class, $post->price_currency);
-        $this->assertEquals('USD', $post->price_currency->getCode());
-    }
+    expect($model->price_currency)
+        ->toBeInstanceOf(MoneyCurrency::class)
+        ->and($model->price_currency->getCode())->toBe('EUR');
+});
 
-    #[Test]
-    public function it_casts_to_money_currency_when_configured()
-    {
-        config(['filament-money-field.currency_cast_to' => MoneyCurrency::class]);
+it('handles null values', function() {
+    $model = Post::factory()->make([
+        'price' => null,
+        'price_currency' => null,
+    ]);
 
-        $model = Post::factory()->make(['price_currency' => 'EUR']);
+    expect($model->price_currency)->toBeNull();
+});
 
-        $this->assertInstanceOf(MoneyCurrency::class, $model->price_currency);
-        $this->assertEquals('EUR', $model->price_currency->getCode());
-    }
+it('sets currency from currency instance', function() {
+    $model = Post::factory()->make();
+    $model->price_currency = Currency::fromCode('SEK');
 
-    #[Test]
-    public function it_handles_null_values()
-    {
-        $model = Post::factory()->make(['currency' => null]);
+    expect($model->getAttributes()['price_currency'])->toBe('SEK');
+});
 
-        $this->assertNull($model->currency);
-    }
+it('sets currency from money currency instance', function() {
+    $model = Post::factory()->make();
+    $model->price_currency = new MoneyCurrency('GBP');
 
-    #[Test]
-    public function it_sets_currency_from_currency_instance()
-    {
-        $model           = Post::factory()->make();
-        $model->currency = Currency::fromCode('SEK');
-
-        $this->assertEquals('SEK', $model->getAttributes()['currency']);
-    }
-
-    #[Test]
-    public function it_sets_currency_from_money_currency_instance()
-    {
-        $model           = Post::factory()->make();
-        $model->currency = new MoneyCurrency('GBP');
-
-        $this->assertEquals('GBP', $model->getAttributes()['currency']);
-    }
-}
+    expect($model->getAttributes()['price_currency'])->toBe('GBP');
+});

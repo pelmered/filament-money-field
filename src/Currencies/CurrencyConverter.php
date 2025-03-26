@@ -34,7 +34,7 @@ class CurrencyConverter
 
     public function convert(int $amount)
     {
-
+        /*
         $exchange = $this->getSwapExcangeClient();
 
         $converter = new Converter(new ISOCurrencies, $exchange);
@@ -46,7 +46,7 @@ class CurrencyConverter
         dd($usd125);
 
         [$usd125, $pair] = $converter->convertAndReturnWithCurrencyPair($eur100, new Currency('USD'));
-
+        */
     }
 
     private static function getCurrency(Currency|string $currency): Currency

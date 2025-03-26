@@ -1,6 +1,6 @@
 <?php
 
-return;
+use Illuminate\Support\Facades\Validator;
 use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
