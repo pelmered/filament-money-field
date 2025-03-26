@@ -15,13 +15,16 @@ use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
+use Pelmered\FilamentMoneyField\Enum\CurrencySymbolPlacement;
+use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
+use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {
     use HasMoneyAttributes;
 
-    // protected ?string $symbolPlacement = null;
+    protected ?string $symbolPlacement = null;
 
     /**
      * @var scalar | Closure | null
@@ -132,7 +135,7 @@ class MoneyInput extends TextInput
     protected function prepare(): void
     {
         $this->currencyColumn = $this->name.config('currency_column_suffix', '_currency');
-        // $symbolPlacement   = $this->getSymbolPlacement();
+        $symbolPlacement   = $this->getSymbolPlacement();
         $getCurrencySymbol = function (MoneyInput $component) {
 
             /*
@@ -154,16 +157,11 @@ class MoneyInput extends TextInput
             )->currencySymbol;
         };
 
-        // ray($symbolPlacement, $getCurrencySymbol($this));
-
-        /*
         match ($symbolPlacement) {
             'before' => $this->prefix($getCurrencySymbol)->suffix(null),
             'after'  => $this->suffix($getCurrencySymbol)->prefix(null),
             default  => $this->suffix(null)->prefix(null),
         };
-        */
-        $this->prefix($getCurrencySymbol)->suffix(null);
 
         if (config('filament-money-field.use_input_mask')) {
             $this->mask(function (MoneyInput $component) {
@@ -186,10 +184,58 @@ class MoneyInput extends TextInput
         }
     }
 
-    /*
     public function getSymbolPlacement(): string
     {
         return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', 'before');
     }
-    */
+
+    public function symbolPlacement(CurrencySymbolPlacement|string $placement): static
+    {
+        if ($placement instanceof CurrencySymbolPlacement) {
+            $placement = $placement->value;
+        }
+
+        if (!in_array($placement, CurrencySymbolPlacement::values())) {
+            throw new \InvalidArgumentException(
+                'Currency symbol placement must be one of: '.implode(', ', CurrencySymbolPlacement::values())
+            );
+        }
+
+        $this->symbolPlacement = $placement;
+
+        return $this;
+    }
+
+    public function hideCurrencySymbol(): static
+    {
+        return $this->symbolPlacement(CurrencySymbolPlacement::Hidden->value);
+    }
+
+    public function minValue(mixed $value): static
+    {
+        $this->minValue = $value;
+
+        $this->rule(
+            static function (MoneyInput $component) {
+                return new MinValueRule((int) $component->getMinValue(), $component);
+            },
+            static fn (MoneyInput $component): bool => filled($component->getMinValue())
+        );
+
+        return $this;
+    }
+
+    public function maxValue(mixed $value): static
+    {
+        $this->maxValue = $value;
+
+        $this->rule(
+            static function (MoneyInput $component) {
+                return new MaxValueRule((int) $component->getMaxValue(), $component);
+            },
+            static fn (MoneyInput $component): bool => filled($component->getMaxValue())
+        );
+
+        return $this;
+    }
 }
