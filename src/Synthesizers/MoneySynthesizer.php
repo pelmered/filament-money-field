@@ -29,23 +29,7 @@ class MoneySynthesizer extends Synth
     /**
      * @param  ?array<string, string>  $value*
      */
-    public function hydrate(?array $value): ?string
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        return $value['amount'];
-
-        /*
-        return new Money(
-            $value['amount'],
-            new Currency($value['currency'])
-        );
-        */
-    }
-    /*
-    public function hydrate($value): ?Money
+    public function hydrate(?array $value): ?Money
     {
         if ($value === null) {
             return null;
@@ -56,19 +40,4 @@ class MoneySynthesizer extends Synth
             new Currency($value['currency'])
         );
     }
-    */
-
-    /*
-    public function get(&$target, $key)
-    {
-        //dd($target, $key);
-        return $target->{$key};
-    }
-
-    public function set(&$target, $key, $value)
-    {
-        //dd($target, $key, $value);
-        $target->{$key} = $value;
-    }
-    */
 }
