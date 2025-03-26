@@ -50,22 +50,27 @@ class CurrencyRepository
 
         $currencies = app()->make($currencyProvider)->loadCurrencies();
 
+
+        if (Config::get('filament-money-field.load_crypto_currencies', false)) {
+            $cryptoCurrencies = app()->make(CryptoCurrenciesProvider::class)->loadCurrencies();
+
+            $currencies = array_merge(
+                $currencies,
+                $cryptoCurrencies
+            );
+        }
+
         if (! $availableCurrencies) {
             $availableCurrencies = array_keys($currencies);
         }
 
-        if (Config::get('filament-money-field.load_crypto_currencies', false)) {
-            $availableCurrencies = array_merge(
-                array_keys($currencies),
-                app()->make(CryptoCurrenciesProvider::class)->loadCurrencies()
-            );
-        }
-
-        return new CurrencyCollection(Arr::mapWithKeys($availableCurrencies, function ($currencyCode) use ($currencies) {
+        return new CurrencyCollection(
+            Arr::mapWithKeys($availableCurrencies,
+                function ($currencyCode) use ($currencies) {
             return [
                 $currencyCode => new Currency(
                     strtoupper($currencyCode),
-                    $currencies[$currencyCode]['currency'],
+                    $currencies[$currencyCode]['currency'] ?? '',
                     $currencies[$currencyCode]['minorUnit'],
                 ),
             ];

@@ -49,7 +49,7 @@ class MoneyCast implements CastsAttributes
             $key => config('filament-money-field.store.format') === 'decimal'
                 ? $amount / 10 ** $this->getDecimals($currency)
                 : $amount,
-            $key.config('currency_column_suffix') => $currency,
+            $key.config('currency_column_suffix', '_currency') => $currency,
         ];
     }
 
@@ -73,7 +73,7 @@ class MoneyCast implements CastsAttributes
 
     public function getCurrencyFromModel(Model $model, string $name): MoneyCurrency
     {
-        $currency = $model->{$name.config('currency_column_suffix')} ?? (string) (config('filament-money-field.default_currency'));
+        $currency = $model->{$name.config('currency_column_suffix', '_currency')} ?? (string) (config('filament-money-field.default_currency'));
 
         return $currency instanceof MoneyCurrency ? $currency : new MoneyCurrency($currency);
     }

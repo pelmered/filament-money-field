@@ -29,7 +29,7 @@ class CurrencyCast implements CastsAttributes
             default                => Currency::fromCode($value)
         };
 
-        return $currency->getCode();
+        return $currency;
     }
 
     /**

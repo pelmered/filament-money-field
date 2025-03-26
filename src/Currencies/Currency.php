@@ -12,7 +12,6 @@ class Currency
         public string $code,
         public string $name,
         public ?int $minorUnit = null,
-
     ) {
         $this->code = strtoupper($code);
     }
