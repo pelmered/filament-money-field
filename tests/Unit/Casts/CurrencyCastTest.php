@@ -2,22 +2,18 @@
 
 namespace Pelmered\FilamentMoneyField\Tests\Unit\Casts;
 
-use Illuminate\Database\Eloquent\Model;
 use Money\Currency as MoneyCurrency;
-use Pelmered\FilamentMoneyField\Casts\CurrencyCast;
-use Pelmered\FilamentMoneyField\Casts\MoneyCast;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Tests\Support\Models\Post;
-use Pelmered\FilamentMoneyField\Tests\TestCase;
 
-beforeEach(function() {
+beforeEach(function () {
     config(['filament-money-field.currency_cast_to' => Currency::class]);
 });
 
-it('casts to currency object', function() {
+it('casts to currency object', function () {
     $post = Post::factory()->make([
         'price'          => 23523,
-        'price_currency' => 'USD'
+        'price_currency' => 'USD',
     ]);
 
     expect($post->price_currency)
@@ -25,7 +21,7 @@ it('casts to currency object', function() {
         ->and($post->price_currency->getCode())->toBe('USD');
 });
 
-it('casts to money currency when configured', function() {
+it('casts to money currency when configured', function () {
     config(['filament-money-field.currency_cast_to' => MoneyCurrency::class]);
 
     $model = Post::factory()->make(['price_currency' => 'EUR']);
@@ -35,24 +31,24 @@ it('casts to money currency when configured', function() {
         ->and($model->price_currency->getCode())->toBe('EUR');
 });
 
-it('handles null values', function() {
+it('handles null values', function () {
     $model = Post::factory()->make([
-        'price' => null,
+        'price'          => null,
         'price_currency' => null,
     ]);
 
     expect($model->price_currency)->toBeNull();
 });
 
-it('sets currency from currency instance', function() {
-    $model = Post::factory()->make();
+it('sets currency from currency instance', function () {
+    $model                 = Post::factory()->make();
     $model->price_currency = Currency::fromCode('SEK');
 
     expect($model->getAttributes()['price_currency'])->toBe('SEK');
 });
 
-it('sets currency from money currency instance', function() {
-    $model = Post::factory()->make();
+it('sets currency from money currency instance', function () {
+    $model                 = Post::factory()->make();
     $model->price_currency = new MoneyCurrency('GBP');
 
     expect($model->getAttributes()['price_currency'])->toBe('GBP');

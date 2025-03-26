@@ -20,7 +20,6 @@ readonly class MaxValueRule implements ValidationRule
         $currencyCode = $this->component->getCurrency();
         $locale       = $this->component->getLocale();
 
-
         try {
             $minorValue = (int) MoneyFormatter::parseDecimal(
                 $value,

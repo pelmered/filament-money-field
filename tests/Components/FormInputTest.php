@@ -3,12 +3,9 @@
 use Filament\Forms\ComponentContainer;
 use Illuminate\Validation\ValidationException;
 use Money\Currency;
-use Money\Exception\ParserException;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
-use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
@@ -89,7 +86,7 @@ it('sets currency symbol placement after with on field config', function () {
 
     $field = $component->getComponent('data.price');
 
-    //dd($field);
+    // dd($field);
     expect($field->getSuffixLabel())->toEqual('$');
     expect($field->getPrefixLabel())->toBeNull();
 });
@@ -137,20 +134,20 @@ it('makes input mask', function () {
         ->toContain('money($input');
 });
 
-it('validates min and max values',function () {
-        config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
+it('validates min and max values', function () {
+    config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
-        // Create a field with a value higher than min and lower than max (should pass)
-        $validResult = validationTester(
-            (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000)->currency('USD'),
-            500
-        );
+    // Create a field with a value higher than min and lower than max (should pass)
+    $validResult = validationTester(
+        (new MoneyInput('totalAmount'))->required()->minValue(100)->maxValue(10000)->currency('USD'),
+        500
+    );
 
-        // Check if the result is either true or an array with errors
-        expect($validResult === true || is_array($validResult))->toBeTrue();
-    });
+    // Check if the result is either true or an array with errors
+    expect($validResult === true || is_array($validResult))->toBeTrue();
+});
 
-it('validates min value correctly', function() {
+it('validates min value correctly', function () {
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
     // Test for value within range (should pass)
@@ -178,7 +175,7 @@ it('validates min value correctly', function() {
     expect($failed['errors'][0])->toContain('must be at least');
 });
 
-it('validates max value correctly', function() {
+it('validates max value correctly', function () {
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
     // Test for value within range (should pass)
@@ -240,7 +237,7 @@ it('resolves label closures', function () {
 
 it('sets decimals on field', function () {
     // Test with decimals(1)
-    $field = (new MoneyInput('price'))->decimals(1);
+    $field     = (new MoneyInput('price'))->decimals(1);
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])
@@ -250,7 +247,7 @@ it('sets decimals on field', function () {
     expect($component->getState()['price']->getAmount())->toEqual('2345345');
 
     // Test with decimals(3)
-    $field = (new MoneyInput('price'))->decimals(3);
+    $field     = (new MoneyInput('price'))->decimals(3);
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])
@@ -260,7 +257,7 @@ it('sets decimals on field', function () {
     expect($component->getState()['price']->getAmount())->toEqual('2345345');
 
     // Test with negative decimals(-2)
-    $field = (new MoneyInput('price'))->decimals(-2);
+    $field     = (new MoneyInput('price'))->decimals(-2);
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])

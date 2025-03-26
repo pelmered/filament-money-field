@@ -7,7 +7,6 @@ use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
@@ -16,33 +15,33 @@ uses(TestCase::class);
 it('validates min value', function ($data, $minValue, bool $expected, $errors = null) {
     // Extract field key
     $fieldKey = array_key_first($data);
-    
+
     // Convert Money object to string value if needed
     $inputValue = $data[$fieldKey];
     if ($inputValue instanceof Money) {
         $inputValue = (string) ($inputValue->getAmount() / 100); // Convert to decimal string
     }
     $validationData = [$fieldKey => $inputValue];
-    
+
     // Create the MoneyInput
     $moneyInput = new MoneyInput($fieldKey);
-    
+
     // Initialize the component in a container
     $container = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$moneyInput])
         ->fill([$moneyInput->getName() => $data[$fieldKey]]);
-    
+
     // Get the initialized component from the container
-    $initializedComponent = $container->getComponent('data.' . $moneyInput->getName());
-    
+    $initializedComponent = $container->getComponent('data.'.$moneyInput->getName());
+
     // Create ValidationRule
     $rule = new MinValueRule($minValue, $initializedComponent);
-    
+
     // Create custom validator that will call the validate method directly
     $validator = Validator::make(
         $validationData,
-        [$fieldKey => function($attribute, $value, $fail) use ($rule) {
+        [$fieldKey => function ($attribute, $value, $fail) use ($rule) {
             $rule->validate($attribute, $value, $fail);
         }]
     );
@@ -80,33 +79,33 @@ it('validates min value', function ($data, $minValue, bool $expected, $errors = 
 it('validates max value', function ($data, $maxValue, bool $expected, $errors = null) {
     // Extract field key
     $fieldKey = array_key_first($data);
-    
+
     // Convert Money object to string value if needed
     $inputValue = $data[$fieldKey];
     if ($inputValue instanceof Money) {
         $inputValue = (string) ($inputValue->getAmount() / 100); // Convert to decimal string
     }
     $validationData = [$fieldKey => $inputValue];
-    
+
     // Create the MoneyInput
     $moneyInput = new MoneyInput($fieldKey);
-    
+
     // Initialize the component in a container
     $container = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$moneyInput])
         ->fill([$moneyInput->getName() => $data[$fieldKey]]);
-    
+
     // Get the initialized component from the container
-    $initializedComponent = $container->getComponent('data.' . $moneyInput->getName());
-    
+    $initializedComponent = $container->getComponent('data.'.$moneyInput->getName());
+
     // Create ValidationRule
     $rule = new MaxValueRule($maxValue, $initializedComponent);
-    
+
     // Create custom validator that will call the validate method directly
     $validator = Validator::make(
         $validationData,
-        [$fieldKey => function($attribute, $value, $fail) use ($rule) {
+        [$fieldKey => function ($attribute, $value, $fail) use ($rule) {
             $rule->validate($attribute, $value, $fail);
         }]
     );

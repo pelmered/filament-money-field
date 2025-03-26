@@ -50,7 +50,6 @@ class CurrencyRepository
 
         $currencies = app()->make($currencyProvider)->loadCurrencies();
 
-
         if (Config::get('filament-money-field.load_crypto_currencies', false)) {
             $cryptoCurrencies = app()->make(CryptoCurrenciesProvider::class)->loadCurrencies();
 
@@ -67,13 +66,13 @@ class CurrencyRepository
         return new CurrencyCollection(
             Arr::mapWithKeys($availableCurrencies,
                 function ($currencyCode) use ($currencies) {
-            return [
-                $currencyCode => new Currency(
-                    strtoupper($currencyCode),
-                    $currencies[$currencyCode]['currency'] ?? '',
-                    $currencies[$currencyCode]['minorUnit'],
-                ),
-            ];
-        }));
+                    return [
+                        $currencyCode => new Currency(
+                            strtoupper($currencyCode),
+                            $currencies[$currencyCode]['currency'] ?? '',
+                            $currencies[$currencyCode]['minorUnit'],
+                        ),
+                    ];
+                }));
     }
 }

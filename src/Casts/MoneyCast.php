@@ -57,7 +57,7 @@ class MoneyCast implements CastsAttributes
     {
         return match (true) {
             $value instanceof Money => $value->getAmount(),
-            is_array($value)  => $value['amount'] ?? $value[0],
+            is_array($value)        => $value['amount'] ?? $value[0],
             default                 => $value,
         };
     }

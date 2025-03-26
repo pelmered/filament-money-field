@@ -135,8 +135,8 @@ class MoneyInput extends TextInput
     protected function prepare(): void
     {
         $this->currencyColumn = $this->name.config('currency_column_suffix', '_currency');
-        $symbolPlacement   = $this->getSymbolPlacement();
-        $getCurrencySymbol = function (MoneyInput $component) {
+        $symbolPlacement      = $this->getSymbolPlacement();
+        $getCurrencySymbol    = function (MoneyInput $component) {
 
             /*
             dump(
@@ -195,7 +195,7 @@ class MoneyInput extends TextInput
             $placement = $placement->value;
         }
 
-        if (!in_array($placement, CurrencySymbolPlacement::values())) {
+        if (! in_array($placement, CurrencySymbolPlacement::values())) {
             throw new \InvalidArgumentException(
                 'Currency symbol placement must be one of: '.implode(', ', CurrencySymbolPlacement::values())
             );

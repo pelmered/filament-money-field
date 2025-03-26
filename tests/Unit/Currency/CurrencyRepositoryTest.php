@@ -15,7 +15,7 @@ beforeEach(function () {
 
 it('checks if a currency is valid', function () {
     // Create a mock collection with a test currency
-    $currency = new Currency('USD', 'US Dollar', 2);
+    $currency   = new Currency('USD', 'US Dollar', 2);
     $currencies = new CurrencyCollection(['USD' => $currency]);
 
     // Mock the getAvailableCurrencies method to return our collection
@@ -30,7 +30,7 @@ it('checks if a currency is valid', function () {
 
     // Test with an invalid currency
     $invalidCurrency = new Currency('XYZ', 'Invalid Currency', 2);
-    $result = CurrencyRepository::isValid($invalidCurrency);
+    $result          = CurrencyRepository::isValid($invalidCurrency);
     expect($result)->toBeFalse();
 });
 

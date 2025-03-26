@@ -9,6 +9,6 @@ enum CurrencySymbolPlacement: string
     use EnumHelpers;
 
     case Before = 'before';
-    case After = 'after';
+    case After  = 'after';
     case Hidden = 'hidden';
 }
