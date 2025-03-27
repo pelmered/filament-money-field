@@ -72,6 +72,10 @@ class MoneyFormatter
             return '';
         }
 
+        if ($value === 0) {
+            return static::format(0, $currency, $locale, decimals: $decimals);
+        }
+
         // No need to abbreviate if the value is less than 1000
         if ($value < 100000) {
             if (! $showCurrencySymbol) {
