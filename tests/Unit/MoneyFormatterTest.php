@@ -228,3 +228,8 @@ it('formats with decimal parameter in sek', function () {
     expect(MoneyFormatter::format(100060, Currency::fromCode('SEK'), 'sv_SE', decimals: 0))
         ->toBe(replaceNonBreakingSpaces('1 001 kr'));
 });
+
+it('formats 0 in short format', function () {
+    expect(MoneyFormatter::formatShort(0, Currency::fromCode('USD'), 'en_US', decimals: -3))
+        ->toBe(replaceNonBreakingSpaces('$0'));
+});
