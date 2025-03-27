@@ -31,10 +31,14 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             __DIR__.'/../config/filament-money-field.php', 'filament-money-field'
         );
 
-        $this->optimizes(
-            optimize: CacheCommand::class,
-            clear: ClearCacheCommand::class,
-        );
+        // Requires Laravel 11.27.1
+        // See: https://github.com/laravel/framework/pull/52928
+        if (method_exists($this, 'optimizes')) {
+            $this->optimizes(
+                optimize: CacheCommand::class,
+                clear: ClearCacheCommand::class,
+            );
+        }
 
         Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
