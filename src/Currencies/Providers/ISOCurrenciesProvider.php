@@ -12,7 +12,11 @@ class ISOCurrenciesProvider implements CurrenciesProvider
     {
         $file = base_path('vendor/moneyphp/money/resources/currency.php');
 
-        dump($file);
+        $f = dirname($file);
+
+        $files = scandir($f);
+
+        dump($f, is_dir($f), $files);
 
         if (is_file($file)) {
             return require $file;
