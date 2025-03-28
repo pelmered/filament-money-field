@@ -15,6 +15,10 @@ class CryptoCurrenciesProvider implements CurrenciesProvider
 
     private function getCurrencyData(): array
     {
+        /**
+         * @see https://github.com/moneyphp/money/blob/master/resources/binance.php
+         * Updated: 2025-03-28
+         */
         return [
             '1000SATS' =>
                 [
