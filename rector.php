@@ -8,9 +8,9 @@ use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/config',
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
+        __DIR__.'/config',
+        __DIR__.'/src',
+        __DIR__.'/tests',
     ])
     ->withSkip([
         ClosureToArrowFunctionRector::class,
@@ -20,14 +20,11 @@ return RectorConfig::configure()
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
         SetList::DEAD_CODE,
-        //SetList::NAMING,
+        // SetList::NAMING,
         SetList::PRIVATIZATION,
         SetList::TYPE_DECLARATION,
         SetList::EARLY_RETURN,
         SetList::INSTANCEOF,
         SetList::CARBON,
     ])
-    ->withAttributesSets()
-
-
-    ;
+    ->withAttributesSets();

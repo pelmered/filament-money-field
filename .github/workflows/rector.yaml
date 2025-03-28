@@ -2,7 +2,9 @@
 name: Rector
 
 on:
-    pull_request:
+    push:
+        branches: [main]
+    pull_request: null
 
 jobs:
     rector:

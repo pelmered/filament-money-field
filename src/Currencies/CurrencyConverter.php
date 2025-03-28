@@ -10,25 +10,15 @@ use Swap\Builder;
 
 class CurrencyConverter
 {
-    private Currency $from;
-
-    private Currency $to;
-
     // public static function convert(Money $amount, Currency $from, Currency $to)
 
     public static function from(Currency|string $from): static
     {
-        $instance = new static;
-
-        $instance->from = static::getCurrency($from);
-
-        return $instance;
+        return new static;
     }
 
     public function to(Currency|string $to): static
     {
-        $this->to = static::getCurrency($to);
-
         return $this;
     }
 
@@ -47,11 +37,6 @@ class CurrencyConverter
 
         [$usd125, $pair] = $converter->convertAndReturnWithCurrencyPair($eur100, new Currency('USD'));
         */
-    }
-
-    private static function getCurrency(Currency|string $currency): Currency
-    {
-        return $currency instanceof Currency ? $currency : Currency::fromCode($currency);
     }
 
     public function getSwapExchangeClient(): SwapExchange

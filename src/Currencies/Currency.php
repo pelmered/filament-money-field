@@ -6,7 +6,7 @@ use Money\Currency as MoneyCurrency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 
-class Currency
+class Currency implements \Stringable
 {
     public function __construct(
         public string $code,

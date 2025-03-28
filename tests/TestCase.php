@@ -44,13 +44,14 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function defineEnvironment($app)
     {
         // Setup default database to use sqlite :memory:
-        tap($app['config'], function (Repository $config) {
+        tap($app['config'], function (Repository $config): void {
             $config->set('database.default', 'testbench');
             $config->set('database.connections.testbench', [
                 'driver'   => 'sqlite',
                 'database' => ':memory:',
                 'prefix'   => '',
             ]);
+            $config->set('cache.default', 'file');
 
             // Setup queue database connections.
             /*
@@ -72,18 +73,18 @@ class TestCase extends \Orchestra\Testbench\TestCase
         artisan($this, 'migrate', ['--database' => 'testbench']);
 
         $this->beforeApplicationDestroyed(
-            fn () => artisan($this, 'migrate:rollback', ['--database' => 'testbench'])
+            fn (): int => artisan($this, 'migrate:rollback', ['--database' => 'testbench'])
         );
     }
 
-    public static function callMethod($obj, $name, array $args)
+    public static function callMethod($obj, $name, array $args): mixed
     {
         $class = new \ReflectionClass($obj);
 
         return $class->getMethod($name)->invokeArgs($obj, $args);
     }
 
-    public static function getProperty($object, $property)
+    public static function getProperty($object, $property): mixed
     {
         $reflectedClass = new \ReflectionClass($object);
         $reflection     = $reflectedClass->getProperty($property);

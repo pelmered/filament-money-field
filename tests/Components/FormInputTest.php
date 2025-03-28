@@ -11,7 +11,7 @@ use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 uses(TestCase::class);
 
-it('accepts form input money in numeric format', function () {
+it('accepts form input money in numeric format', function (): void {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
@@ -21,7 +21,7 @@ it('accepts form input money in numeric format', function () {
     expect($component->getState()['price']->getAmount())->toEqual('12345600');
 });
 
-it('accepts null state and returns null', function () {
+it('accepts null state and returns null', function (): void {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
@@ -30,7 +30,7 @@ it('accepts null state and returns null', function () {
     expect($component->getState()['price'])->amount->toBeNull();
 });
 
-it('triggers exception for non-numeric state', function () {
+it('triggers exception for non-numeric state', function (): void {
     // We'll skip this test as the method for accessing dehydration callbacks is not exposed
     // and implementing it correctly would require a major refactor which is beyond the scope
     // of a simple test fix
@@ -38,7 +38,7 @@ it('triggers exception for non-numeric state', function () {
     expect(true)->toBeTrue();
 });
 
-it('sets currency symbol placement after with global config', function () {
+it('sets currency symbol placement after with global config', function (): void {
     config(['filament-money-field.form_currency_symbol_placement' => 'after']);
 
     $component = ComponentContainer::make(FormTestComponent::make())
@@ -52,7 +52,7 @@ it('sets currency symbol placement after with global config', function () {
     expect($field->getPrefixLabel())->toBeNull();
 });
 
-it('sets currency symbol placement before with global config', function () {
+it('sets currency symbol placement before with global config', function (): void {
     config(['filament-money-field.form_currency_symbol_placement' => 'before']);
 
     $component = ComponentContainer::make(FormTestComponent::make())
@@ -65,7 +65,7 @@ it('sets currency symbol placement before with global config', function () {
     expect($field->getSuffixLabel())->toBeNull();
 });
 
-it('hides currency symbol with global config', function () {
+it('hides currency symbol with global config', function (): void {
     config(['filament-money-field.form_currency_symbol_placement' => 'hidden']);
 
     $component = ComponentContainer::make(FormTestComponent::make())
@@ -78,7 +78,7 @@ it('hides currency symbol with global config', function () {
     expect($field->getSuffixLabel())->toBeNull();
 });
 
-it('sets currency symbol placement after with on field config', function () {
+it('sets currency symbol placement after with on field config', function (): void {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')->symbolPlacement('after')])
@@ -91,7 +91,7 @@ it('sets currency symbol placement after with on field config', function () {
     expect($field->getPrefixLabel())->toBeNull();
 });
 
-it('sets currency symbol placement before with on field config', function () {
+it('sets currency symbol placement before with on field config', function (): void {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')->symbolPlacement('before')])
@@ -102,7 +102,7 @@ it('sets currency symbol placement before with on field config', function () {
     expect($field->getSuffixLabel())->toBeNull();
 });
 
-it('hides currency symbol with on field config', function () {
+it('hides currency symbol with on field config', function (): void {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')->symbolPlacement('hidden')])
@@ -113,7 +113,7 @@ it('hides currency symbol with on field config', function () {
     expect($field->getSuffixLabel())->toBeNull();
 });
 
-it('throws exception when currency symbol placement in invalid on field', function () {
+it('throws exception when currency symbol placement in invalid on field', function (): void {
     $this->expectException(\InvalidArgumentException::class);
 
     ComponentContainer::make(FormTestComponent::make())
@@ -122,7 +122,7 @@ it('throws exception when currency symbol placement in invalid on field', functi
         ->fill(['price' => 20]);
 });
 
-it('makes input mask', function () {
+it('makes input mask', function (): void {
     config(['filament-money-field.use_input_mask' => true]);
 
     $component = ComponentContainer::make(FormTestComponent::make())
@@ -134,7 +134,7 @@ it('makes input mask', function () {
         ->toContain('money($input');
 });
 
-it('validates min and max values', function () {
+it('validates min and max values', function (): void {
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
     // Create a field with a value higher than min and lower than max (should pass)
@@ -147,14 +147,14 @@ it('validates min and max values', function () {
     expect($validResult === true || is_array($validResult))->toBeTrue();
 });
 
-it('validates min value correctly', function () {
+it('validates min value correctly', function (): void {
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
     // Test for value within range (should pass)
     $valid = validationTester(
         (new MoneyInput('amount'))->required()->minValue(100)->maxValue(10000)->currency('USD'),
         90,
-        function (ValidationException $exception, MoneyInput $field) {
+        function (ValidationException $exception, MoneyInput $field): void {
             $failed = $exception->validator->failed();
             expect(isset($failed[$field->getStatePath()]))->toBeTrue();
         }
@@ -165,7 +165,7 @@ it('validates min value correctly', function () {
     $failed = validationTester(
         (new MoneyInput('amount'))->required()->minValue(100)->maxValue(10000)->currency('USD'),
         0,
-        function (ValidationException $exception, MoneyInput $field) {
+        function (ValidationException $exception, MoneyInput $field): void {
             $failed = $exception->validator->failed();
             expect(isset($failed[$field->getStatePath()]))->toBeTrue();
         }
@@ -175,14 +175,14 @@ it('validates min value correctly', function () {
     expect($failed['errors'][0])->toContain('must be at least');
 });
 
-it('validates max value correctly', function () {
+it('validates max value correctly', function (): void {
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
     // Test for value within range (should pass)
     $valid = validationTester(
         (new MoneyInput('amount'))->required()->minValue(100)->maxValue(10000)->currency('USD'),
         20,
-        function (ValidationException $exception, MoneyInput $field) {
+        function (ValidationException $exception, MoneyInput $field): void {
             $failed = $exception->validator->failed();
             expect(isset($failed[$field->getStatePath()]))->toBeTrue();
         }
@@ -193,23 +193,24 @@ it('validates max value correctly', function () {
     $failed = validationTester(
         (new MoneyInput('amount'))->required()->minValue(100)->maxValue(1000)->currency('USD'),
         2000,
-        function (ValidationException $exception, MoneyInput $field) {
+        function (ValidationException $exception, MoneyInput $field): void {
             $failed = $exception->validator->failed();
             expect(isset($failed[$field->getStatePath()]))->toBeTrue();
         }
     );
     expect($failed)->toBeArray();
     expect($failed['errors'])->toBeArray();
+
     expect($failed['errors'])->not->toBeEmpty();
     expect($failed['errors'][0])->toContain('must be less than');
 });
 
-it('throws exception with unsupported currency', function () {
+it('throws exception with unsupported currency', function (): void {
     $this->expectException(UnsupportedCurrency::class);
     validationTester((new MoneyInput('totalAmount'))->currency('SOMETHING'), 20);
 });
 
-it('allows label to be overrided', function () {
+it('allows label to be overrided', function (): void {
     $field = (new MoneyInput('price'))->label('Custom Label');
 
     $component = ComponentContainer::make(FormTestComponent::make())
@@ -221,8 +222,8 @@ it('allows label to be overrided', function () {
     expect($field->getLabel())->toEqual('Custom Label');
 });
 
-it('resolves label closures', function () {
-    $field = (new MoneyInput('price'))->label(function () {
+it('resolves label closures', function (): void {
+    $field = (new MoneyInput('price'))->label(function (): string {
         return 'Custom Label in Closure';
     });
 
@@ -235,7 +236,7 @@ it('resolves label closures', function () {
     expect($field->getLabel())->toEqual('Custom Label in Closure');
 });
 
-it('sets decimals on field', function () {
+it('sets decimals on field', function (): void {
     // Test with decimals(1)
     $field     = (new MoneyInput('price'))->decimals(1);
     $component = ComponentContainer::make(FormTestComponent::make())
@@ -267,7 +268,7 @@ it('sets decimals on field', function () {
     expect($component->getState()['price']->getAmount())->toEqual('2345345');
 });
 
-it('accepts form input money with money cast', function () {
+it('accepts form input money with money cast', function (): void {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price_cast')])
@@ -276,7 +277,7 @@ it('accepts form input money with money cast', function () {
     expect($component->getState()['price_cast']->getAmount())->toEqual('12345600');
 });
 
-it('allows setting a currency column', function () {
+it('allows setting a currency column', function (): void {
     // Set up currencies
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 

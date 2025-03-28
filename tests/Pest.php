@@ -63,14 +63,14 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
             ->components([$field])
             ->fill([$field->getName() => $value])
             ->validate();
-    } catch (ValidationException $exception) {
-        if ($assertsCallback) {
-            $assertsCallback($exception, $field);
+    } catch (ValidationException $validationException) {
+        if ($assertsCallback !== null) {
+            $assertsCallback($validationException, $field);
         }
 
         return [
-            'errors' => $exception->validator->errors()->toArray()[$field->getStatePath()],
-            'failed' => $exception->validator->failed()[$field->getStatePath()],
+            'errors' => $validationException->validator->errors()->toArray()[$field->getStatePath()],
+            'failed' => $validationException->validator->failed()[$field->getStatePath()],
         ];
     }
 

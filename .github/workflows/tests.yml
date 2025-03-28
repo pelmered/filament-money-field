@@ -3,6 +3,7 @@ name: Tests
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
@@ -28,7 +29,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: intl, fileinfo, zip
+          extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath
 
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
@@ -49,7 +50,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          extensions: intl, fileinfo, zip
+          extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath
           coverage: pcov
 
       - name: Install dependencies
