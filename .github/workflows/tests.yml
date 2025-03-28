@@ -55,6 +55,9 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-stable --prefer-dist --no-interaction
 
+      - name: Setup testbench
+        run: php vendor/bin/testbench package:purge-skeleton --ansi
+
       - name: Execute tests with coverage
         run: vendor/bin/pest --coverage-clover=reports/coverage/test-coverage-clover.xml
 
