@@ -31,6 +31,23 @@ Or as a property:
     ];
 ```
 
+Value objects are great in most cases, but if you don't want to use them in your code, you can add an [accessor](https://laravel.com/docs/12.x/eloquent-mutators#accessors-and-mutators) for getting the raw values:
+```php
+    protected function price(): Attribute
+    {
+        return Attribute::make(
+            get: static fn (string $value) => $value
+        );
+    }
+    protected function priceCurrency(): Attribute
+    {
+        return Attribute::make(
+            get: static fn (string $value) => $value,
+        );
+    }
+````
+
+
 ### Add currency columns
 
 Each money column needs a corresponding currency column with the name {money_column}_currency
