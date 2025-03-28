@@ -14,10 +14,10 @@ class ISOCurrenciesProvider implements CurrenciesProvider
 
         $f = dirname($file);
 
-        $files1 = scandir(dirname($f, 2));
+        //$files1 = scandir(dirname($f, 2));
         $files2 = scandir(dirname($f, 5));
 
-        dump($f, is_dir($f), $files1, $files2);
+        dump($f, is_dir($f), $files2);
 
         if (is_file($file)) {
             return require $file;
