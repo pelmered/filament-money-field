@@ -51,6 +51,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
                 'database' => ':memory:',
                 'prefix'   => '',
             ]);
+            $config->set('cache.default', 'file');
 
             // Setup queue database connections.
             /*
