@@ -58,6 +58,31 @@ class MoneyInput extends TextInput
                             ->options($currencies->toSelectArray())
                             ->required()
                             ->live(),
+                        Checkbox::make('convert')
+                            ->label('Convert amount to selected currency')
+                            ->helperText(function (Get $get) {
+
+                                if (! $get('convert')) {
+                                    return null;
+                                }
+
+                                $currentCurrency = $this->getCurrency();
+                                $newCurrency     = $get('currency');
+
+                                $rate = 1.2234;
+
+                                return 'Conversion rate from '.$currentCurrency->getCode().' to '.$newCurrency.':'.$rate;
+
+                                /*
+                                    $exchange = new SwapExchange($swap);
+
+                                    $converter = new Converter(new ISOCurrencies(), $exchange);
+                                    $eur100 = Money::EUR(100);
+                                    $usd125 = $converter->convert($eur100, new Currency('USD'));
+                                    [$usd125, $pair] = $converter->convertAndReturnWithCurrencyPair($eur100, new Currency('USD'));
+                                    */
+                            })
+                            ->default(false),
                     ])
                     ->action(function (array $data, MoneyInput $component, Model $record, Form $form) {
                         $money    = $record->{$component->name};
