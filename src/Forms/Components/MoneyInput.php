@@ -98,7 +98,7 @@ class MoneyInput extends TextInput
             );
         }
 
-        $this->formatStateUsing(function (MoneyInput $component, $record, mixed $state): ?string {
+        $this->formatStateUsing(function (MoneyInput $component, mixed $state): ?string {
 
             $this->prepare();
 
@@ -113,7 +113,7 @@ class MoneyInput extends TextInput
             return MoneyFormatter::formatAsDecimal((int) $amount, $currency, $locale, $this->getDecimals());
         });
 
-        $this->dehydrateStateUsing(function (MoneyInput $component, $record, null|int|string $state): ?Money {
+        $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
             /*
             if (! is_numeric($state)) {
                 return null;

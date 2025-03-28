@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Infolists\Components;
 
 use Filament\Infolists\Components\TextEntry;
+use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
@@ -19,7 +20,7 @@ class MoneyEntry extends TextEntry
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyEntry $component, $state): string {
+        $this->formatStateUsing(function (MoneyEntry $component, Money|array|int|null $state): string {
             if ($state === null) {
                 return '';
             }
@@ -37,7 +38,7 @@ class MoneyEntry extends TextEntry
 
     public function short(): static
     {
-        $this->formatStateUsing(function (MoneyEntry $component, $state) {
+        $this->formatStateUsing(function (MoneyEntry $component, Money|array|int|null    $state) {
             if ($state === null) {
                 return '';
             }

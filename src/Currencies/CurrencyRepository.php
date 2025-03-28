@@ -11,12 +11,12 @@ use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
 
 class CurrencyRepository
 {
-    public static function isValid(Currency $currency)
+    public static function isValid(Currency $currency): bool
     {
         return static::getAvailableCurrencies()->contains($currency);
     }
 
-    public static function isValidCode(string $currencyCode)
+    public static function isValidCode(string $currencyCode): bool
     {
         return static::isValid(Currency::fromCode($currencyCode));
     }
@@ -43,7 +43,7 @@ class CurrencyRepository
     /**
      * @throws BindingResolutionException
      */
-    private static function loadAvailableCurrencies(): CurrencyCollection
+    protected static function loadAvailableCurrencies(): CurrencyCollection
     {
         $currencyProvider    = Config::get('filament-money-field.currency_provider', ISOCurrenciesProvider::class);
         $availableCurrencies = Config::get('filament-money-field.available_currencies', []);
@@ -65,7 +65,7 @@ class CurrencyRepository
 
         return new CurrencyCollection(
             Arr::mapWithKeys($availableCurrencies,
-                function ($currencyCode) use ($currencies) {
+                static function (string $currencyCode) use ($currencies) {
                     return [
                         $currencyCode => new Currency(
                             strtoupper($currencyCode),

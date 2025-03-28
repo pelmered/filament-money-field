@@ -16,7 +16,7 @@ class CurrencyConverter
 
     // public static function convert(Money $amount, Currency $from, Currency $to)
 
-    public static function from(Currency|string $from)
+    public static function from(Currency|string $from): static
     {
         $instance = new static;
 
@@ -25,17 +25,17 @@ class CurrencyConverter
         return $instance;
     }
 
-    public function to(Currency|string $to)
+    public function to(Currency|string $to): static
     {
         $this->to = static::getCurrency($to);
 
         return $this;
     }
 
-    public function convert(int $amount)
+    public function convert(int $amount): void
     {
         /*
-        $exchange = $this->getSwapExcangeClient();
+        $exchange = $this->getSwapExchangeClient();
 
         $converter = new Converter(new ISOCurrencies, $exchange);
 
@@ -54,7 +54,7 @@ class CurrencyConverter
         return $currency instanceof Currency ? $currency : Currency::fromCode($currency);
     }
 
-    public function getSwapExcangeClient()
+    public function getSwapExchangeClient(): SwapExchange
     {
         $swap = (new Builder)
             // Use the Fixer service as first level provider

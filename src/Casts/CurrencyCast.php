@@ -18,7 +18,7 @@ class CurrencyCast implements CastsAttributes
      * @param  ?non-empty-string  $value
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes)// : Currency|\Money\Currency|null
+    public function get(Model $model, string $key, mixed $value, array $attributes): Currency|\Money\Currency|null
     {
         if ($value === null) {
             return null;

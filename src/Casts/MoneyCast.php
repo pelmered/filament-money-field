@@ -53,7 +53,7 @@ class MoneyCast implements CastsAttributes
         ];
     }
 
-    protected function getAmount($model, $key, $value): ?int
+    protected function getAmount(Model $model, string $key, Money|array|int|null $value): ?int
     {
         return match (true) {
             $value instanceof Money => $value->getAmount(),
@@ -62,7 +62,7 @@ class MoneyCast implements CastsAttributes
         };
     }
 
-    public function getCurrency($model, $key, $value): string
+    protected function getCurrency(Model $model, string $key, Money|array|int|null $value): string
     {
         return match (true) {
             $value instanceof Money => $value->getCurrency(),
@@ -71,7 +71,7 @@ class MoneyCast implements CastsAttributes
         };
     }
 
-    public function getCurrencyFromModel(Model $model, string $name): MoneyCurrency
+    protected function getCurrencyFromModel(Model $model, string $name): MoneyCurrency
     {
         $currency = $model->{$name.config('currency_column_suffix', '_currency')} ?? (string) (config('filament-money-field.default_currency'));
 
