@@ -55,6 +55,7 @@ class MoneyFormatter
         if (! is_numeric($value)) {
             return '';
         }
+
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
         // $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
 
@@ -176,6 +177,7 @@ class MoneyFormatter
                 // "\xc2\xa0" is a non-breaking space
                 $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_PREFIX, $intlCurrencySymbol."\xc2\xa0");
             }
+
             if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_SUFFIX) !== '') {
                 // "\xc2\xa0" is a non-breaking space
                 $numberFormatter->setTextAttribute(NumberFormatter::POSITIVE_SUFFIX, "\xc2\xa0".$intlCurrencySymbol);

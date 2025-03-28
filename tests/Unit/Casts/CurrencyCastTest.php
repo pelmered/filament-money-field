@@ -6,11 +6,11 @@ use Money\Currency as MoneyCurrency;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Tests\Support\Models\Post;
 
-beforeEach(function () {
+beforeEach(function (): void {
     config(['filament-money-field.currency_cast_to' => Currency::class]);
 });
 
-it('casts to currency object', function () {
+it('casts to currency object', function (): void {
     $post = Post::factory()->make([
         'price'          => 23523,
         'price_currency' => 'USD',
@@ -21,7 +21,7 @@ it('casts to currency object', function () {
         ->and($post->price_currency->getCode())->toBe('USD');
 });
 
-it('casts to money currency when configured', function () {
+it('casts to money currency when configured', function (): void {
     config(['filament-money-field.currency_cast_to' => MoneyCurrency::class]);
 
     $model = Post::factory()->make(['price_currency' => 'EUR']);
@@ -31,7 +31,7 @@ it('casts to money currency when configured', function () {
         ->and($model->price_currency->getCode())->toBe('EUR');
 });
 
-it('handles null values', function () {
+it('handles null values', function (): void {
     $model = Post::factory()->make([
         'price'          => null,
         'price_currency' => null,
@@ -40,14 +40,14 @@ it('handles null values', function () {
     expect($model->price_currency)->toBeNull();
 });
 
-it('sets currency from currency instance', function () {
+it('sets currency from currency instance', function (): void {
     $model                 = Post::factory()->make();
     $model->price_currency = Currency::fromCode('SEK');
 
     expect($model->getAttributes()['price_currency'])->toBe('SEK');
 });
 
-it('sets currency from money currency instance', function () {
+it('sets currency from money currency instance', function (): void {
     $model                 = Post::factory()->make();
     $model->price_currency = new MoneyCurrency('GBP');
 

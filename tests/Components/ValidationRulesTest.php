@@ -12,7 +12,7 @@ use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 uses(TestCase::class);
 
-it('validates min value', function ($data, $minValue, bool $expected, $errors = null) {
+it('validates min value', function (array $data, $minValue, bool $expected, $errors = null): void {
     // Extract field key
     $fieldKey = array_key_first($data);
 
@@ -21,6 +21,7 @@ it('validates min value', function ($data, $minValue, bool $expected, $errors = 
     if ($inputValue instanceof Money) {
         $inputValue = (string) ($inputValue->getAmount() / 100); // Convert to decimal string
     }
+
     $validationData = [$fieldKey => $inputValue];
 
     // Create the MoneyInput
@@ -41,7 +42,7 @@ it('validates min value', function ($data, $minValue, bool $expected, $errors = 
     // Create custom validator that will call the validate method directly
     $validator = Validator::make(
         $validationData,
-        [$fieldKey => function ($attribute, $value, $fail) use ($rule) {
+        [$fieldKey => function ($attribute, $value, $fail) use ($rule): void {
             $rule->validate($attribute, $value, $fail);
         }]
     );
@@ -76,7 +77,7 @@ it('validates min value', function ($data, $minValue, bool $expected, $errors = 
     ],
 ]);
 
-it('validates max value', function ($data, $maxValue, bool $expected, $errors = null) {
+it('validates max value', function (array $data, $maxValue, bool $expected, $errors = null): void {
     // Extract field key
     $fieldKey = array_key_first($data);
 
@@ -85,6 +86,7 @@ it('validates max value', function ($data, $maxValue, bool $expected, $errors = 
     if ($inputValue instanceof Money) {
         $inputValue = (string) ($inputValue->getAmount() / 100); // Convert to decimal string
     }
+
     $validationData = [$fieldKey => $inputValue];
 
     // Create the MoneyInput
@@ -105,7 +107,7 @@ it('validates max value', function ($data, $maxValue, bool $expected, $errors = 
     // Create custom validator that will call the validate method directly
     $validator = Validator::make(
         $validationData,
-        [$fieldKey => function ($attribute, $value, $fail) use ($rule) {
+        [$fieldKey => function ($attribute, $value, $fail) use ($rule): void {
             $rule->validate($attribute, $value, $fail);
         }]
     );

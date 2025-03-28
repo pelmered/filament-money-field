@@ -6,7 +6,7 @@ use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 /**
  * @test
  */
-it('can be created from currency code', function (string $code) {
+it('can be created from currency code', function (string $code): void {
     config(['filament-money-field.currencies' => ['USD', 'EUR', 'SEK']]);
 
     $currency = Currency::fromCode($code);
@@ -18,17 +18,17 @@ it('can be created from currency code', function (string $code) {
 /**
  * @test
  */
-it('throws exception for unsupported currency', function () {
+it('throws exception for unsupported currency', function (): void {
     config(['filament-money-field.currencies' => ['USD', 'EUR', 'SEK']]);
 
-    expect(fn () => Currency::fromCode('PHP'))->toThrow(UnsupportedCurrency::class);
-    expect(fn () => Currency::fromCode('INR'))->toThrow(UnsupportedCurrency::class);
+    expect(fn (): \Pelmered\FilamentMoneyField\Currencies\Currency => Currency::fromCode('PHP'))->toThrow(UnsupportedCurrency::class);
+    expect(fn (): \Pelmered\FilamentMoneyField\Currencies\Currency => Currency::fromCode('INR'))->toThrow(UnsupportedCurrency::class);
 });
 
 /**
  * @test
  */
-it('handles different case inputs', function () {
+it('handles different case inputs', function (): void {
     config(['filament-money-field.currencies' => ['USD']]);
 
     $currencyLower = Currency::fromCode('usd');
@@ -43,7 +43,7 @@ it('handles different case inputs', function () {
 /**
  * @test
  */
-it('maintains case consistency in toString', function () {
+it('maintains case consistency in toString', function (): void {
     config(['filament-money-field.currencies' => ['USD']]);
 
     $currency = Currency::fromCode('usd');

@@ -84,7 +84,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
     public function register(): void
     {
-        $this->app->bind(CurrencyCollection::class, function () {
+        $this->app->bind(CurrencyCollection::class, function (): \Pelmered\FilamentMoneyField\Currencies\CurrencyCollection {
             return new CurrencyCollection;
         });
 
