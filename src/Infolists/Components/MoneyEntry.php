@@ -38,7 +38,7 @@ class MoneyEntry extends TextEntry
 
     public function short(): static
     {
-        $this->formatStateUsing(function (MoneyEntry $component, Money|array|int|null    $state) {
+        $this->formatStateUsing(function (MoneyEntry $component, Money|array|int|null $state) {
             if ($state === null) {
                 return '';
             }
