@@ -5,6 +5,7 @@ namespace Pelmered\FilamentMoneyField\Casts;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
+use PhpStaticAnalysis\Attributes\Param;
 use Spatie\LaravelData\Casts\Cast;
 
 /**
@@ -14,10 +15,9 @@ class CurrencyCast implements CastsAttributes
 {
     /**
      * Cast the given value.
-     *
-     * @param  ?non-empty-string  $value
-     * @param  array<string, mixed>  $attributes
      */
+    #[Param(value: '?non-empty-string')]
+    #[Param(attributes: 'array<string, mixed>')]
     public function get(Model $model, string $key, mixed $value, array $attributes): Currency|\Money\Currency|null
     {
         if ($value === null) {
@@ -32,10 +32,9 @@ class CurrencyCast implements CastsAttributes
 
     /**
      * Prepare the given value for storage.
-     *
-     * @param  Currency|string  $value
-     * @param  array<string, mixed>  $attributes
      */
+    #[Param(value: 'Currency|string')]
+    #[Param(attributes: 'array<string, mixed>')]
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
         if ($value === null) {

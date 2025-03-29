@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Money\Currency as MoneyCurrency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
+use PhpStaticAnalysis\Attributes\Param;
 
 /**
  * @implements CastsAttributes<Money, Money>
@@ -15,10 +16,9 @@ class MoneyCast implements CastsAttributes
 {
     /**
      * Cast the given value.
-     *
-     * @param  ?int  $value
-     * @param  array<string, mixed>  $attributes
      */
+    #[Param(value: '?int')]
+    #[Param(attributes: 'array<string, mixed>')]
     public function get(Model $model, string $key, mixed $value, array $attributes): ?Money
     {
         if ($value === null) {
@@ -36,10 +36,9 @@ class MoneyCast implements CastsAttributes
 
     /**
      * Prepare the given value for storage.
-     *
-     * @param  Money|string|null  $value
-     * @param  array<string, mixed>  $attributes
      */
+    #[Param(value: 'Money|string')]
+    #[Param(attributes: 'array<string, mixed>')]
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
         $amount   = $this->getAmount($model, $key, $value);

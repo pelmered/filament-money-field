@@ -20,7 +20,7 @@ class MoneyColumn extends TextColumn
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyColumn $component, Money|int|float|null $state): string {
+        $this->formatStateUsing(function (MoneyColumn $component, Money|int|string|null $state): string {
             if ($state === null) {
                 return '';
             }
@@ -38,7 +38,7 @@ class MoneyColumn extends TextColumn
 
     public function short(): static
     {
-        $this->formatStateUsing(function (MoneyColumn $component, Money|int|float|null $state): string {
+        $this->formatStateUsing(function (MoneyColumn $component, Money|int|string|null $state): string {
             if ($state === null) {
                 return '';
             }

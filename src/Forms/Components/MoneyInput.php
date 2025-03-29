@@ -19,6 +19,7 @@ use Pelmered\FilamentMoneyField\Enum\CurrencySymbolPlacement;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use PhpStaticAnalysis\Attributes\Type;
 
 class MoneyInput extends TextInput
 {
@@ -31,9 +32,7 @@ class MoneyInput extends TextInput
      */
     protected $maxValue;
 
-    /**
-     * @var scalar | Closure | null
-     */
+    #[Type('scalar | Closure | null')]
     protected $minValue;
 
     protected function setUp(): void
@@ -42,11 +41,9 @@ class MoneyInput extends TextInput
 
         $this->prepare();
 
-        // $this->container = new ComponentContainer();
-        // $this->currencyColumn = 'currency';
-
         $currencies = CurrencyRepository::getAvailableCurrencies();
 
+        /** @phpstan-ignore if.alwaysTrue */
         if ($this->shouldHaveCurrencySwitcher()) {
             $this->suffixAction(
                 Action::make('changeCurrency')
@@ -73,27 +70,25 @@ class MoneyInput extends TextInput
             );
         }
 
-        $this->formatStateUsing(function (MoneyInput $component, mixed $state): ?string {
+        $this->formatStateUsing(function (MoneyInput $component, mixed $state): string {
 
             $this->prepare();
 
-            if (is_null($state) || ! $state instanceof Money) {
+            if (! $state instanceof Money) {
                 return '';
             }
 
             $amount   = $state->getAmount();
-            $currency = Currency::fromMoney($state) ?? $component->getCurrency();
+            $currency = Currency::fromMoney($state);
             $locale   = $component->getLocale();
 
             return MoneyFormatter::formatAsDecimal((int) $amount, $currency, $locale, $this->getDecimals());
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
-            /*
             if (! is_numeric($state)) {
                 return null;
             }
-            */
 
             $currency = $component->getCurrency();
             $amount   = MoneyFormatter::parseDecimal((string) $state, $currency, $component->getLocale(), $this->getDecimals());
@@ -191,7 +186,7 @@ class MoneyInput extends TextInput
         $this->minValue = $value;
 
         $this->rule(
-            static function (MoneyInput $component): \Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule {
+            static function (MoneyInput $component): MinValueRule {
                 return new MinValueRule((int) $component->getMinValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMinValue())
@@ -205,7 +200,7 @@ class MoneyInput extends TextInput
         $this->maxValue = $value;
 
         $this->rule(
-            static function (MoneyInput $component): \Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule {
+            static function (MoneyInput $component): MaxValueRule {
                 return new MaxValueRule((int) $component->getMaxValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMaxValue())

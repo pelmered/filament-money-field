@@ -5,6 +5,8 @@ namespace Pelmered\FilamentMoneyField\Synthesizers;
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Money\Currency;
 use Money\Money;
+use PhpStaticAnalysis\Attributes\Param;
+use PhpStaticAnalysis\Attributes\Returns;
 
 class MoneySynthesizer extends Synth
 {
@@ -15,9 +17,7 @@ class MoneySynthesizer extends Synth
         return $target instanceof Money;
     }
 
-    /**
-     * @return Currency
-     */
+    #[Returns('array{array{amount: string, currency: string}, array{}}')]
     public function dehydrate(Money $target): array
     {
         return [[
@@ -26,12 +26,11 @@ class MoneySynthesizer extends Synth
         ], []];
     }
 
-    /**
-     * @param  ?array<string, string>  $value*
-     */
+    #[Param(value: '?array{amount?: int|numeric-string, currency?: non-empty-string}')]
+    #[Returns('Money|null')]
     public function hydrate(?array $value): ?Money
     {
-        if ($value === null) {
+        if ($value === null || ! isset($value['amount'], $value['currency'])) {
             return null;
         }
 

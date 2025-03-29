@@ -20,15 +20,13 @@ class MoneyEntry extends TextEntry
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyEntry $component, Money|array|int|null $state): string {
+        $this->formatStateUsing(function (MoneyEntry $component, Money|int|null $state): string {
             if ($state === null) {
                 return '';
             }
 
-            $amount = $state instanceof \Money\Money ? $state->getAmount() : $state;
-
             return MoneyFormatter::format(
-                $amount,
+                $state,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals()
@@ -38,15 +36,13 @@ class MoneyEntry extends TextEntry
 
     public function short(): static
     {
-        $this->formatStateUsing(function (MoneyEntry $component, Money|array|int|null $state): string {
+        $this->formatStateUsing(function (MoneyEntry $component, Money|int|null $state): string {
             if ($state === null) {
                 return '';
             }
 
-            $amount = $state instanceof \Money\Money ? $state->getAmount() : $state;
-
             return MoneyFormatter::formatShort(
-                $amount,
+                $state,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals(),

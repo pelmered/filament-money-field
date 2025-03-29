@@ -9,11 +9,6 @@ class ISOCurrenciesProvider implements CurrenciesProvider
     #[Type('array<string, array{alphabeticCode: string, currency: string, minorUnit: int, numericCode: int}>')]
     public function loadCurrencies(): array
     {
-        return $this->getCurrencyData();
-    }
-
-    private function getCurrencyData(): array
-    {
         /**
          * @see https://github.com/moneyphp/money/blob/master/resources/currency.php
          * Updated: 2025-03-28

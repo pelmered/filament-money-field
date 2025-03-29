@@ -48,7 +48,6 @@ class MoneyFormatter
 
     public static function numberFormat(
         null|int|float|string $value,
-        Currency $currency,
         string $locale,
         int $decimals = 2,
     ): string {
@@ -57,14 +56,13 @@ class MoneyFormatter
         }
 
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
-        // $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
 
         return (string) $numberFormatter->format((float) $value);  // Outputs something like "1.234,56"
     }
 
     public static function formatShort(
-        null|int|string $value,
-        Currency $currency,
+        null|int|string|Money $value,
+        Currency|MoneyCurrency $currency,
         string $locale,
         int $decimals = 2,
         bool $showCurrencySymbol = true
@@ -80,7 +78,7 @@ class MoneyFormatter
         // No need to abbreviate if the value is less than 1000
         if ($value < 100000) {
             if (! $showCurrencySymbol) {
-                return static::numberFormat((int) $value / 100, $currency, $locale, decimals: $decimals);
+                return static::numberFormat((int) $value / 100, $locale, decimals: $decimals);
             }
 
             return static::format($value, $currency, $locale, $decimals);
@@ -93,37 +91,37 @@ class MoneyFormatter
             throw new \RuntimeException('Invalid format');
         }
 
-        /** @var array{number: string, suffix: string} $matches1 */
-        $abbreviatedNumber = $matches1['number'];
+        $abbreviatedNumber = (float) $matches1['number'];
         $suffix            = $matches1['suffix'];
 
-        $formattedNumber = static::numberFormat($abbreviatedNumber, $currency, $locale, decimals: $decimals);
+        $formattedNumber = static::numberFormat($abbreviatedNumber, $locale, decimals: $decimals);
 
         if (! $showCurrencySymbol) {
             return $formattedNumber.$suffix;
         }
 
         // Format the number
-        $formattedCurrency = static::format($abbreviatedNumber * 100, $currency, $locale, decimals: $decimals);
+        $formattedCurrency = static::format((int) ($abbreviatedNumber * 100), $currency, $locale, decimals: $decimals);
 
         // Find the formatted number
         if (preg_match('/(?<number>[0-9\.,]+)/', $formattedCurrency, $matches2) !== 1) {
             throw new \RuntimeException('Invalid format');
         }
 
-        /** @var array{number: string} $matches2 */
         return str_replace($matches2['number'], $formattedNumber.$suffix, $formattedCurrency);
     }
 
     public static function parseDecimal(
         ?string $moneyString,
-        Currency $currency,
+        Currency|MoneyCurrency $currency,
         string $locale,
         int $decimals = 2
     ): string {
         if (is_null($moneyString) || $moneyString === '') {
             return '';
         }
+
+        $currency = $currency instanceof Currency ? $currency->toMoneyCurrency() : $currency;
 
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
         $moneyParser     = new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies);
@@ -136,13 +134,13 @@ class MoneyFormatter
         $moneyString     = str_replace($formattingRules->groupingSeparator, '', $moneyString);
 
         try {
-            return $moneyParser->parse($moneyString, $currency->toMoneyCurrency())->getAmount();
+            return $moneyParser->parse($moneyString, $currency)->getAmount();
         } catch (ParserException) {
             throw new ParserException('The value must be a valid numeric value.');
         }
     }
 
-    public static function getFormattingRules(string $locale, Currency $currency): CurrencyFormattingRules
+    public static function getFormattingRules(string $locale, Currency|MoneyCurrency $currency): CurrencyFormattingRules
     {
         $config          = config('filament-money-field');
         $numberFormatter = new NumberFormatter($locale.'@currency='.$currency->getCode(), NumberFormatter::CURRENCY);

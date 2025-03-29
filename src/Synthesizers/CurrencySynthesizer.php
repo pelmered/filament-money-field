@@ -4,6 +4,8 @@ namespace Pelmered\FilamentMoneyField\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
+use PhpStaticAnalysis\Attributes\Param;
+use PhpStaticAnalysis\Attributes\Returns;
 
 class CurrencySynthesizer extends Synth
 {
@@ -14,17 +16,14 @@ class CurrencySynthesizer extends Synth
         return $target instanceof Currency;
     }
 
-    /**
-     * @return Currency
-     */
+    #[Param(target: 'Currency ')]
+    #[Returns('array{string, array{}}')]
     public function dehydrate(Currency $target): array
     {
         return [$target->getCode(), []];
     }
 
-    /**
-     * @param  ?array<string, string>  $value*
-     */
+    #[Param(value: '?string')]
     public function hydrate(?string $value): ?string
     {
         if ($value === null) {

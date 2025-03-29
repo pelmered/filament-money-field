@@ -33,6 +33,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
         // Requires Laravel 11.27.1
         // See: https://github.com/laravel/framework/pull/52928
+        /** @phpstan-ignore function.alreadyNarrowedType  */
         if (method_exists($this, 'optimizes')) {
             $this->optimizes(
                 optimize: CacheCommand::class,
