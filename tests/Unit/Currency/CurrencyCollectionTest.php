@@ -3,13 +3,13 @@
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyCollection;
 
-it('can create a new currency collection', function () {
+it('can create a new currency collection', function (): void {
     $collection = new CurrencyCollection;
 
     expect($collection)->toBeInstanceOf(CurrencyCollection::class);
 });
 
-it('can transform currencies to select array', function () {
+it('can transform currencies to select array', function (): void {
     // Create a collection with sample currency objects
     $collection = new CurrencyCollection([
         'USD' => new Currency('USD', 'US Dollar', 2),
@@ -29,7 +29,7 @@ it('can transform currencies to select array', function () {
         ->and($selectArray['SEK'])->toBe('Swedish Krona');
 });
 
-it('returns empty array when collection is empty', function () {
+it('returns empty array when collection is empty', function (): void {
     $collection = new CurrencyCollection;
 
     $selectArray = $collection->toSelectArray();
@@ -39,7 +39,7 @@ it('returns empty array when collection is empty', function () {
         ->toBeEmpty();
 });
 
-it('maintains collection functionality', function () {
+it('maintains collection functionality', function (): void {
     // Test that the class properly extends Laravel Collection
     $collection = new CurrencyCollection([
         'USD' => new Currency('USD', 'US Dollar', 2),

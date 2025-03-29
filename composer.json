@@ -28,7 +28,7 @@
         "ext-intl": "*",
         "filament/support": "^v3.2.39",
         "moneyphp/money": "^4.0",
-        "illuminate/support": "^11.0",
+        "illuminate/support": "^11.24",
         "php-static-analysis/attributes": "^0.3.1 | ^0.4.0"
     },
     "require-dev": {
@@ -41,7 +41,8 @@
         "pestphp/pest-plugin-type-coverage": "^3.0",
         "larastan/larastan": "^3.0",
         "php-static-analysis/phpstan-extension": "^0.4.0",
-        "spatie/laravel-ray": "^1.39"
+        "spatie/laravel-ray": "^1.39",
+        "rector/rector": "^2.0"
     },
     "extra": {
         "laravel": {

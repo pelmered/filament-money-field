@@ -28,7 +28,7 @@ class CurrencyRepository
             'ttl'  => 0,
         ]);
 
-        $callback = function () {
+        $callback = function (): \Pelmered\FilamentMoneyField\Currencies\CurrencyCollection {
             return static::loadAvailableCurrencies();
         };
 

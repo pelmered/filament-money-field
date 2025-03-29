@@ -8,18 +8,18 @@ use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\Currencies\Providers\CryptoCurrenciesProvider;
 use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Clear cache between tests
     Cache::flush();
 });
 
-it('checks if a currency is valid', function () {
+it('checks if a currency is valid', function (): void {
     // Create a mock collection with a test currency
     $currency   = new Currency('USD', 'US Dollar', 2);
     $currencies = new CurrencyCollection(['USD' => $currency]);
 
     // Mock the getAvailableCurrencies method to return our collection
-    $this->partialMock(CurrencyRepository::class, function ($mock) use ($currencies) {
+    $this->partialMock(CurrencyRepository::class, function ($mock) use ($currencies): void {
         $mock->shouldReceive('getAvailableCurrencies')
             ->andReturn($currencies);
     });
@@ -34,19 +34,19 @@ it('checks if a currency is valid', function () {
     expect($result)->toBeFalse();
 });
 
-it('checks if a currency code is valid', function () {
+it('checks if a currency code is valid', function (): void {
     // Create a valid currency
     $currency = new Currency('USD', 'US Dollar', 2);
 
     // Mock the Currency::fromCode method
-    $this->partialMock(Currency::class, function ($mock) use ($currency) {
+    $this->partialMock(Currency::class, function ($mock) use ($currency): void {
         $mock->shouldReceive('fromCode')
             ->with('USD')
             ->andReturn($currency);
     });
 
     // Mock the isValid method
-    $this->partialMock(CurrencyRepository::class, function ($mock) use ($currency) {
+    $this->partialMock(CurrencyRepository::class, function ($mock) use ($currency): void {
         $mock->shouldReceive('isValid')
             ->with($currency)
             ->andReturn(true);
@@ -56,14 +56,14 @@ it('checks if a currency code is valid', function () {
     expect($result)->toBeTrue();
 });
 
-it('loads available currencies without caching', function () {
+it('loads available currencies without caching', function (): void {
     // Configure to not use cache
     Config::set('filament-money-field.currency_cache.type', false);
     Config::set('filament-money-field.currency_provider', ISOCurrenciesProvider::class);
     Config::set('filament-money-field.available_currencies', ['USD', 'EUR']);
 
     // Mock the ISOCurrenciesProvider
-    $this->mock(ISOCurrenciesProvider::class, function ($mock) {
+    $this->mock(ISOCurrenciesProvider::class, function ($mock): void {
         $mock->shouldReceive('loadCurrencies')
             ->andReturn([
                 'USD' => ['alphabeticCode' => 'USD', 'currency' => 'US Dollar', 'minorUnit' => 2, 'numericCode' => 840],
@@ -81,7 +81,7 @@ it('loads available currencies without caching', function () {
         ->and($currencies->get('EUR')->name)->toBe('Euro');
 });
 
-it('caches currencies with remember', function () {
+it('caches currencies with remember', function (): void {
     // Configure to use remember cache
     Config::set('filament-money-field.currency_cache.type', 'remember');
     Config::set('filament-money-field.currency_cache.ttl', 60);
@@ -89,7 +89,7 @@ it('caches currencies with remember', function () {
     Config::set('filament-money-field.available_currencies', ['USD', 'EUR']);
 
     // Mock the ISOCurrenciesProvider
-    $this->mock(ISOCurrenciesProvider::class, function ($mock) {
+    $this->mock(ISOCurrenciesProvider::class, function ($mock): void {
         $mock->shouldReceive('loadCurrencies')
             ->once() // This should only be called once, then cached
             ->andReturn([
@@ -112,7 +112,7 @@ it('caches currencies with remember', function () {
         ->and($currencies->count())->toBe(2);
 });
 
-it('caches currencies with flexible', function () {
+it('caches currencies with flexible', function (): void {
     // Configure to use flexible cache
     Config::set('filament-money-field.currency_cache.type', 'flexible');
     Config::set('filament-money-field.currency_cache.ttl', [60, 3600]);
@@ -120,7 +120,7 @@ it('caches currencies with flexible', function () {
     Config::set('filament-money-field.available_currencies', ['USD', 'EUR']);
 
     // Mock the ISOCurrenciesProvider
-    $this->mock(ISOCurrenciesProvider::class, function ($mock) {
+    $this->mock(ISOCurrenciesProvider::class, function ($mock): void {
         $mock->shouldReceive('loadCurrencies')
             ->once() // This should only be called once, then cached
             ->andReturn([
@@ -143,14 +143,14 @@ it('caches currencies with flexible', function () {
         ->and($currencies->count())->toBe(2);
 });
 
-it('caches currencies forever', function () {
+it('caches currencies forever', function (): void {
     // Configure to use forever cache
     Config::set('filament-money-field.currency_cache.type', 'forever');
     Config::set('filament-money-field.currency_provider', ISOCurrenciesProvider::class);
     Config::set('filament-money-field.available_currencies', ['USD', 'EUR']);
 
     // Mock the ISOCurrenciesProvider
-    $this->mock(ISOCurrenciesProvider::class, function ($mock) {
+    $this->mock(ISOCurrenciesProvider::class, function ($mock): void {
         $mock->shouldReceive('loadCurrencies')
             ->once() // This should only be called once, then cached
             ->andReturn([
@@ -173,13 +173,13 @@ it('caches currencies forever', function () {
         ->and($currencies->count())->toBe(2);
 });
 
-it('loads all available currencies when none specified', function () {
+it('loads all available currencies when none specified', function (): void {
     Config::set('filament-money-field.currency_cache.type', false);
     Config::set('filament-money-field.currency_provider', ISOCurrenciesProvider::class);
     Config::set('filament-money-field.available_currencies', []);
 
     // Mock the ISOCurrenciesProvider with more currencies
-    $this->mock(ISOCurrenciesProvider::class, function ($mock) {
+    $this->mock(ISOCurrenciesProvider::class, function ($mock): void {
         $mock->shouldReceive('loadCurrencies')
             ->andReturn([
                 'USD' => ['alphabeticCode' => 'USD', 'currency' => 'US Dollar', 'minorUnit' => 2, 'numericCode' => 840],
@@ -197,7 +197,7 @@ it('loads all available currencies when none specified', function () {
         ->and($currencies->has('GBP'))->toBeTrue();
 });
 
-it('loads crypto currencies when enabled', function () {
+it('loads crypto currencies when enabled', function (): void {
     Config::set('filament-money-field.currency_cache.type', false);
     Config::set('filament-money-field.currency_provider', ISOCurrenciesProvider::class);
     Config::set('filament-money-field.available_currencies', []);
