@@ -29,12 +29,12 @@ class MoneyInput extends TextInput
     /**
      * @var scalar | Closure | null
      */
-    protected $maxValue = null;
+    protected $maxValue;
 
     /**
      * @var scalar | Closure | null
      */
-    protected $minValue = null;
+    protected $minValue;
 
     protected function setUp(): void
     {
@@ -60,7 +60,7 @@ class MoneyInput extends TextInput
                             ->live(),
                         Checkbox::make('convert')
                             ->label('Convert amount to selected currency')
-                            ->helperText(function (Get $get) {
+                            ->helperText(function (Get $get): ?string {
 
                                 if (! $get('convert')) {
                                     return null;
@@ -84,7 +84,7 @@ class MoneyInput extends TextInput
                             })
                             ->default(false),
                     ])
-                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form) {
+                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
                         $money    = $record->{$component->name};
                         $currency = $data['currency'];
 
@@ -136,7 +136,7 @@ class MoneyInput extends TextInput
     {
         $this->currencyColumn = $this->name.config('currency_column_suffix', '_currency');
         $symbolPlacement      = $this->getSymbolPlacement();
-        $getCurrencySymbol    = function (MoneyInput $component) {
+        $getCurrencySymbol    = function (MoneyInput $component): string {
 
             /*
             dump(
@@ -164,7 +164,7 @@ class MoneyInput extends TextInput
         };
 
         if (config('filament-money-field.use_input_mask')) {
-            $this->mask(function (MoneyInput $component) {
+            $this->mask(function (MoneyInput $component): \Filament\Support\RawJs {
                 $formattingRules = MoneyFormatter::getFormattingRules(
                     $component->getLocale(),
                     $component->getCurrency()
@@ -216,7 +216,7 @@ class MoneyInput extends TextInput
         $this->minValue = $value;
 
         $this->rule(
-            static function (MoneyInput $component) {
+            static function (MoneyInput $component): \Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule {
                 return new MinValueRule((int) $component->getMinValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMinValue())
@@ -230,7 +230,7 @@ class MoneyInput extends TextInput
         $this->maxValue = $value;
 
         $this->rule(
-            static function (MoneyInput $component) {
+            static function (MoneyInput $component): \Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule {
                 return new MaxValueRule((int) $component->getMaxValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMaxValue())

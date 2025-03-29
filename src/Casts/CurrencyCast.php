@@ -24,12 +24,10 @@ class CurrencyCast implements CastsAttributes
             return null;
         }
 
-        $currency = match (config('filament-money-field.currency_cast_to')) {
+        return match (config('filament-money-field.currency_cast_to')) {
             \Money\Currency::class => new \Money\Currency($value),
             default                => Currency::fromCode($value)
         };
-
-        return $currency;
     }
 
     /**
@@ -47,6 +45,7 @@ class CurrencyCast implements CastsAttributes
         if ($value instanceof \Money\Currency) {
             return $value->getCode();
         }
+
         if ($value instanceof Currency) {
             return $value->getCode();
         }
