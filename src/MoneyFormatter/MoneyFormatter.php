@@ -7,37 +7,55 @@ use Money\Currencies\ISOCurrencies;
 use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
+use Money\Currency as MoneyCurrency;
 use Money\Parser\IntlLocalizedDecimalParser;
 use NumberFormatter;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
+use PhpStaticAnalysis\Attributes\Type;
 
 class MoneyFormatter
 {
-    public static function format(
-        null|int|string|Money $value,
-        Currency $currency,
+    public static function formatMoney(
+        Money $money,
         string $locale,
         int $outputStyle = NumberFormatter::CURRENCY,
         int $decimals = 2,
     ): string {
-        if ($value === '' || ! is_numeric($value)) {
-            return '';
-        }
-
         $numberFormatter = self::getNumberFormatter($locale, $outputStyle, $decimals);
         $moneyFormatter  = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies);
-
-        $money = new Money((int) $value, $currency->toMoneyCurrency());
 
         return $moneyFormatter->format($money);  // Outputs something like "$1.234,56"
     }
 
+    public static function format(
+        null|int|string|Money $value,
+        Currency|MoneyCurrency $currency,
+        string $locale,
+        int $outputStyle = NumberFormatter::CURRENCY,
+        int $decimals = 2,
+    ): string {
+        if ($value === '' || $value === null) {
+            return '';
+        }
+
+        $money = $value instanceof Money
+            ? $value
+            : new Money((int) $value, $currency instanceof Currency ? $currency->toMoneyCurrency() : $currency)
+        ;
+
+        return static::formatMoney($money, $locale, $outputStyle, $decimals);
+    }
+
     public static function formatAsDecimal(
         null|int|string|Money $value,
-        Currency $currency,
+        Currency|MoneyCurrency $currency,
         string $locale,
         int $decimals = 2,
     ): string {
+        if (!$value) {
+            return '';
+        }
+
         if ($value instanceof Money) {
             $currency = $value->getCurrency();
             $value    = $value->getAmount();
