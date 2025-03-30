@@ -5,9 +5,11 @@ namespace Pelmered\FilamentMoneyField\Currencies;
 use Money\Currency as MoneyCurrency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
+use PhpStaticAnalysis\Attributes\Param;
 
 class Currency implements \Stringable
 {
+    #[Param(code: 'string', name: 'string')]
     public function __construct(
         public string $code,
         public string $name,
@@ -59,6 +61,10 @@ class Currency implements \Stringable
 
     public function toMoneyCurrency(): MoneyCurrency
     {
+        if(!$this->code) {
+            return new MoneyCurrency('USD');
+        }
+
         return new MoneyCurrency($this->code);
     }
 }

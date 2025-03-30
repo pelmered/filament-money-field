@@ -7,6 +7,7 @@ use Filament\Infolists\Infolist;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
+use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
 trait HasMoneyAttributes
 {
@@ -32,14 +33,7 @@ trait HasMoneyAttributes
             return Currency::fromCode($this->getRecord()->{$this->currencyColumn});
         }
 
-        return $this->getDefaultCurrency();
-    }
-
-    protected function getDefaultCurrency(): Currency
-    {
-        $defaultCurrencyCode = (string) (config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency);
-
-        return $this->currency($defaultCurrencyCode)->getCurrency();
+        return MoneyFormatter::getDefaultCurrency();
     }
 
     public function getLocale(): string

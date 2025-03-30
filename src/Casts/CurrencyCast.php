@@ -33,7 +33,7 @@ class CurrencyCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      */
-    #[Param(value: 'Currency|string')]
+    #[Param(value: 'Currency|\Money\Currency|string|null')]
     #[Param(attributes: 'array<string, mixed>')]
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {

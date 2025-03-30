@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Money\Currency as MoneyCurrency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
+use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 use PhpStaticAnalysis\Attributes\Param;
+use PhpStaticAnalysis\Attributes\Returns;
 
 /**
  * @implements CastsAttributes<Money, Money>
@@ -28,6 +30,7 @@ class MoneyCast implements CastsAttributes
         $currency = $this->getCurrencyFromModel($model, $key);
 
         $value = (int) (config('filament-money-field.store.format') === 'decimal'
+            //? $value * 10 ** $this->getDecimals($currency->getCode() ?? MoneyFormatter::getDefaultCurrency()->getCode())
             ? $value * 10 ** $this->getDecimals($currency->getCode())
             : $value);
 
@@ -39,6 +42,7 @@ class MoneyCast implements CastsAttributes
      */
     #[Param(value: 'Money|string')]
     #[Param(attributes: 'array<string, mixed>')]
+    #[Returns('array<string, int|float|string|null>')]
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
         $amount   = $this->getAmount($model, $key, $value);
@@ -52,22 +56,27 @@ class MoneyCast implements CastsAttributes
         ];
     }
 
-    protected function getAmount(Model $model, string $key, Money|array|int|null $value): ?int
+    #[Param(value: 'array{0?: int, 1?: string, amount?: int, currency?: string}|Money|int|string|null')]
+    #[Returns('int|null')]
+    protected function getAmount(Model $model, string $key, Money|array|int|string|null $value): int|null
     {
-        return match (true) {
+        $amount = match (true) {
             $value instanceof Money => $value->getAmount(),
-            is_array($value)        => $value['amount'] ?? $value[0],
-            default                 => $value,
+            is_array($value)  => $value['amount'] ?? $value[0] ?? null,
+            default                 =>  $value,
         };
+
+        return $amount ? (int) $amount : null;
     }
 
-    protected function getCurrency(Model $model, string $key, Money|array|int|null $value): string
+    #[Param(value: 'array{0?: int, 1?: string, amount?: int, currency?: string}|Money|int|string|null')]
+    protected function getCurrency(Model $model, string $key, Money|array|int|string|null $value): string
     {
         return match (true) {
             $value instanceof Money => $value->getCurrency(),
-            is_array($value)        => $value['currency'] ?? $value[1],
+            is_array($value)  => $value['currency'] ?? $value[1] ?? null,
             default                 => $this->getCurrencyFromModel($model, $key)->getCode(),
-        };
+        } ?? MoneyFormatter::getDefaultCurrency()->getCode();
     }
 
     protected function getCurrencyFromModel(Model $model, string $name): MoneyCurrency

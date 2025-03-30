@@ -2,6 +2,7 @@
 
 namespace Pelmered\FilamentMoneyField\MoneyFormatter;
 
+use Filament\Infolists\Infolist;
 use Illuminate\Support\Number;
 use Money\Currencies\ISOCurrencies;
 use Money\Exception\ParserException;
@@ -173,6 +174,12 @@ class MoneyFormatter
             decimalSeparator: $numberFormatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL),
             groupingSeparator: $numberFormatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL),
         );
+    }
+
+    public static function getDefaultCurrency(): Currency
+    {
+        $defaultCurrencyCode = (string) (config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency);
+        return Currency::fromCode($defaultCurrencyCode);
     }
 
     private static function getNumberFormatter(string $locale, int $style, int $decimals = 2): NumberFormatter
