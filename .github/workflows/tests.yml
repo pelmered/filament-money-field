@@ -54,7 +54,7 @@ jobs:
           coverage: pcov
 
       - name: Install dependencies
-        run: composer update --prefer-stable --prefer-dist --no-interaction
+        run: composer install --no-interaction
 
       - name: Setup testbench
         run: php vendor/bin/testbench package:purge-skeleton --ansi
