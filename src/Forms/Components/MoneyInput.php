@@ -86,7 +86,7 @@ class MoneyInput extends TextInput
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
-            if (! is_numeric($state)) {
+            if (!$state) {
                 return null;
             }
 
