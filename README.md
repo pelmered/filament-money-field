@@ -14,20 +14,26 @@ This package would give "1 234,56 kr", while most other solutions probably would
 [![License](https://poser.pugx.org/pelmered/filament-money-field/license)](https://packagist.org/packages/pelmered/filament-money-field)
 
 [![Tests](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/coverage/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/type/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/complexity/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/crap/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Test Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/coverage/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Type Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/type/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Complexity](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/complexity/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Crap](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/crap/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
 
-[![Tested on PHP 8.2 to 8.3](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat)](https://otterwise.app/github/pelmered/filament-money-field)
+
+
+
+[![Tested with Laravel 11 to 12](https://img.shields.io/badge/Tested%20with%20Laravel-11%20%7C%2012-brightgreen?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![Tested on PHP 8.2 to 8.4](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3%20|%208.4-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 [![Tested on OS:es Linux, MacOS, Windows](https://img.shields.io/badge/Tested%20on%20lastest%20versions%20of-%20Ubuntu%20|%20MacOS%20|%20Windows-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 
 ## Requirements
 
 - PHP 8.2 or higher
-- Filament 3.0 or higher
+- Laravel 11.24.1 or higher
+- Filament 3.2 or higher
 - [PHP Internationalization extension (intl)](https://www.php.net/manual/en/intro.intl.php)
-- The database column should be a integers with minor units (i.e. cents) and not a float (Floats should never be used for storing money).
+- The database column type should be a either decimal or integer (amount stored with minor units i.e. cents).
 
 ## Key features
 

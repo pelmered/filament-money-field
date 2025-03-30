@@ -20,7 +20,7 @@ jobs:
                   onlyDirty: true
                   configPath: ./pint.json
 
-    rector:
+    check:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
