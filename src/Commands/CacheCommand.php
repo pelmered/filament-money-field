@@ -18,7 +18,7 @@ class CacheCommand extends Command
         if ($this->option('verbose')) {
             $this->table(
                 ['Name', 'Code', 'Minor Unit Decimals'],
-                $currencies->map(fn (Currency $currency) => [$currency->name, $currency->code, $currency->minorUnit])
+                $currencies->map(fn (Currency $currency): array => [$currency->name, $currency->code, $currency->minorUnit])
             );
         }
     }

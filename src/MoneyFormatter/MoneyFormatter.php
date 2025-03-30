@@ -53,7 +53,7 @@ class MoneyFormatter
         string $locale,
         int $decimals = 2,
     ): string {
-        if (!$value) {
+        if ($value === null) {
             return '';
         }
 

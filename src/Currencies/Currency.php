@@ -61,7 +61,7 @@ class Currency implements \Stringable
 
     public function toMoneyCurrency(): MoneyCurrency
     {
-        if(!$this->code) {
+        if($this->code === '' || $this->code === '0') {
             return new MoneyCurrency('USD');
         }
 

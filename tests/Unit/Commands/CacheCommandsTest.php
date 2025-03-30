@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Cache;
 
-test('cache command caches currencies', function () {
+test('cache command caches currencies', function (): void {
 
     Cache::forget('filament_money_currencies');
 
@@ -13,7 +13,7 @@ test('cache command caches currencies', function () {
     expect(Cache::has('filament_money_currencies'))->toBeTrue();
 });
 
-test('clear cache command removes currencies from cache', function () {
+test('clear cache command removes currencies from cache', function (): void {
 
     $this->artisan('money:cache')
          ->assertExitCode(0);
