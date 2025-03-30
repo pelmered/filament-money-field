@@ -1,5 +1,5 @@
 # github action that checks code with Rector
-name: Rector
+name: Code Check
 
 on:
     push:
