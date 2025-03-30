@@ -41,6 +41,11 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             );
         }
 
+        $this->commands([
+            CacheCommand::class,
+            ClearCacheCommand::class,
+        ]);
+
         Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
 
