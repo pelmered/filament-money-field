@@ -35,40 +35,44 @@ class MoneyInput extends TextInput
     #[Type('scalar | Closure | null')]
     protected $minValue;
 
+
+    protected ?bool $currencySwitcher = null;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->prepare();
 
-        $currencies = CurrencyRepository::getAvailableCurrencies();
+        $this->suffixAction(function (MoneyInput $component) {
+            if ($component->shouldHaveCurrencySwitcher()) {
 
-        /** @phpstan-ignore if.alwaysTrue */
-        if ($this->shouldHaveCurrencySwitcher()) {
-            $this->suffixAction(
-                Action::make('changeCurrency')
-                    ->icon('heroicon-m-arrow-path')
-                    ->tooltip('Change currency')
-                    ->form([
-                        Select::make('currency')
-                            ->label('Currency')
-                            ->options($currencies->toSelectArray())
-                            ->required()
-                            ->live(),
-                    ])
-                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
-                        $money    = $record->{$component->name};
-                        $currency = $data['currency'];
+                $currencies = CurrencyRepository::getAvailableCurrencies();
 
-                        $record->{$component->name} = new Money(
-                            $money->getAmount(),
-                            Currency::fromCode($currency)->toMoneyCurrency()
-                        );
+                return Action::make('changeCurrency')
+                      ->icon('heroicon-m-arrow-path')
+                      ->tooltip('Change currency')
+                      ->form([
+                          Select::make('currency')
+                                ->label('Currency')
+                                ->options($currencies->toSelectArray())
+                                ->required()
+                                ->live(),
+                      ])
+                      ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
+                          $money    = $record->{$component->name};
+                          $currency = $data['currency'];
 
-                        $record->save();
-                    })
-            );
-        }
+                          $record->{$component->name} = new Money(
+                              $money->getAmount(),
+                              Currency::fromCode($currency)->toMoneyCurrency()
+                          );
+
+                          $record->save();
+                      });
+            }
+        });
+
 
         $this->formatStateUsing(function (MoneyInput $component, mixed $state): string {
 
@@ -97,30 +101,12 @@ class MoneyInput extends TextInput
         });
     }
 
-    protected function shouldHaveCurrencySwitcher(): true
-    {
-        return true;
-    }
 
     protected function prepare(): void
     {
         $this->currencyColumn = $this->name.config('currency_column_suffix', '_currency');
         $symbolPlacement      = $this->getSymbolPlacement();
         $getCurrencySymbol    = function (MoneyInput $component): string {
-
-            /*
-            dump(
-                $component->name,
-                $component->getLocale(),
-                $component->getCurrency(),
-                MoneyFormatter::getFormattingRules(
-                    $component->getLocale(),
-                    $component->getCurrency()
-                )->currencySymbol
-            );
-            */
-            // ray($component->getLocale(), $component->getCurrency());
-            // ray(MoneyFormatter::getFormattingRules($component->getLocale(), $component->getCurrency()));
             return MoneyFormatter::getFormattingRules(
                 $component->getLocale(),
                 $component->getCurrency()
@@ -205,6 +191,25 @@ class MoneyInput extends TextInput
             },
             static fn (MoneyInput $component): bool => filled($component->getMaxValue())
         );
+
+        return $this;
+    }
+
+    protected function shouldHaveCurrencySwitcher(): bool
+    {
+        return $this->currencySwitcher ?? config('filament-money-field.currency_switcher_enabled_default', true);
+    }
+
+    public function currencySwitcherEnabled(): static
+    {
+        $this->currencySwitcher = true;
+
+        return $this;
+    }
+
+    public function currencySwitcherDisabled(): static
+    {
+        $this->currencySwitcher = false;
 
         return $this;
     }

@@ -83,6 +83,16 @@ return [
 
     /*
     |---------------------------------------------------------------------------
+    | Currency switcher enabled on fields by default
+    |---------------------------------------------------------------------------
+    |
+    | Should the currency switcher be enabled on fields by default.
+    | You can change this on a per-field basis with ->currencySwitcherEnabled() and ->currencySwitcherDisabled().
+    */
+    'currency_switcher_enabled_default' => env('MONEY_CURRENCY_SWITCHER_ENABLED', true),
+
+    /*
+    |---------------------------------------------------------------------------
     | Currency list
     |---------------------------------------------------------------------------
     |
