@@ -1,6 +1,7 @@
 <?php
 
 use Filament\Forms\ComponentContainer;
+use Filament\Forms\Components\Actions\Action;
 use Illuminate\Validation\ValidationException;
 use Money\Currency;
 use Money\Money;
@@ -282,14 +283,80 @@ it('allows setting a currency column', function (): void {
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
     $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([
-            MoneyInput::make('price')
-                ->currencyColumn('price_currency')
-                ->currency('EUR'),
-        ])
-        ->fill(['price' => new Money(123456, new Currency('EUR'))]);
+                                   ->statePath('data')
+                                   ->components([
+                                       MoneyInput::make('price')
+                                                 ->currencyColumn('price_currency')
+                                                 ->currency('EUR'),
+                                   ])
+                                   ->fill(['price' => new Money(123456, new Currency('EUR'))]);
 
     expect($component->getState()['price']->getAmount())->toEqual('123456');
     expect($component->getState()['price']->getCurrency()->getCode())->toEqual('EUR');
+});
+
+it('allows can enable or disable currency switcher with global config', function (): void {
+    config(['filament-money-field.currency_switcher_enabled_default' => false]);
+
+    $component = ComponentContainer::make(FormTestComponent::make())
+                                   ->statePath('data')
+                                   ->components([MoneyInput::make('price')])
+                                   ->fill(['price' => new Money(123456, new Currency('EUR'))]);
+
+    /** @var MoneyInput $field */
+    $field = $component->getComponent('data.price');
+
+    expect($field)->toBeInstanceOf(MoneyInput::class);
+
+    expect($field->getSuffixActions())->toBeEmpty();
+
+    config(['filament-money-field.currency_switcher_enabled_default' => true]);
+
+    $component = ComponentContainer::make(FormTestComponent::make())
+                                   ->statePath('data')
+                                   ->components([MoneyInput::make('price')])
+                                   ->fill(['price' => new Money(123456, new Currency('EUR'))]);
+
+    /** @var MoneyInput $field */
+    $field = $component->getComponent('data.price');
+
+    expect($field)->toBeInstanceOf(MoneyInput::class);
+
+    $action = $field->getSuffixActions()['changeCurrency'];
+    expect($action)->toBeInstanceOf(Action::class);
+});
+
+it('allows to override currency switcher with field config', function (): void {
+    // Global config = false, field config = true => enabled
+    config(['filament-money-field.currency_switcher_enabled_default' => false]);
+
+    $component = ComponentContainer::make(FormTestComponent::make())
+                                   ->statePath('data')
+                                   ->components([
+                                       MoneyInput::make('price')->currencySwitcherEnabled()
+                                   ])
+                                   ->fill(['price' => new Money(123456, new Currency('EUR'))]);
+
+    /** @var MoneyInput $field */
+    $field  = $component->getComponent('data.price');
+    $action = $field->getSuffixActions()['changeCurrency'];
+
+    expect($field)->toBeInstanceOf(MoneyInput::class);
+    expect($action)->toBeInstanceOf(Action::class);
+
+    // Global config = true, field config = false => disabled
+    config(['filament-money-field.currency_switcher_enabled_default' => true]);
+
+    $component = ComponentContainer::make(FormTestComponent::make())
+                                   ->statePath('data')
+                                   ->components([
+                                       MoneyInput::make('price')->currencySwitcherDisabled()
+                                   ])
+                                   ->fill(['price' => new Money(123456, new Currency('EUR'))]);
+
+    /** @var MoneyInput $field */
+    $field = $component->getComponent('data.price');
+
+    expect($field)->toBeInstanceOf(MoneyInput::class);
+    expect($field->getSuffixActions())->toBeEmpty();
 });
