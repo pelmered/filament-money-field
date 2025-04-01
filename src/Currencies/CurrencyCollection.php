@@ -14,7 +14,7 @@ class CurrencyCollection extends Collection
     {
         return $this->mapWithKeys(function (Currency $currency) {
             return [
-                $currency->code => $currency->name,
+                $currency->code => $currency->code.' - '.$currency->name,
             ];
         })->toArray();
     }

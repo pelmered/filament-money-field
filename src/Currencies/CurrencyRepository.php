@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\Currencies\Providers\CryptoCurrenciesProvider;
 use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
+use PhpStaticAnalysis\Attributes\Returns;
+use PhpStaticAnalysis\Attributes\Throws;
 
 class CurrencyRepository
 {
@@ -40,9 +42,12 @@ class CurrencyRepository
         };
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
+    public static function clearCache(): void
+    {
+        Cache::forget('filament_money_currencies');
+    }
+
+    #[Throws(BindingResolutionException::class)]
     protected static function loadAvailableCurrencies(): CurrencyCollection
     {
         $currencyProvider    = Config::get('filament-money-field.currency_provider', ISOCurrenciesProvider::class);
@@ -61,6 +66,16 @@ class CurrencyRepository
 
         if (! $availableCurrencies) {
             $availableCurrencies = array_keys($currencies);
+
+            // Filter out excluded currencies
+            $availableCurrencies = array_diff(
+                $availableCurrencies,
+                Config::get('filament-money-field.excluded_currencies', [])
+            );
+        }
+
+        if (is_string($availableCurrencies)) {
+            $availableCurrencies = explode(',', $availableCurrencies);
         }
 
         return new CurrencyCollection(
@@ -73,6 +88,8 @@ class CurrencyRepository
                             $currencies[$currencyCode]['minorUnit'],
                         ),
                     ];
-                }));
+                }
+            )
+        );
     }
 }
