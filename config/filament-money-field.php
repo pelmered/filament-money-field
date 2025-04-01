@@ -110,13 +110,14 @@ return [
     | Provide a list of available currencies for selection.
     | It should be a list of ISO 4217 currency codes.
     | For example: ['USD', 'EUR']
+    | If you want to include all currencies, leave this as an empty array.
+    | If you include all with an empty array, you may exclude currencies with 'excluded_currencies'.
+    | TIP: In your .env file, you can set MONEY_AVAILABLE_CURRENCIES as a comma-separated string like this:
+    | MONEY_AVAILABLE_CURRENCIES="USD,EUR,SEK"
     |
     */
-    'available_currencies' => [
-        'USD',
-        'EUR',
-        'SEK',
-    ],
+    'available_currencies' => env('MONEY_AVAILABLE_CURRENCIES', []),
+    'excluded_currencies' => [],
 
     /*
     |---------------------------------------------------------------------------

@@ -24,7 +24,7 @@ class CurrencySynthesizer extends Synth
     }
 
     #[Param(value: '?string')]
-    public function hydrate(?string $value): ?string
+    public function hydrate(?string $value): ?Currency
     {
         if ($value === null) {
             return null;
