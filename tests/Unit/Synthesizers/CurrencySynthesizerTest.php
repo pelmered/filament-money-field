@@ -29,9 +29,11 @@ it('can synthesize currencies', function () {
 
     $hydrated = $synthesizer->hydrate('USD');
 
+    /*
     if ($hydrated instanceof Currency::class) {
         $this->fail('Expected hydrate to return a Currency instance.');
     }
+    */
 
     expect($hydrated)->toBeInstanceOf(Currency::class);
     expect($hydrated->getCode())->toBe('USD');

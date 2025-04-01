@@ -36,9 +36,11 @@ it('can synthesize money', function () {
 
     $hydrated = $synthesizer->hydrate(['amount' => 2412, 'currency' => 'USD']);
 
+    /*
     if ($hydrated instanceof Money::class) {
         $this->fail('Expected hydrate to return a Money instance.');
     }
+    */
 
     expect($hydrated)->toBeInstanceOf(Money::class);
     expect($hydrated->getAmount())->toBe('2412');
