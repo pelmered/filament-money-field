@@ -20,15 +20,13 @@ trait HasMoneyAttributes
 
     protected bool $inMinor = true;
 
-    protected ?string $monetarySeparator = null;
-
     public function getCurrency(): Currency
     {
         if (isset($this->currency)) {
             return $this->currency;
         }
 
-        if ($this->getRecord() && isset($this->currencyColumn)) {
+        if (isset($this->currencyColumn) && $this->getRecord()) {
             return Currency::fromCode($this->getRecord()->{$this->currencyColumn});
         }
 

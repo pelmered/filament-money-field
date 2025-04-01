@@ -5,6 +5,7 @@ namespace Pelmered\FilamentMoneyField\Tests\Unit\Synthesizers;
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Mockery;
 use Money\Money;
+use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Synthesizers\MoneySynthesizer;
 
 afterEach(function (): void {
@@ -14,7 +15,7 @@ afterEach(function (): void {
 it('can synthesize money', function (): void {
     $context = Mockery::mock(ComponentContext::class);
 
-    $currency = \Pelmered\FilamentMoneyField\Currencies\Currency::fromCode('USD');
+    $currency = Currency::fromCode('USD');
     $money    = new Money(123456, $currency->toMoneyCurrency());
 
     $synthesizer = new MoneySynthesizer($context, 'price');

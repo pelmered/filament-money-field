@@ -25,7 +25,7 @@ class MoneyColumn extends TextColumn
                 return '';
             }
 
-            $amount = $state instanceof \Money\Money ? $state->getAmount() : $state;
+            $amount = $state instanceof Money ? $state->getAmount() : $state;
 
             return MoneyFormatter::format(
                 $amount,
@@ -43,7 +43,7 @@ class MoneyColumn extends TextColumn
                 return '';
             }
 
-            $amount = $state instanceof \Money\Money ? $state->getAmount() : $state;
+            $amount = $state instanceof Money ? $state->getAmount() : $state;
 
             return MoneyFormatter::formatShort(
                 $amount,

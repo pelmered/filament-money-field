@@ -27,7 +27,6 @@ class MoneySynthesizer extends Synth
     }
 
     #[Param(value: '?array{amount?: int|numeric-string, currency?: non-empty-string}')]
-    #[Returns('Money|null')]
     public function hydrate(?array $value): ?Money
     {
         if ($value === null || ! isset($value['amount'], $value['currency'])) {

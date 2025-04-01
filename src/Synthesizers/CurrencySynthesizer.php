@@ -16,14 +16,12 @@ class CurrencySynthesizer extends Synth
         return $target instanceof Currency;
     }
 
-    #[Param(target: 'Currency ')]
     #[Returns('array{string, array{}}')]
     public function dehydrate(Currency $target): array
     {
         return [$target->getCode(), []];
     }
 
-    #[Param(value: '?string')]
     public function hydrate(?string $value): ?Currency
     {
         if ($value === null) {

@@ -9,7 +9,6 @@ use PhpStaticAnalysis\Attributes\Param;
 
 class Currency implements \Stringable
 {
-    #[Param(code: 'string', name: 'string')]
     public function __construct(
         public string $code,
         public string $name,
@@ -41,9 +40,6 @@ class Currency implements \Stringable
         return $this->code;
     }
 
-    /**
-     * Checks whether this currency is the same as an other.
-     */
     public function equals(Currency $other): bool
     {
         return $this->code === $other->code;

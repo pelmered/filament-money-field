@@ -25,9 +25,7 @@ class MoneyInput extends TextInput
 
     protected ?string $symbolPlacement = null;
 
-    /**
-     * @var scalar | Closure | null
-     */
+    #[Type('scalar | Closure | null')]
     protected $maxValue;
 
     #[Type('scalar | Closure | null')]
