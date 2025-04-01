@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\Currencies\Providers\CryptoCurrenciesProvider;
 use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
+use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use PhpStaticAnalysis\Attributes\Returns;
 use PhpStaticAnalysis\Attributes\Throws;
 
@@ -20,7 +21,11 @@ class CurrencyRepository
 
     public static function isValidCode(string $currencyCode): bool
     {
-        return static::isValid(Currency::fromCode($currencyCode));
+        try {
+            return static::isValid(Currency::fromCode($currencyCode));
+        } catch (UnsupportedCurrency) {
+            return false;
+        }
     }
 
     public static function getAvailableCurrencies(): CurrencyCollection
@@ -38,7 +43,7 @@ class CurrencyRepository
             'remember' => Cache::remember('filament_money_currencies', $config['ttl'], $callback),
             'flexible' => Cache::flexible('filament_money_currencies', $config['ttl'], $callback),
             'forever'  => Cache::forever('filament_money_currencies', $callback),
-            default    => static::loadAvailableCurrencies(),
+            default    => $callback(),
         };
     }
 
