@@ -117,7 +117,7 @@ return [
     |
     */
     'available_currencies' => env('MONEY_AVAILABLE_CURRENCIES', []),
-    'excluded_currencies' => [],
+    'excluded_currencies'  => [],
 
     /*
     |---------------------------------------------------------------------------

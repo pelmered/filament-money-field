@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\Currencies\Providers\CryptoCurrenciesProvider;
 use Pelmered\FilamentMoneyField\Currencies\Providers\ISOCurrenciesProvider;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
-use PhpStaticAnalysis\Attributes\Returns;
 use PhpStaticAnalysis\Attributes\Throws;
 
 class CurrencyRepository

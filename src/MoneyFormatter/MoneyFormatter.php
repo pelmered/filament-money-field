@@ -5,14 +5,13 @@ namespace Pelmered\FilamentMoneyField\MoneyFormatter;
 use Filament\Infolists\Infolist;
 use Illuminate\Support\Number;
 use Money\Currencies\ISOCurrencies;
+use Money\Currency as MoneyCurrency;
 use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
-use Money\Currency as MoneyCurrency;
 use Money\Parser\IntlLocalizedDecimalParser;
 use NumberFormatter;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
-use PhpStaticAnalysis\Attributes\Type;
 
 class MoneyFormatter
 {
@@ -41,8 +40,7 @@ class MoneyFormatter
 
         $money = $value instanceof Money
             ? $value
-            : new Money((int) $value, $currency instanceof Currency ? $currency->toMoneyCurrency() : $currency)
-        ;
+            : new Money((int) $value, $currency instanceof Currency ? $currency->toMoneyCurrency() : $currency);
 
         return static::formatMoney($money, $locale, $outputStyle, $decimals);
     }
@@ -179,6 +177,7 @@ class MoneyFormatter
     public static function getDefaultCurrency(): Currency
     {
         $defaultCurrencyCode = (string) (config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency);
+
         return Currency::fromCode($defaultCurrencyCode);
     }
 

@@ -10,10 +10,11 @@ class CacheCommand extends Command
 {
     protected $signature = 'money:cache';
 
-    public function handle(): void {
+    public function handle(): void
+    {
         $currencies = CurrencyRepository::getAvailableCurrencies();
 
-        $this->info($currencies->count() . ' Currencies cached.');
+        $this->info($currencies->count().' Currencies cached.');
 
         if ($this->option('verbose')) {
             $this->table(

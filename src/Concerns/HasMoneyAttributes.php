@@ -3,7 +3,6 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
-use Filament\Infolists\Infolist;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;

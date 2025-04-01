@@ -30,7 +30,7 @@ class MoneyCast implements CastsAttributes
         $currency = $this->getCurrencyFromModel($model, $key);
 
         $value = (int) (config('filament-money-field.store.format') === 'decimal'
-            //? $value * 10 ** $this->getDecimals($currency->getCode() ?? MoneyFormatter::getDefaultCurrency()->getCode())
+            // ? $value * 10 ** $this->getDecimals($currency->getCode() ?? MoneyFormatter::getDefaultCurrency()->getCode())
             ? $value * 10 ** $this->getDecimals($currency->getCode())
             : $value);
 
@@ -58,12 +58,12 @@ class MoneyCast implements CastsAttributes
 
     #[Param(value: 'array{0?: int, 1?: string, amount?: int, currency?: string}|Money|int|string|null')]
     #[Returns('int|null')]
-    protected function getAmount(Model $model, string $key, Money|array|int|string|null $value): int|null
+    protected function getAmount(Model $model, string $key, Money|array|int|string|null $value): ?int
     {
         $amount = match (true) {
             $value instanceof Money => $value->getAmount(),
-            is_array($value)  => $value['amount'] ?? $value[0] ?? null,
-            default                 =>  $value,
+            is_array($value)        => $value['amount'] ?? $value[0] ?? null,
+            default                 => $value,
         };
 
         return $amount ? (int) $amount : null;
@@ -74,7 +74,7 @@ class MoneyCast implements CastsAttributes
     {
         return match (true) {
             $value instanceof Money => $value->getCurrency(),
-            is_array($value)  => $value['currency'] ?? $value[1] ?? null,
+            is_array($value)        => $value['currency'] ?? $value[1] ?? null,
             default                 => $this->getCurrencyFromModel($model, $key)->getCode(),
         } ?? MoneyFormatter::getDefaultCurrency()->getCode();
     }
