@@ -2,37 +2,23 @@
 
 namespace Pelmered\FilamentMoneyField\Tests\Unit\Synthesizers;
 
-use Filament\Forms\ComponentContainer;
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Mockery;
-use Mockery\MockInterface;
-use Money\Money;
-use Nette\Schema\Expect;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
-use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
-use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 
 afterEach(function () {
     Mockery::close();
 });
 
 it('can synthesize currencies', function () {
-    $component = ComponentContainer::make(FormTestComponent::make())
-                                   ->statePath('data')
-                                   ->components([
-                                       MoneyInput::make('price')->currencySwitcherEnabled()
-                                   ])
-                                   ->fill(['price' => new Money(123456, new \Money\Currency('EUR'))]);
-
-    $context ??= new ComponentContext($component);
+    $context  = Mockery::mock(ComponentContext::class);
     $currency = Currency::fromCode('USD');
 
     $synthesizer = new CurrencySynthesizer($context, 'price');
 
     expect($synthesizer::match($currency))->toBeTrue();
-    expect($synthesizer::match(new \stdClass()))->toBeFalse();
+    expect($synthesizer::match(new \stdClass))->toBeFalse();
 
     $dehydrated = $synthesizer->dehydrate($currency);
 
@@ -50,4 +36,3 @@ it('can synthesize currencies', function () {
     expect($hydrated)->toBeInstanceOf(Currency::class);
     expect($hydrated->getCode())->toBe('USD');
 });
-

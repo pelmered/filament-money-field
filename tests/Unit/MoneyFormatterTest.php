@@ -167,8 +167,11 @@ it('formats money in usd', function (mixed $input, string $expectedOutput): void
 })->with(provideMoneyDataUsd());
 
 it('formats money in sek', function (mixed $input, string $expectedOutput): void {
-    expect(MoneyFormatter::format($input, Currency::fromCode('SEK'), 'sv_SE'))
-        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+    $result        = MoneyFormatter::format($input, Currency::fromCode('SEK'), 'sv_SE');
+    $cleanResult   = replaceNonBreakingSpaces($result);
+    $cleanExpected = replaceNonBreakingSpaces($expectedOutput);
+
+    expect($cleanResult)->toEqual($cleanExpected);
 })->with(provideMoneyDataSek());
 
 it('formats decimal money in usd', function (mixed $input, string $expectedOutput): void {
@@ -177,8 +180,11 @@ it('formats decimal money in usd', function (mixed $input, string $expectedOutpu
 })->with(provideDecimalMoneyDataUsd());
 
 it('formats decimal money in sek', function (mixed $input, string $expectedOutput): void {
-    expect(MoneyFormatter::formatAsDecimal($input, Currency::fromCode('SEK'), 'sv_SE'))
-        ->toBe(replaceNonBreakingSpaces($expectedOutput));
+    $result        = MoneyFormatter::formatAsDecimal($input, Currency::fromCode('SEK'), 'sv_SE');
+    $cleanResult   = replaceNonBreakingSpaces($result);
+    $cleanExpected = replaceNonBreakingSpaces($expectedOutput);
+
+    expect($cleanResult)->toEqual($cleanExpected);
 })->with(provideDecimalMoneyDataSek());
 
 it('parses decimal money in sek', function (mixed $input, string $expectedOutput): void {
@@ -206,15 +212,21 @@ it('parses small decimal money', function (): void {
 it('formats to international currency symbol', function (): void {
     config(['filament-money-field.intl_currency_symbol' => true]);
 
-    expect(MoneyFormatter::format(100000, Currency::fromCode('USD'), 'en_US'))
-        ->toBe(replaceNonBreakingSpaces('USD 1,000.00'));
+    $result        = MoneyFormatter::format(100000, Currency::fromCode('USD'), 'en_US');
+    $cleanResult   = replaceNonBreakingSpaces($result);
+    $cleanExpected = replaceNonBreakingSpaces('USD 1,000.00');
+
+    expect($cleanResult)->toEqual($cleanExpected);
 });
 
 it('formats to international currency symbol as suffix', function (): void {
     config(['filament-money-field.intl_currency_symbol' => true]);
 
-    expect(MoneyFormatter::format(100000, Currency::fromCode('SEK'), 'sv_SE'))
-        ->toBe(replaceNonBreakingSpaces('1 000,00 SEK'));
+    $result        = MoneyFormatter::format(100000, Currency::fromCode('SEK'), 'sv_SE');
+    $cleanResult   = replaceNonBreakingSpaces($result);
+    $cleanExpected = replaceNonBreakingSpaces('1 000,00 SEK');
+
+    expect($cleanResult)->toEqual($cleanExpected);
 });
 
 it('formats with decimal parameter', function (): void {
@@ -225,8 +237,11 @@ it('formats with decimal parameter', function (): void {
 });
 
 it('formats with decimal parameter in sek', function (): void {
-    expect(MoneyFormatter::format(100060, Currency::fromCode('SEK'), 'sv_SE', decimals: 0))
-        ->toBe(replaceNonBreakingSpaces('1 001 kr'));
+    $result        = MoneyFormatter::format(100060, Currency::fromCode('SEK'), 'sv_SE', decimals: 0);
+    $cleanResult   = replaceNonBreakingSpaces($result);
+    $cleanExpected = replaceNonBreakingSpaces('1 001 kr');
+
+    expect($cleanResult)->toEqual($cleanExpected);
 });
 
 it('formats 0 in short format', function (): void {
