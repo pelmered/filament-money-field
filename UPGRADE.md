@@ -47,7 +47,6 @@ protected function priceCurrency(): Attribute
 }
 ````
 
-
 ### Add currency columns
 
 Each money column needs a corresponding currency column with the name {money_column}_currency
@@ -78,11 +77,11 @@ You need to configure the available currencies in the `filament-money-field.php`
 In the config file you can configure like this:
 
 ```php
-    'available_currencies' => [
-        'USD',
-        'EUR',
-        'GBP',
-    ],
+'available_currencies' => [
+    'USD',
+    'EUR',
+    'GBP',
+],
 ```
 
 In the `.env` file you can configure like this:

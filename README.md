@@ -78,7 +78,6 @@ MONEY_DEFAULT_CURRENCY=SEK
 php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider" --tag="config"
 ```
 
-
 #### Decimals and significant digits
 
 The number of decimals and significant digits can be set in the config file. Defaults to 2.
@@ -110,11 +109,70 @@ MoneyColumn::make('price')->decimals(-2);
 
 #### Migrations
 
-TODO: Add docs
+Each money column needs a corresponding currency column with the name `{money_column_name}_currency` 
+
+For new columns
+```php
+Schema::table('tablename', function (Blueprint $table) {
+    $table->money('price'); // This will create two columns, 'price' (integer) and 'price_currency' (char(3))
+});
+```
+For changing existing columns, in this case a column called `price`.
+```php
+Schema::table('tablename', function (Blueprint $table) {
+    $table->char('price_currency', 3)->after('price')->change();
+    $this->index(['price', 'price_currency']);
+});
+```
+Don't forget to run your migrations.
 
 #### Casts
 
-TODO: Add docs
+
+Each money column should have a cast that casts the column to a Money object and the currency column should have a cast that casts the column to a Currency object
+
+```php
+use Pelmered\FilamentMoneyField\Casts\CurrencyCast;
+use Pelmered\FilamentMoneyField\Casts\MoneyCast;
+
+protected function casts(): array
+{
+    return [
+        'price' => MoneyCast::class,
+        'price_currency' => CurrencyCast::class,
+        'another_price' => MoneyCast::class,
+        'another_price_currency' => CurrencyCast::class,
+    ];
+}
+```
+Or as a property:
+```php
+protected $casts = [
+    'price' => MoneyCast::class,
+    'price_currency' => CurrencyCast::class,
+    'another_price' => MoneyCast::class,
+    'another_price_currency' => CurrencyCast::class,
+];
+```
+This will give you value objects for the money and currency columns when you acceess them in your code. 
+For example `$model->price` will get you a `\Money\Money` object. To access the amount you need to write `$model->price->getAmount()`.
+Currency columns gives you a `\Pelmered\FilamentMoneyField\Currencies\Currency` object, and to get the currency code as a string you need to write `$model->priceCurrency->getCode()`.
+
+Value objects are great in most cases, but if you don't want to use them in your code, you can add an [accessor](https://laravel.com/docs/12.x/eloquent-mutators#accessors-and-mutators) for getting the raw values instead. This will cast your values to strings:
+```php
+protected function price(): Attribute
+{
+    return Attribute::make(
+        get: static fn (string $value) => $value
+    );
+}
+protected function priceCurrency(): Attribute
+{
+    return Attribute::make(
+        get: static fn (string $value) => $value,
+    );
+}
+````
 
 ## Usage
 
@@ -140,7 +198,10 @@ MoneyInput::make('price')
     ->maxValue(10000) // Add min and max value (in minor units, i.e. cents) to the input field. In this case no values over 100
     ->step(100) // Step value for the input field. In this case only multiples of 100 are allowed.
     ->decimals(0)
-    ->getSymbolPlacement('after'), // Possible options: 'after', 'before', 'none'. Defaults to 'before'
+    ->getSymbolPlacement('after') // Possible options: 'after', 'before', 'none'. Defaults to 'before'
+    ->hideCurrencySymbol() // Hide currency symbol.
+    ->currencySwitcherEnabled() // Enable the currency switcher (if it is disabled globally in the config file).
+    ->currencySwitcherDisabled() // Disable the currency switcher (if it is enabled globally in the config file).
 ```
 
 ### Table column
@@ -261,8 +322,6 @@ MoneyInput::make('price')->decimals(function () {
 Contact me or create an issue if you want something of this, or something else. 
 I appreciate if you could tell me a bit about your use case for that feature as well. 
 
-- Improve the input mask.
-- Add support for dynamic currency and locale based on current user.
 - Currency conversions. Set what base currency the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case.
 
 ## Contributing
@@ -273,5 +332,5 @@ When you are submitting a PR, I appreciate if you:
 
 - Add tests for your code. Not a strict requirement. Ask for guidance if you are unsure. I will try to help if I have time. 
 - Run the test suite and make sure it passes with `composer test`.
-- Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. 
+- Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. You might also try to fix the code automatically with `composer fix`.
 

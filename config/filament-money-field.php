@@ -14,7 +14,6 @@ return [
     */
     'store' => [
         'format' => 'int', // Allowed values: 'int' or 'decimal'
-
     ],
 
     /*

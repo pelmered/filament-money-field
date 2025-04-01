@@ -135,7 +135,7 @@ class MoneyInput extends TextInput
 
     public function getSymbolPlacement(): string
     {
-        return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', 'before');
+        return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', CurrencySymbolPlacement::Before->value);
     }
 
     public function symbolPlacement(CurrencySymbolPlacement|string $placement): static

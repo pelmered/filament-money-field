@@ -65,12 +65,16 @@
             "@build",
             "@php vendor/bin/testbench serve"
         ],
-        "lint": [
-            "composer pint",
-            "composer phpstan"
+        "check" : [
+            "composer lint",
+            "composer test"
         ],
-        "lint-fix": [
+        "lint": [
+            "composer check"
+        ],
+        "fix": [
             "composer pint --fix",
+            "vendor/bin/rector",
             "composer phpstan --fix"
         ],
         "test": [
@@ -81,10 +85,6 @@
         ],
         "types": [
             "@php vendor/bin/pest --type-coverage"
-        ],
-        "check" : [
-            "composer lint",
-            "composer test"
         ]
     },
     "config": {
