@@ -11,9 +11,7 @@ afterEach(function (): void {
     Mockery::close();
 });
 
-
 it('can synthesize money', function (): void {
-    // Create a mocked context
     $context = Mockery::mock(ComponentContext::class);
 
     $currency = \Pelmered\FilamentMoneyField\Currencies\Currency::fromCode('USD');
