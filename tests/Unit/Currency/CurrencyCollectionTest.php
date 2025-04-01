@@ -24,9 +24,9 @@ it('can transform currencies to select array', function (): void {
         ->toBeArray()
         ->toHaveCount(3)
         ->toHaveKeys(['USD', 'EUR', 'SEK'])
-        ->and($selectArray['USD'])->toBe('US Dollar')
-        ->and($selectArray['EUR'])->toBe('Euro')
-        ->and($selectArray['SEK'])->toBe('Swedish Krona');
+        ->and($selectArray['USD'])->toBe('USD - US Dollar')
+        ->and($selectArray['EUR'])->toBe('EUR - Euro')
+        ->and($selectArray['SEK'])->toBe('SEK - Swedish Krona');
 });
 
 it('returns empty array when collection is empty', function (): void {

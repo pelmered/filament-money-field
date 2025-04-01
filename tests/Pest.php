@@ -19,7 +19,7 @@ pest()->project()->github('pelmered/filament-money-field');
 |
 */
 
-uses(TestCase::class)->in('Unit');
+uses(TestCase::class)->in('Unit', 'Components', 'Forms');
 
 /*
 |--------------------------------------------------------------------------
@@ -48,11 +48,11 @@ expect()->extend('toBeOne', function () {
 */
 
 /**
- * Replaces all non-breaking spaces in the given string with the Unicode character for non-breaking space.
+ * Replaces all non-breaking spaces in the given string with regular spaces.
  */
 function replaceNonBreakingSpaces(string $string): string
 {
-    return preg_replace('/\s/', "\xc2\xa0", $string);
+    return str_replace(["\xC2\xA0", "\xE2\x80\xAF"], ' ', $string);
 }
 
 function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array

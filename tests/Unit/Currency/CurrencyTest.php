@@ -19,7 +19,7 @@ it('can be created from currency code', function (string $code): void {
  * @test
  */
 it('throws exception for unsupported currency', function (): void {
-    config(['filament-money-field.currencies' => ['USD', 'EUR', 'SEK']]);
+    config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
     expect(fn (): \Pelmered\FilamentMoneyField\Currencies\Currency => Currency::fromCode('PHP'))->toThrow(UnsupportedCurrency::class);
     expect(fn (): \Pelmered\FilamentMoneyField\Currencies\Currency => Currency::fromCode('INR'))->toThrow(UnsupportedCurrency::class);

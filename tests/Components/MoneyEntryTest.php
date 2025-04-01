@@ -1,7 +1,5 @@
 <?php
 
-uses(\Pelmered\FilamentMoneyField\Tests\TestCase::class);
-
 use Filament\Infolists\ComponentContainer;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
@@ -27,7 +25,10 @@ it('formats infolist money in sek', function (): void {
 
     $entry = $component->getComponent('price');
 
-    expect($entry->formatState($entry->getState()))->toEqual(replaceNonBreakingSpaces('10 000,00 kr'));
+    $formatted = $entry->formatState($entry->getState());
+    $expected  = '10 000,00 kr';
+
+    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
 });
 
 it('formats infolist money in short format in USD', function (): void {
@@ -39,7 +40,7 @@ it('formats infolist money in short format in USD', function (): void {
 
     $entry = $component->getComponent('price');
 
-    expect($entry->formatState($entry->getState()))->toEqual(replaceNonBreakingSpaces('$1.23M'));
+    expect($entry->formatState($entry->getState()))->toEqual('$1.23M');
 });
 
 it('formats infolist money in short format in sek', function (): void {
@@ -51,7 +52,10 @@ it('formats infolist money in short format in sek', function (): void {
 
     $entry = $component->getComponent('price');
 
-    expect($entry->formatState($entry->getState()))->toEqual(replaceNonBreakingSpaces('1,23K kr'));
+    $formatted = $entry->formatState($entry->getState());
+    $expected  = '1,23K kr';
+
+    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
 });
 
 it('formats infolist money in sek with no decimals', function (): void {
@@ -63,5 +67,8 @@ it('formats infolist money in sek with no decimals', function (): void {
 
     $entry = $component->getComponent('price');
 
-    expect($entry->formatState($entry->getState()))->toEqual(replaceNonBreakingSpaces('10 000 kr'));
+    $formatted = $entry->formatState($entry->getState());
+    $expected  = '10 000 kr';
+
+    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
 });

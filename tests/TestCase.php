@@ -10,6 +10,7 @@ use Filament\Support\SupportServiceProvider;
 use Illuminate\Contracts\Config\Repository;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Attributes\WithMigration;
+use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
 
 use function Orchestra\Testbench\artisan;
@@ -52,6 +53,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
                 'prefix'   => '',
             ]);
             $config->set('cache.default', 'file');
+
+            $config->set('filament-money-field.currency_cache.type', false);
+            $config->set('filament-money-field.available_currencies', ['USD', 'EUR', 'SEK']);
 
             // Setup queue database connections.
             /*
