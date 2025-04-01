@@ -12,7 +12,6 @@ afterEach(function (): void {
 });
 
 it('can synthesize money', function (): void {
-    // Create a mocked context
     $context = Mockery::mock(ComponentContext::class);
 
     $currency = \Pelmered\FilamentMoneyField\Currencies\Currency::fromCode('USD');
@@ -34,6 +33,12 @@ it('can synthesize money', function (): void {
     expect($dehydrated[0]['currency']->getCode())->toBe('USD');
 
     $hydrated = $synthesizer->hydrate(['amount' => 2412, 'currency' => 'USD']);
+
+    /*
+    if ($hydrated instanceof Money::class) {
+        $this->fail('Expected hydrate to return a Money instance.');
+    }
+    */
 
     expect($hydrated)->toBeInstanceOf(Money::class);
     expect($hydrated->getAmount())->toBe('2412');

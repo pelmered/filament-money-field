@@ -12,9 +12,7 @@ afterEach(function (): void {
 });
 
 it('can synthesize currencies', function (): void {
-    // Create a mocked context
-    $context = Mockery::mock(ComponentContext::class);
-
+    $context  = Mockery::mock(ComponentContext::class);
     $currency = Currency::fromCode('USD');
 
     $synthesizer = new CurrencySynthesizer($context, 'price');
@@ -30,6 +28,12 @@ it('can synthesize currencies', function (): void {
     expect($dehydrated[1])->toBe([]);
 
     $hydrated = $synthesizer->hydrate('USD');
+
+    /*
+    if ($hydrated instanceof Currency::class) {
+        $this->fail('Expected hydrate to return a Currency instance.');
+    }
+    */
 
     expect($hydrated)->toBeInstanceOf(Currency::class);
     expect($hydrated->getCode())->toBe('USD');
