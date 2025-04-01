@@ -7,7 +7,7 @@ use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\TestComponent;
 
-it('handles empty string properly', function () {
+it('handles empty string properly', function (): void {
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('money')])
@@ -19,7 +19,7 @@ it('handles empty string properly', function () {
     expect($moneyValue)->toBeNull();
 });
 
-it('handles extremely large amounts properly', function () {
+it('handles extremely large amounts properly', function (): void {
     // Use actual Money object directly since filling with string isn't working
     $largeMoneyValue = new Money('999999999999', new Currency('USD'));
 
@@ -34,7 +34,7 @@ it('handles extremely large amounts properly', function () {
     expect($state['money']->getAmount())->toBe('999999999999');
 });
 
-it('handles currency changes gracefully', function () {
+it('handles currency changes gracefully', function (): void {
     // First test with USD currency
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
@@ -61,7 +61,7 @@ it('handles currency changes gracefully', function () {
     expect($state['money']->getCurrency()->getCode())->toBe('EUR');
 });
 
-it('handles negative values correctly', function () {
+it('handles negative values correctly', function (): void {
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
@@ -70,7 +70,7 @@ it('handles negative values correctly', function () {
     expect($component->getState()['price']->getAmount())->toBe('-50000');
 });
 
-it('handles zero values correctly', function () {
+it('handles zero values correctly', function (): void {
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
@@ -79,7 +79,7 @@ it('handles zero values correctly', function () {
     expect($component->getState()['price']->getAmount())->toBe('0');
 });
 
-it('handles empty string as null', function () {
+it('handles empty string as null', function (): void {
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
@@ -88,7 +88,7 @@ it('handles empty string as null', function () {
     expect($component->getState()['price'])->toBeNull();
 });
 
-it('handles custom step values', function () {
+it('handles custom step values', function (): void {
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
         ->components([
@@ -101,7 +101,7 @@ it('handles custom step values', function () {
     expect($field->getStep())->toBe(0.01);
 });
 
-it('handles hidden state correctly', function () {
+it('handles hidden state correctly', function (): void {
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
         ->components([
@@ -124,7 +124,7 @@ it('handles hidden state correctly', function () {
     expect($field->isHidden())->toBeTrue();
 });
 
-it('handles disabled state correctly', function () {
+it('handles disabled state correctly', function (): void {
     $component = ComponentContainer::make(TestComponent::make())
         ->statePath('data')
         ->components([

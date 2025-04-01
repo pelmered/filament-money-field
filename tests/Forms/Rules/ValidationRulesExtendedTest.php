@@ -5,7 +5,7 @@ use Pelmered\FilamentMoneyField\Forms\Rules\MoneyCurrency;
 use Pelmered\FilamentMoneyField\Forms\Rules\MoneyMax;
 use Pelmered\FilamentMoneyField\Forms\Rules\MoneyMin;
 
-it('validates currency correctly', function () {
+it('validates currency correctly', function (): void {
     $rule = new MoneyCurrency(['USD', 'EUR']);
 
     $validator = Validator::make(['amount' => ['amount' => 1000, 'currency' => 'USD']], [
@@ -22,7 +22,7 @@ it('validates currency correctly', function () {
     expect($validator->errors()->first('amount'))->toContain('The selected currency is invalid');
 });
 
-it('validates minimum money amount correctly', function () {
+it('validates minimum money amount correctly', function (): void {
     $rule = new MoneyMin(1000);
 
     // Test valid amount
@@ -41,7 +41,7 @@ it('validates minimum money amount correctly', function () {
     expect($validator->errors()->first('amount'))->toContain('must be at least');
 });
 
-it('validates maximum money amount correctly', function () {
+it('validates maximum money amount correctly', function (): void {
     $rule = new MoneyMax(1000);
 
     // Test valid amount
@@ -60,7 +60,7 @@ it('validates maximum money amount correctly', function () {
     expect($validator->errors()->first('amount'))->toContain('may not be greater than');
 });
 
-it('validates minimum for negative amounts', function () {
+it('validates minimum for negative amounts', function (): void {
     $rule = new MoneyMin(-500);
 
     // Test valid negative amount (greater than min)
@@ -79,7 +79,7 @@ it('validates minimum for negative amounts', function () {
     expect($validator->errors()->first('amount'))->toContain('must be at least');
 });
 
-it('validates maximum for negative amounts', function () {
+it('validates maximum for negative amounts', function (): void {
     $rule = new MoneyMax(-500);
 
     // Test valid negative amount (less than max)
@@ -98,7 +98,7 @@ it('validates maximum for negative amounts', function () {
     expect($validator->errors()->first('amount'))->toContain('may not be greater than');
 });
 
-it('properly formats currency values in error messages', function () {
+it('properly formats currency values in error messages', function (): void {
     $rule                        = new MoneyMin(1000);
     $rule->formatNumberInMessage = true;
 

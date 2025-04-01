@@ -7,11 +7,11 @@ use Mockery;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
 
-afterEach(function () {
+afterEach(function (): void {
     Mockery::close();
 });
 
-it('can synthesize currencies', function () {
+it('can synthesize currencies', function (): void {
     $context  = Mockery::mock(ComponentContext::class);
     $currency = Currency::fromCode('USD');
 

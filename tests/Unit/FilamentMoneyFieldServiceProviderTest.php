@@ -6,13 +6,13 @@ use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
 
 // Tests for FilamentMoneyFieldServiceProvider that avoid using reflection
 
-it('loads service provider correctly', function () {
+it('loads service provider correctly', function (): void {
     // Test that the service provider can be instantiated without errors
     $serviceProvider = new FilamentMoneyFieldServiceProvider(app());
     expect($serviceProvider)->toBeInstanceOf(FilamentMoneyFieldServiceProvider::class);
 });
 
-it('registers config file correctly', function () {
+it('registers config file correctly', function (): void {
     // Verify that the config file exists in the package
     $configSourcePath = realpath(__DIR__.'/../../config');
     $hasConfigFile    = file_exists($configSourcePath.'/filament-money-field.php');
@@ -23,7 +23,7 @@ it('registers config file correctly', function () {
     expect(config('filament-money-field.default_currency'))->not()->toBeNull();
 });
 
-it('merges config', function () {
+it('merges config', function (): void {
     $originalDefaultCurrency = config('filament-money-field.default_currency');
 
     // Change config value
@@ -36,7 +36,7 @@ it('merges config', function () {
     config(['filament-money-field.default_currency' => $originalDefaultCurrency]);
 });
 
-it('registers database macros', function () {
+it('registers database macros', function (): void {
     // Test that the macros for Blueprint are registered
     expect(Blueprint::hasMacro('money'))->toBeTrue();
     expect(Blueprint::hasMacro('nullableMoney'))->toBeTrue();
@@ -44,7 +44,7 @@ it('registers database macros', function () {
     expect(Blueprint::hasMacro('signedMoney'))->toBeTrue();
 });
 
-it('has correct blueprint money macro implementation', function () {
+it('has correct blueprint money macro implementation', function (): void {
     $originalSuffix = config('filament-money-field.currency_column_suffix');
 
     // Set a test value

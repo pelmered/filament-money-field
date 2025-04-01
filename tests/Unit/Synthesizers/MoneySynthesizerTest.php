@@ -7,12 +7,12 @@ use Mockery;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Synthesizers\MoneySynthesizer;
 
-afterEach(function () {
+afterEach(function (): void {
     Mockery::close();
 });
 
 
-it('can synthesize money', function () {
+it('can synthesize money', function (): void {
     // Create a mocked context
     $context = Mockery::mock(ComponentContext::class);
 

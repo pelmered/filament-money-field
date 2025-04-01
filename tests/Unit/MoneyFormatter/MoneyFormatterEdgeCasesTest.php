@@ -4,14 +4,14 @@ use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\MoneyFormatter\CurrencyFormattingRules;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Ensure the currency cache is configured to work with tests
     config(['filament-money-field.currency_cache.type' => false]);
 
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK', 'JPY', 'BHD']]);
 });
 
-it('formats large values in short format', function () {
+it('formats large values in short format', function (): void {
     // Testing millions
     expect(MoneyFormatter::formatShort(1000000, Currency::fromCode('USD'), 'en_US'))
         ->toEqual('$10.00K');
@@ -21,7 +21,7 @@ it('formats large values in short format', function () {
         ->toEqual('$1.00K');
 });
 
-it('formats small values correctly', function () {
+it('formats small values correctly', function (): void {
     // Testing fractions of cents
     expect(MoneyFormatter::format(1, Currency::fromCode('USD'), 'en_US'))
         ->toEqual('$0.01');
@@ -31,7 +31,7 @@ it('formats small values correctly', function () {
         ->toEqual('$0.00');
 });
 
-it('handles invalid inputs gracefully', function () {
+it('handles invalid inputs gracefully', function (): void {
     // Testing non-numeric string
     expect(MoneyFormatter::format('not-a-number', Currency::fromCode('USD'), 'en_US'))
         ->toEqual('$0.00');
@@ -43,12 +43,12 @@ it('handles invalid inputs gracefully', function () {
         ->toEqual('$0.00');
 });
 
-it('formats negative values correctly', function () {
+it('formats negative values correctly', function (): void {
     expect(MoneyFormatter::format(-1500000, Currency::fromCode('USD'), 'en_US'))
         ->toEqual('-$15,000.00');
 });
 
-it('formats different currencies with appropriate precision', function () {
+it('formats different currencies with appropriate precision', function (): void {
     // Japanese Yen typically doesn't use decimal places
     $result = MoneyFormatter::format(12345, Currency::fromCode('JPY'), 'en_US', decimals: 0);
 
@@ -65,7 +65,7 @@ it('formats different currencies with appropriate precision', function () {
     expect($result)->toContain('.');
 });
 
-it('respects custom formatter rules', function () {
+it('respects custom formatter rules', function (): void {
     $rules = new CurrencyFormattingRules(
         currencySymbol: 'USD',
         fractionDigits: 4,
@@ -77,7 +77,7 @@ it('respects custom formatter rules', function () {
         ->toEqual('$123.4500');
 });
 
-it('handles different locales properly', function () {
+it('handles different locales properly', function (): void {
     // Testing French locale
     expect(replaceNonBreakingSpaces(MoneyFormatter::format(12345, Currency::fromCode('EUR'), 'fr_FR')))
         ->toContain('123,45');
@@ -87,7 +87,7 @@ it('handles different locales properly', function () {
         ->toContain('123,45');
 });
 
-it('parses money strings from different locales', function () {
+it('parses money strings from different locales', function (): void {
     // US format
     expect(MoneyFormatter::parseDecimal('1,234.56', Currency::fromCode('USD'), 'en_US'))
         ->toEqual('123456');

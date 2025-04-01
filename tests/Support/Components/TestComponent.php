@@ -12,11 +12,10 @@ class TestComponent extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    public $data;
+    public $data = [];
 
     public function __construct()
     {
-        $this->data = [];
     }
 
     public static function make(): static
