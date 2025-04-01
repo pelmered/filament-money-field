@@ -4,11 +4,9 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
@@ -35,7 +33,6 @@ class MoneyInput extends TextInput
     #[Type('scalar | Closure | null')]
     protected $minValue;
 
-
     protected ?bool $currencySwitcher = null;
 
     protected function setUp(): void
@@ -50,29 +47,28 @@ class MoneyInput extends TextInput
                 $currencies = CurrencyRepository::getAvailableCurrencies();
 
                 return Action::make('changeCurrency')
-                      ->icon('heroicon-m-arrow-path')
-                      ->tooltip('Change currency')
-                      ->form([
-                          Select::make('currency')
-                                ->label('Currency')
-                                ->options($currencies->toSelectArray())
-                                ->required()
-                                ->live(),
-                      ])
-                      ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
-                          $money    = $record->{$component->name};
-                          $currency = $data['currency'];
+                    ->icon('heroicon-m-arrow-path')
+                    ->tooltip('Change currency')
+                    ->form([
+                        Select::make('currency')
+                            ->label('Currency')
+                            ->options($currencies->toSelectArray())
+                            ->required()
+                            ->live(),
+                    ])
+                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
+                        $money    = $record->{$component->name};
+                        $currency = $data['currency'];
 
-                          $record->{$component->name} = new Money(
-                              $money->getAmount(),
-                              Currency::fromCode($currency)->toMoneyCurrency()
-                          );
+                        $record->{$component->name} = new Money(
+                            $money->getAmount(),
+                            Currency::fromCode($currency)->toMoneyCurrency()
+                        );
 
-                          $record->save();
-                      });
+                        $record->save();
+                    });
             }
         });
-
 
         $this->formatStateUsing(function (MoneyInput $component, mixed $state): string {
 
@@ -90,7 +86,7 @@ class MoneyInput extends TextInput
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
-            if (!$state) {
+            if (! $state) {
                 return null;
             }
 
@@ -100,7 +96,6 @@ class MoneyInput extends TextInput
             return new Money((int) $amount, $currency->toMoneyCurrency());
         });
     }
-
 
     protected function prepare(): void
     {
