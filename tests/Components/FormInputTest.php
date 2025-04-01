@@ -112,7 +112,7 @@ it('hides currency symbol with on field config', function (): void {
 });
 
 it('throws exception when currency symbol placement in invalid on field', function (): void {
-    expect(function () {
+    expect(function (): void {
         ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
             ->components([MoneyInput::make('price')->symbolPlacement('invalid')])
@@ -204,7 +204,7 @@ it('validates max value correctly', function (): void {
 });
 
 it('throws exception with unsupported currency', function (): void {
-    expect(function () {
+    expect(function (): void {
         validationTester((new MoneyInput('totalAmount'))->currency('SOMETHING'), 20);
     })->toThrow(UnsupportedCurrency::class);
 });

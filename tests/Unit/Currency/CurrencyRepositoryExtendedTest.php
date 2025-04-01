@@ -4,14 +4,14 @@ use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyCollection;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 
-it('gets available currencies', function () {
+it('gets available currencies', function (): void {
     $currencies = CurrencyRepository::getAvailableCurrencies();
 
     expect($currencies)->toBeInstanceOf(CurrencyCollection::class)
         ->and($currencies->count())->toBeGreaterThan(1);
 });
 
-it('finds a currency by code', function () {
+it('finds a currency by code', function (): void {
     $usd = CurrencyRepository::getAvailableCurrencies()->get('USD');
 
     expect($usd)->toBeInstanceOf(Currency::class)
@@ -19,20 +19,20 @@ it('finds a currency by code', function () {
         ->and($usd->name)->toBe('US Dollar');
 });
 
-it('returns null for non-existent currency code', function () {
+it('returns null for non-existent currency code', function (): void {
     $nonExistent = CurrencyRepository::getAvailableCurrencies()->get('XYZ');
 
     expect($nonExistent)->toBeNull();
 });
 
-it('checks if a currency exists', function () {
+it('checks if a currency exists', function (): void {
     $currencies = CurrencyRepository::getAvailableCurrencies();
 
     expect($currencies->has('USD'))->toBeTrue()
         ->and($currencies->has('XYZ'))->toBeFalse();
 });
 
-it('gets currency codes', function () {
+it('gets currency codes', function (): void {
     $currencies = CurrencyRepository::getAvailableCurrencies();
     $codes      = $currencies->pluck('code')->toArray();
 
@@ -40,7 +40,7 @@ it('gets currency codes', function () {
         ->and($codes)->toContain('USD', 'EUR');
 });
 
-it('respects currency inclusion configuration', function () {
+it('respects currency inclusion configuration', function (): void {
     // Save original config
     $originalConfig = config('filament-money-field.available_currencies');
 
@@ -61,7 +61,7 @@ it('respects currency inclusion configuration', function () {
     CurrencyRepository::clearCache();
 });
 
-it('respects currency exclusion configuration', function () {
+it('respects currency exclusion configuration', function (): void {
     // Save original config
     $originalAvailable = config('filament-money-field.available_currencies', []);
     $originalExcluded  = config('filament-money-field.excluded_currencies', []);

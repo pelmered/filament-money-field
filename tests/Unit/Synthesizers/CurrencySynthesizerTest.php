@@ -7,11 +7,11 @@ use Mockery;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
 
-afterEach(function () {
+afterEach(function (): void {
     Mockery::close();
 });
 
-it('can synthesize currencies', function () {
+it('can synthesize currencies', function (): void {
     // Create a mocked context
     $context = Mockery::mock(ComponentContext::class);
 

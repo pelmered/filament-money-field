@@ -5,7 +5,7 @@ use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 
-it('formats money value correctly', function () {
+it('formats money value correctly', function (): void {
     $column = MoneyColumn::make('amount');
     $state  = new Money(12345, new Currency('USD'));
 
@@ -14,7 +14,7 @@ it('formats money value correctly', function () {
     expect($formatted)->toEqual('$123.45');
 });
 
-it('formats money value with custom currency correctly', function () {
+it('formats money value with custom currency correctly', function (): void {
     $column = MoneyColumn::make('amount')->currency('EUR');
     $state  = new Money(12345, new Currency('EUR'));
 
@@ -23,7 +23,7 @@ it('formats money value with custom currency correctly', function () {
     expect($formatted)->toEqual('€123.45');
 });
 
-it('formats money value with custom locale correctly', function () {
+it('formats money value with custom locale correctly', function (): void {
     $column = MoneyColumn::make('amount')->locale('sv_SE');
     $state  = new Money(12345, new Currency('USD'));
 
@@ -35,7 +35,7 @@ it('formats money value with custom locale correctly', function () {
     expect(replaceNonBreakingSpaces($formatted))->toContain('$');
 });
 
-it('formats money with custom currency and locale', function () {
+it('formats money with custom currency and locale', function (): void {
     $column = MoneyColumn::make('amount')->currency('SEK')->locale('sv_SE');
 
     $formatted = $column->formatState(new Money(12345, new Currency('USD')));
@@ -44,7 +44,7 @@ it('formats money with custom currency and locale', function () {
     expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
 });
 
-it('formats money with short format', function () {
+it('formats money with short format', function (): void {
     $column = MoneyColumn::make('amount')->short();
 
     $formatted = $column->formatState(new Money(1234567, new Currency('USD')));
@@ -52,7 +52,7 @@ it('formats money with short format', function () {
     expect($formatted)->toEqual('$12.35K');
 });
 
-it('formats money with custom decimal precision', function () {
+it('formats money with custom decimal precision', function (): void {
     $column = MoneyColumn::make('amount')->decimals(0);
 
     $formatted = $column->formatState(new Money(12345, new Currency('USD')));
@@ -60,7 +60,7 @@ it('formats money with custom decimal precision', function () {
     expect($formatted)->toEqual('$123');
 });
 
-it('handles null value gracefully', function () {
+it('handles null value gracefully', function (): void {
     $column = MoneyColumn::make('amount');
 
     $formatted = $column->formatState(null);
@@ -68,13 +68,13 @@ it('handles null value gracefully', function () {
     expect($formatted)->toEqual('');
 });
 
-it('hides value when column is hidden', function () {
+it('hides value when column is hidden', function (): void {
     $column = MoneyColumn::make('amount')->hidden();
 
     expect($column->isHidden())->toBeTrue();
 });
 
-it('formats money with international currency symbol when configured', function () {
+it('formats money with international currency symbol when configured', function (): void {
     Config::set('filament-money-field.intl_currency_symbol', true);
 
     $column = MoneyColumn::make('amount');
@@ -87,7 +87,7 @@ it('formats money with international currency symbol when configured', function 
     expect(replaceNonBreakingSpaces($formatted))->toContain('123');
 });
 
-it('can sort records based on money values', function () {
+it('can sort records based on money values', function (): void {
     $column = MoneyColumn::make('amount')->sortable();
 
     expect($column->isSortable())->toBeTrue();

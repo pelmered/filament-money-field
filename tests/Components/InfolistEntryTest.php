@@ -7,7 +7,7 @@ use Money\Money;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
 
-it('formats money value correctly', function () {
+it('formats money value correctly', function (): void {
     $component = ComponentContainer::make(InfolistTestComponent::make())
         ->statePath('data')
         ->components([MoneyEntry::make('amount')])
@@ -18,7 +18,7 @@ it('formats money value correctly', function () {
     expect($formatted)->toEqual('$123.45');
 });
 
-it('formats money value with custom currency', function () {
+it('formats money value with custom currency', function (): void {
     $component = ComponentContainer::make(InfolistTestComponent::make())
         ->statePath('data')
         ->components([MoneyEntry::make('amount')->currency('EUR')])
@@ -29,7 +29,7 @@ it('formats money value with custom currency', function () {
     expect($formatted)->toEqual('€123.45');
 });
 
-it('formats money value with custom locale', function () {
+it('formats money value with custom locale', function (): void {
     $component = ComponentContainer::make(InfolistTestComponent::make())
         ->statePath('data')
         ->components([MoneyEntry::make('amount')->locale('sv_SE')])
@@ -41,7 +41,7 @@ it('formats money value with custom locale', function () {
     expect(replaceNonBreakingSpaces($formatted))->toContain('$');
 });
 
-it('formats money with custom currency and locale', function () {
+it('formats money with custom currency and locale', function (): void {
     $component = ComponentContainer::make(InfolistTestComponent::make())
         ->statePath('data')
         ->components([MoneyEntry::make('amount')->currency('SEK')->locale('sv_SE')])
@@ -53,7 +53,7 @@ it('formats money with custom currency and locale', function () {
     expect(replaceNonBreakingSpaces($formatted))->toContain('kr');
 });
 
-it('formats money with short format', function () {
+it('formats money with short format', function (): void {
     $component = ComponentContainer::make(InfolistTestComponent::make())
         ->statePath('data')
         ->components([MoneyEntry::make('amount')->short()])
@@ -66,7 +66,7 @@ it('formats money with short format', function () {
     expect($formatted)->toMatch('/[\d,.]+[KM]?/');
 });
 
-it('formats money with custom decimal precision', function () {
+it('formats money with custom decimal precision', function (): void {
     $component = ComponentContainer::make(InfolistTestComponent::make())
         ->statePath('data')
         ->components([MoneyEntry::make('amount')->decimals(0)])
@@ -77,7 +77,7 @@ it('formats money with custom decimal precision', function () {
     expect($formatted)->toEqual('$123');
 });
 
-it('handles null value gracefully', function () {
+it('handles null value gracefully', function (): void {
     $component = ComponentContainer::make(InfolistTestComponent::make())
         ->statePath('data')
         ->components([MoneyEntry::make('amount')])
@@ -88,7 +88,7 @@ it('handles null value gracefully', function () {
     expect($formatted)->toEqual('');
 });
 
-it('formats with international currency symbol when configured', function () {
+it('formats with international currency symbol when configured', function (): void {
     Config::set('filament-money-field.intl_currency_symbol', true);
 
     $component = ComponentContainer::make(InfolistTestComponent::make())

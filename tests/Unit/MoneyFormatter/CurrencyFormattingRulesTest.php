@@ -2,7 +2,7 @@
 
 use Pelmered\FilamentMoneyField\MoneyFormatter\CurrencyFormattingRules;
 
-it('creates a correct default rules instance', function () {
+it('creates a correct default rules instance', function (): void {
     $rules = new CurrencyFormattingRules(
         currencySymbol: '$',
         fractionDigits: 2,
@@ -16,7 +16,7 @@ it('creates a correct default rules instance', function () {
         ->and($rules->groupingSeparator)->toBe(',');
 });
 
-it('modifies currency symbol', function () {
+it('modifies currency symbol', function (): void {
     $rules = new CurrencyFormattingRules(
         currencySymbol: '$',
         fractionDigits: 2,
@@ -28,7 +28,7 @@ it('modifies currency symbol', function () {
     expect($rules->currencySymbol)->toBe('€');
 });
 
-it('modifies fraction digits', function () {
+it('modifies fraction digits', function (): void {
     $rules = new CurrencyFormattingRules(
         currencySymbol: '$',
         fractionDigits: 2,
@@ -40,7 +40,7 @@ it('modifies fraction digits', function () {
     expect($rules->fractionDigits)->toBe(4);
 });
 
-it('modifies separators', function () {
+it('modifies separators', function (): void {
     $rules = new CurrencyFormattingRules(
         currencySymbol: '$',
         fractionDigits: 2,

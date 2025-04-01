@@ -3,7 +3,7 @@
 use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Currencies\CurrencyCollection;
 
-it('creates a collection with currencies', function () {
+it('creates a collection with currencies', function (): void {
     $currencies = [
         new Currency('USD', 'US Dollar'),
         new Currency('EUR', 'Euro'),
@@ -15,7 +15,7 @@ it('creates a collection with currencies', function () {
     expect($collection)->toHaveCount(3);
 });
 
-it('filters currencies by a callback', function () {
+it('filters currencies by a callback', function (): void {
     $currencies = [
         new Currency('USD', 'US Dollar'),
         new Currency('EUR', 'Euro'),
@@ -24,7 +24,7 @@ it('filters currencies by a callback', function () {
 
     $collection = new CurrencyCollection($currencies);
 
-    $filtered = $collection->filter(function (Currency $currency) {
+    $filtered = $collection->filter(function (Currency $currency): bool {
         return $currency->getCode() === 'USD';
     });
 
@@ -32,7 +32,7 @@ it('filters currencies by a callback', function () {
         ->and($filtered->first()->getCode())->toBe('USD');
 });
 
-it('maps currencies to values', function () {
+it('maps currencies to values', function (): void {
     $currencies = [
         new Currency('USD', 'US Dollar'),
         new Currency('EUR', 'Euro'),
@@ -40,14 +40,14 @@ it('maps currencies to values', function () {
 
     $collection = new CurrencyCollection($currencies);
 
-    $mapped = $collection->map(function (Currency $currency) {
+    $mapped = $collection->map(function (Currency $currency): string {
         return $currency->getCode();
     });
 
     expect($mapped->toArray())->toBe(['USD', 'EUR']);
 });
 
-it('plucks values from currencies', function () {
+it('plucks values from currencies', function (): void {
     $currencies = [
         new Currency('USD', 'US Dollar'),
         new Currency('EUR', 'Euro'),
@@ -60,7 +60,7 @@ it('plucks values from currencies', function () {
     expect($plucked->toArray())->toBe(['USD', 'EUR']);
 });
 
-it('finds a currency by code', function () {
+it('finds a currency by code', function (): void {
     $currencies = [
         new Currency('USD', 'US Dollar'),
         new Currency('EUR', 'Euro'),
@@ -78,7 +78,7 @@ it('finds a currency by code', function () {
     expect($notFound)->toBeNull();
 });
 
-it('can be converted to select array', function () {
+it('can be converted to select array', function (): void {
     $currencies = [
         new Currency('USD', 'US Dollar'),
         new Currency('EUR', 'Euro'),
@@ -94,7 +94,7 @@ it('can be converted to select array', function () {
         ->and($array['EUR'])->toBe('EUR - Euro');
 });
 
-it('sorts currencies by a key', function () {
+it('sorts currencies by a key', function (): void {
     $currencies = [
         new Currency('GBP', 'British Pound'),
         new Currency('USD', 'US Dollar'),
