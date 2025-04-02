@@ -8,7 +8,7 @@ enum TestEnum: string
 {
     use EnumHelpers;
 
-    case Red = 'red';
+    case Red   = 'red';
     case Green = 'green';
-    case Blue = 'blue';
-} 
+    case Blue  = 'blue';
+}

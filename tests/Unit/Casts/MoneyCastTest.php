@@ -36,9 +36,8 @@ it('casts to Money object', function (): void {
 
     $casted = $cast->get($model, $key, $value, $attributes);
 
-    if (!$casted instanceof \Money\Money)
-    {
-        $this->fail('MoneyCast->get return null');
+    if (! $casted instanceof \Money\Money) {
+        $this->fail('MoneyCast->get did not return Money object');
     }
 
     expect($casted)->toBeInstanceOf(Money::class)
@@ -87,9 +86,8 @@ it('casts to Money with specified currency in cast definition', function (): voi
 
     $casted = $cast->get($model, $key, $value, $attributes);
 
-    if (!$casted instanceof \Money\Money)
-    {
-        $this->fail('MoneyCast->get return null');
+    if (! $casted instanceof \Money\Money) {
+        $this->fail('MoneyCast->get did not return Money object');
     }
 
     expect($casted)->toBeInstanceOf(Money::class)
@@ -176,14 +174,13 @@ it('casts to Money object from decimal', function (): void {
 
     $casted = $cast->get($model, $key, $value, $attributes);
 
-    if (!$casted instanceof \Money\Money)
-    {
-        $this->fail('MoneyCast->get return null');
+    if (! $casted instanceof \Money\Money) {
+        $this->fail('MoneyCast->get did not return Money object');
     }
 
     expect($casted)->toBeInstanceOf(Money::class)
-                   ->and($casted->getAmount())->toBe('12300')
-                   ->and($casted->getCurrency()->getCode())->toBe('USD'); // Default currency
+        ->and($casted->getAmount())->toBe('12300')
+        ->and($casted->getCurrency()->getCode())->toBe('USD'); // Default currency
 });
 
 it('casts from Money object to decimal', function (): void {
@@ -199,5 +196,5 @@ it('casts from Money object to decimal', function (): void {
     $casted = $cast->set($model, $key, $money, $attributes);
 
     expect($casted)->toBeArray()
-                   ->and($casted[$key])->toBe(123.45); // Integer amount, not decimal string
+        ->and($casted[$key])->toBe(123.45);
 });
