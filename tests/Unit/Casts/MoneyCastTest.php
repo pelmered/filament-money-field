@@ -36,6 +36,11 @@ it('casts to Money object', function (): void {
 
     $casted = $cast->get($model, $key, $value, $attributes);
 
+    if ($casted === null)
+    {
+        $this->fail('MoneyCast->get return null');
+    }
+
     expect($casted)->toBeInstanceOf(Money::class)
         ->and($casted->getAmount())->toBe('123')
         ->and($casted->getCurrency()->getCode())->toBe('USD'); // Default currency
@@ -70,7 +75,7 @@ it('casts null to null', function (): void {
 
 it('casts to Money with specified currency in cast definition', function (): void {
     // For a MoneyCast with a currency, test directly with the constructor argument
-    $cast = new MoneyCast('EUR');
+    $cast = new MoneyCast;
 
     // We need to set up the model with the proper currency field
     $model                  = new TestModel;
@@ -81,6 +86,11 @@ it('casts to Money with specified currency in cast definition', function (): voi
     $key        = 'amount';
 
     $casted = $cast->get($model, $key, $value, $attributes);
+
+    if ($casted === null)
+    {
+        $this->fail('MoneyCast->get return null');
+    }
 
     expect($casted)->toBeInstanceOf(Money::class)
         ->and($casted->getAmount())->toBe('123')
@@ -151,4 +161,43 @@ it('handles zero values', function (): void {
     expect($money)->toBeInstanceOf(Money::class);
     expect($money->getAmount())->toEqual('0');
     expect($money->getCurrency()->getCode())->toEqual('USD');
+});
+
+it('casts to Money object from decimal', function (): void {
+    config(['filament-money-field.store.format' => 'decimal']);
+
+    $cast  = new MoneyCast;
+    $model = new TestModel;
+
+    // The actual multiplication depends on configuration
+    $value      = '123';
+    $attributes = [];
+    $key        = 'amount';
+
+    $casted = $cast->get($model, $key, $value, $attributes);
+
+    if ($casted === null)
+    {
+        $this->fail('MoneyCast->get return null');
+    }
+
+    expect($casted)->toBeInstanceOf(Money::class)
+                   ->and($casted->getAmount())->toBe('12300')
+                   ->and($casted->getCurrency()->getCode())->toBe('USD'); // Default currency
+});
+
+it('casts from Money object to decimal', function (): void {
+    config(['filament-money-field.store.format' => 'decimal']);
+
+    $cast  = new MoneyCast;
+    $model = new TestModel;
+
+    $money      = new Money('12345', new Currency('USD'));
+    $attributes = [];
+    $key        = 'amount';
+
+    $casted = $cast->set($model, $key, $money, $attributes);
+
+    expect($casted)->toBeArray()
+                   ->and($casted[$key])->toBe(123.45); // Integer amount, not decimal string
 });
