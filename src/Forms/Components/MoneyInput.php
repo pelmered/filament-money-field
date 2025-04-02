@@ -24,12 +24,6 @@ class MoneyInput extends TextInput
 
     protected ?string $symbolPlacement = null;
 
-    #[Type('scalar | Closure | null')]
-    protected $maxValue;
-
-    #[Type('scalar | Closure | null')]
-    protected $minValue;
-
     protected ?bool $currencySwitcher = null;
 
     protected function setUp(): void
