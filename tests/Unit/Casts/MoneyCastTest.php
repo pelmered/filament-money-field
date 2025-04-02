@@ -36,7 +36,7 @@ it('casts to Money object', function (): void {
 
     $casted = $cast->get($model, $key, $value, $attributes);
 
-    if ($casted === null)
+    if (!$casted instanceof \Money\Money)
     {
         $this->fail('MoneyCast->get return null');
     }
@@ -87,7 +87,7 @@ it('casts to Money with specified currency in cast definition', function (): voi
 
     $casted = $cast->get($model, $key, $value, $attributes);
 
-    if ($casted === null)
+    if (!$casted instanceof \Money\Money)
     {
         $this->fail('MoneyCast->get return null');
     }
@@ -176,7 +176,7 @@ it('casts to Money object from decimal', function (): void {
 
     $casted = $cast->get($model, $key, $value, $attributes);
 
-    if ($casted === null)
+    if (!$casted instanceof \Money\Money)
     {
         $this->fail('MoneyCast->get return null');
     }
