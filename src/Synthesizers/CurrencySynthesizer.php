@@ -4,7 +4,6 @@ namespace Pelmered\FilamentMoneyField\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Pelmered\FilamentMoneyField\Currencies\Currency;
-use PhpStaticAnalysis\Attributes\Param;
 use PhpStaticAnalysis\Attributes\Returns;
 
 class CurrencySynthesizer extends Synth

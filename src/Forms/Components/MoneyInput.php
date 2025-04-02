@@ -2,7 +2,6 @@
 
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
-use Closure;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;

@@ -5,7 +5,6 @@ namespace Pelmered\FilamentMoneyField\Currencies;
 use Money\Currency as MoneyCurrency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
-use PhpStaticAnalysis\Attributes\Param;
 
 class Currency implements \Stringable
 {

@@ -14,9 +14,7 @@ class TestComponent extends Component implements HasForms
 
     public $data = [];
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function make(): static
     {

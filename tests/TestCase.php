@@ -10,7 +10,6 @@ use Filament\Support\SupportServiceProvider;
 use Illuminate\Contracts\Config\Repository;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Attributes\WithMigration;
-use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
 
 use function Orchestra\Testbench\artisan;
