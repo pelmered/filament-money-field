@@ -12,13 +12,13 @@ trait HasMoneyAttributes
 {
     protected Currency $currency;
 
-    protected string $currencyColumn;
+    protected ?string $currencyColumn = null;
 
     protected string $locale;
 
     protected ?int $decimals = null;
 
-    protected bool $inMinor = true;
+    protected ?bool $inMinor = null;
 
     public function getCurrency(): Currency
     {
@@ -26,8 +26,8 @@ trait HasMoneyAttributes
             return $this->currency;
         }
 
-        if (isset($this->currencyColumn) && $this->getRecord()) {
-            return Currency::fromCode($this->getRecord()->{$this->currencyColumn});
+        if ($this->getRecord()) {
+            return Currency::fromCode($this->getRecord()->{$this->getCurrencyColumn()});
         }
 
         return MoneyFormatter::getDefaultCurrency();
@@ -53,6 +53,17 @@ trait HasMoneyAttributes
         return $this;
     }
 
+    protected function getInMinorUnits(): bool
+    {
+        if ($this->inMinor !== null) {
+            return $this->inMinor;
+        }
+
+        $storeFormat = config('filament-money-field.store.format');
+
+        return $storeFormat === 'int';
+    }
+
     public function inMajorUnits(): static
     {
         $this->inMinor = false;
@@ -70,6 +81,11 @@ trait HasMoneyAttributes
         $this->inMinor = true;
 
         return $this;
+    }
+
+    protected function getCurrencyColumn(): string
+    {
+        return $this->currencyColumn ?? config('filament-money-field.default_currency_column');
     }
 
     public function currencyColumn(string|Closure $column): static
