@@ -88,3 +88,150 @@ it('has correct blueprint money macro implementation', function (): void {
     // Reset the config
     config(['filament-money-field.currency_column_suffix' => $originalSuffix]);
 });
+
+it('has correct blueprint nullableMoney macro implementation', function (): void {
+    $originalSuffix = config('filament-money-field.currency_column_suffix');
+
+    // Set a test value
+    $testSuffix = '_test_currency';
+    config(['filament-money-field.currency_column_suffix' => $testSuffix]);
+
+    // Create a mock that will track what columns are defined
+    $mockBlueprint = Mockery::mock(Blueprint::class, ['test_table'])
+        ->makePartial()
+        ->shouldAllowMockingProtectedMethods();
+
+    // Set expectations for the mock
+    $mockBlueprint->shouldReceive('unsignedBigInteger')
+        ->once()
+        ->with('price')
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('nullable')
+        ->twice()  // Called for both columns
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('string')
+        ->once()
+        ->with('price'.$testSuffix)
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('index')
+        ->once()
+        ->with(['price'.$testSuffix, 'price'], null)
+        ->andReturnSelf();
+
+    // Call the macro on our mock
+    $nullableMoneyMacro = Blueprint::macro('nullableMoney', function (string $name, ?string $indexName = null) use ($testSuffix) {
+        $column = $this->unsignedBigInteger($name)->nullable();
+        $this->string($name.$testSuffix)->nullable();
+
+        $this->index([$name.$testSuffix, $name], $indexName);
+
+        return $column;
+    });
+
+    // Execute the nullableMoney macro
+    $mockBlueprint->nullableMoney('price');
+
+    // Reset the config
+    config(['filament-money-field.currency_column_suffix' => $originalSuffix]);
+});
+
+it('has correct blueprint smallMoney macro implementation', function (): void {
+    $originalSuffix = config('filament-money-field.currency_column_suffix');
+
+    // Set a test value
+    $testSuffix = '_test_currency';
+    config(['filament-money-field.currency_column_suffix' => $testSuffix]);
+
+    // Create a mock that will track what columns are defined
+    $mockBlueprint = Mockery::mock(Blueprint::class, ['test_table'])
+        ->makePartial()
+        ->shouldAllowMockingProtectedMethods();
+
+    // Set expectations for the mock
+    $mockBlueprint->shouldReceive('unsignedSmallInteger')
+        ->once()
+        ->with('price')
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('nullable')
+        ->twice()  // Called for both columns
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('string')
+        ->once()
+        ->with('price'.$testSuffix)
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('index')
+        ->once()
+        ->with(['price'.$testSuffix, 'price'], null)
+        ->andReturnSelf();
+
+    // Call the macro on our mock
+    $smallMoneyMacro = Blueprint::macro('smallMoney', function (string $name, ?string $indexName = null) use ($testSuffix) {
+        $column = $this->unsignedSmallInteger($name)->nullable();
+        $this->string($name.$testSuffix)->nullable();
+
+        $this->index([$name.$testSuffix, $name], $indexName);
+
+        return $column;
+    });
+
+    // Execute the smallMoney macro
+    $mockBlueprint->smallMoney('price');
+
+    // Reset the config
+    config(['filament-money-field.currency_column_suffix' => $originalSuffix]);
+});
+
+it('has correct blueprint signedMoney macro implementation', function (): void {
+    $originalSuffix = config('filament-money-field.currency_column_suffix');
+
+    // Set a test value
+    $testSuffix = '_test_currency';
+    config(['filament-money-field.currency_column_suffix' => $testSuffix]);
+
+    // Create a mock that will track what columns are defined
+    $mockBlueprint = Mockery::mock(Blueprint::class, ['test_table'])
+        ->makePartial()
+        ->shouldAllowMockingProtectedMethods();
+
+    // Set expectations for the mock
+    $mockBlueprint->shouldReceive('bigInteger')
+        ->once()
+        ->with('price')
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('nullable')
+        ->twice()  // Called for both columns
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('string')
+        ->once()
+        ->with('price'.$testSuffix)
+        ->andReturnSelf();
+
+    $mockBlueprint->shouldReceive('index')
+        ->once()
+        ->with(['price'.$testSuffix, 'price'], null)
+        ->andReturnSelf();
+
+    // Call the macro on our mock
+    $signedMoneyMacro = Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) use ($testSuffix) {
+        $column = $this->bigInteger($name)->nullable();
+        $this->string($name.$testSuffix)->nullable();
+
+        $this->index([$name.$testSuffix, $name], $indexName);
+
+        return $column;
+    });
+
+    // Execute the signedMoney macro
+    $mockBlueprint->signedMoney('price');
+
+    // Reset the config
+    config(['filament-money-field.currency_column_suffix' => $originalSuffix]);
+});
