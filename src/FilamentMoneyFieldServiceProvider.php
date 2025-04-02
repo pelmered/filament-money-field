@@ -49,38 +49,56 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
         Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
 
-        $currencySuffix = config('filament-money-field.currency_column_suffix');
 
-        Blueprint::macro('money', function (string $name, ?string $indexName = null) use ($currencySuffix) {
-            $column = $this->unsignedBigInteger($name);
-            $this->string($name.$currencySuffix);
 
-            $this->index([$name.$currencySuffix, $name], $indexName);
+        Blueprint::macro('money', function (string $name, ?string $indexName = null) {
+            $currencySuffix = config('filament-money-field.currency_column_suffix');
 
-            return $column;
-        });
+            $column = config('filament-money-field.store.format') === 'decimal'
+                ? $this->decimal($name, 12, 3)
+                : $this->unsignedBigInteger($name);
 
-        Blueprint::macro('nullableMoney', function (string $name, ?string $indexName = null) use ($currencySuffix) {
-            $column = $this->unsignedBigInteger($name)->nullable();
-            $this->string($name.$currencySuffix)->nullable();
+            $this->string($name.$currencySuffix, 6);
 
             $this->index([$name.$currencySuffix, $name], $indexName);
 
             return $column;
         });
 
-        Blueprint::macro('smallMoney', function (string $name, ?string $indexName = null) use ($currencySuffix) {
-            $column = $this->unsignedSmallInteger($name)->nullable();
-            $this->string($name.$currencySuffix)->nullable();
+        Blueprint::macro('nullableMoney', function (string $name, ?string $indexName = null) {
+            $currencySuffix = config('filament-money-field.currency_column_suffix');
+
+            $column = config('filament-money-field.store.format') === 'decimal'
+                ? $this->decimal($name, 12, 3)->nullable()
+                : $this->unsignedBigInteger($name)->nullable();
+
+            $this->string($name.$currencySuffix, 6)->nullable();
 
             $this->index([$name.$currencySuffix, $name], $indexName);
 
             return $column;
         });
 
-        Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) use ($currencySuffix) {
-            $column = $this->bigInteger($name)->nullable();
-            $this->string($name.$currencySuffix)->nullable();
+        Blueprint::macro('smallMoney', function (string $name, ?string $indexName = null) {
+            $currencySuffix = config('filament-money-field.currency_column_suffix');
+
+            $column = config('filament-money-field.store.format') === 'decimal'
+                ? $this->decimal($name, 6, 3)->nullable()
+                : $this->unsignedSmallInteger($name)->nullable();
+            $this->string($name.$currencySuffix, 6)->nullable();
+
+            $this->index([$name.$currencySuffix, $name], $indexName);
+
+            return $column;
+        });
+
+        Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) {
+            $currencySuffix = config('filament-money-field.currency_column_suffix');
+
+            $column = config('filament-money-field.store.format') === 'decimal'
+                ? $this->decimal($name, 12, 3)->nullable()
+                : $this->bigInteger($name)->nullable();
+            $this->string($name.$currencySuffix, 6)->nullable();
 
             $this->index([$name.$currencySuffix, $name], $indexName);
 
