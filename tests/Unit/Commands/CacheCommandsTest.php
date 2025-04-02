@@ -44,6 +44,28 @@ test('clear cache command runs successfully', function (): void {
     expect(Cache::has('filament_money_currencies'))->toBeFalse();
 });
 
+test('cache command in verbose mode shows currency table', function (): void {
+    config(['filament-money-field.currency_cache.type' => 'remember']);
+    config(['filament-money-field.currency_cache.ttl' => '500']);
+
+    CurrencyRepository::clearCache();
+
+    $currencies = CurrencyRepository::getAvailableCurrencies();
+
+    $tableData = $currencies->map(fn ($currency): array => [
+        $currency->name,
+        $currency->code,
+        $currency->minorUnit,
+    ])->toArray();
+
+    test()->artisan('money:cache --verbose')
+        ->expectsTable(
+            ['Name', 'Code', 'Minor Unit Decimals'],
+            $tableData
+        )
+        ->assertExitCode(0);
+});
+
 /*
 test('optimize command also adds currencies to cache', function () {
     test()->artisan('optimize')
