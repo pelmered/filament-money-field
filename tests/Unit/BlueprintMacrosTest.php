@@ -45,7 +45,7 @@ it('has correct blueprint money macro implementation', function ($macro, $config
     }
 
     if(isset($expected['index'])) {
-        $indexes = \Illuminate\Support\Arr::where($commands, function ($command) {
+        $indexes = \Illuminate\Support\Arr::where($commands, function ($command): bool {
             return $command instanceof \Illuminate\Support\Fluent && $command->index;
         });
 
