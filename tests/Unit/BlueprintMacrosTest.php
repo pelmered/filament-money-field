@@ -11,7 +11,7 @@ it('registers database macros', function (): void {
     expect(Blueprint::hasMacro('money'))->toBeTrue();
     expect(Blueprint::hasMacro('nullableMoney'))->toBeTrue();
     expect(Blueprint::hasMacro('smallMoney'))->toBeTrue();
-    expect(Blueprint::hasMacro('signedMoney'))->toBeTrue();
+    expect(Blueprint::hasMacro('unsignedMoney'))->toBeTrue();
 });
 
 it('has correct blueprint money macro implementation', function ($macro, $config, $expected): void {
@@ -29,20 +29,14 @@ it('has correct blueprint money macro implementation', function ($macro, $config
     $moneyColumnAttributes = $moneyColumn->getAttributes();
 
     expect($moneyColumn)->toBeInstanceOf(ColumnDefinition::class);
-
-    foreach ($expected['price'] as $columnName => $columnAttribute)
-    {
-        expect($moneyColumnAttributes[$columnName])->toBe($columnAttribute);
-    }
+    expect($moneyColumnAttributes)->toMatchArray($expected['price']);
 
     $currencyColumn = $columns[1];
 
+    expect($currencyColumn)->toBeInstanceOf(ColumnDefinition::class);
     $currencyColumnAttributes = $currencyColumn->getAttributes();
 
-    foreach ($expected['currency'] as $columnName => $columnAttribute)
-    {
-        expect($currencyColumnAttributes[$columnName])->toBe($columnAttribute);
-    }
+    expect($currencyColumnAttributes)->toMatchArray($expected['currency']);
 
     if(isset($expected['index'])) {
         $indexes = \Illuminate\Support\Arr::where($commands, function ($command): bool {
@@ -67,7 +61,7 @@ it('has correct blueprint money macro implementation', function ($macro, $config
                 'type' => 'bigInteger',
                 'name' => 'price',
                 'autoIncrement' => false,
-                'unsigned' => true,
+                'unsigned' => false,
             ],
             'currency' => [
                 'type' => 'string',
@@ -112,7 +106,7 @@ it('has correct blueprint money macro implementation', function ($macro, $config
                 'type' => 'bigInteger',
                 'name' => 'price',
                 'autoIncrement' => false,
-                'unsigned' => true,
+                'unsigned' => false,
             ],
             'currency' => [
                 'type' => 'string',
@@ -199,16 +193,15 @@ it('has correct blueprint money macro implementation', function ($macro, $config
             ],
         ]
     ],
-    'signedMoney' => [
-        'macro' => 'signedMoney',
+    'unsignedMoney' => [
+        'macro' => 'unsignedMoney',
         'config' => [],
         'expected' => [
             'price' => [
                 'type' => 'bigInteger',
                 'name' => 'price',
                 'autoIncrement' => false,
-                'unsigned' => false,
-                'nullable' => true,
+                'unsigned' => true,
             ],
             'currency' => [
                 'type' => 'string',
@@ -217,8 +210,8 @@ it('has correct blueprint money macro implementation', function ($macro, $config
             ],
         ]
     ],
-    'signedMoney_decimal' => [
-        'macro' => 'nullableMoney',
+    'unsignedMoney_decimal' => [
+        'macro' => 'unsignedMoney',
         'config' => [
             'store' => [
                 'format' => 'decimal'
@@ -230,7 +223,6 @@ it('has correct blueprint money macro implementation', function ($macro, $config
                 'name' => 'price',
                 'total' => 12,
                 'places' => 3,
-                'nullable' => true,
             ],
             'currency' => [
                 'type' => 'string',

@@ -124,6 +124,16 @@ Schema::table('tablename', function (Blueprint $table) {
     $this->index(['price', 'price_currency']);
 });
 ```
+Available column types(methods) on the Blueprint object are:
+
+| Method            | With int storage        | With decimal storage        |
+|-------------------|-------------------------|-----------------------------|
+| `money()`         | `BigInteger`            | `Decimal(12, 3)`            |
+| `nullableMoney()` | `BigInteger (Nullable)` | `Decimal(12, 3) (Nullable)` |
+| `smallMoney()`    | `SmallInteger`          | `Decimal(6, 3)`             |
+| `unsignedMoney()` | `BigInteger (Unigned)`  | `Decimal(12, 3) (Unsigned)` |
+
+
 Don't forget to run your migrations.
 
 #### Casts

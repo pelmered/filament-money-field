@@ -56,7 +56,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
             $column = config('filament-money-field.store.format') === 'decimal'
                 ? $this->decimal($name, 12, 3)
-                : $this->unsignedBigInteger($name);
+                : $this->bigInteger($name);
 
             $this->string($name.$currencySuffix, 6);
 
@@ -92,12 +92,12 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             return $column;
         });
 
-        Blueprint::macro('signedMoney', function (string $name, ?string $indexName = null) {
+        Blueprint::macro('unsignedMoney', function (string $name, ?string $indexName = null) {
             $currencySuffix = config('filament-money-field.currency_column_suffix');
 
             $column = config('filament-money-field.store.format') === 'decimal'
-                ? $this->decimal($name, 12, 3)->nullable()
-                : $this->bigInteger($name)->nullable();
+                ? $this->decimal($name, 12, 3)->unsigned()
+                : $this->unsignedBigInteger($name);
             $this->string($name.$currencySuffix, 6)->nullable();
 
             $this->index([$name.$currencySuffix, $name], $indexName);
