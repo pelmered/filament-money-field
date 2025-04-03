@@ -1,5 +1,13 @@
 <?php
 
+use Filament\Forms\ComponentContainer;
+use Filament\Forms\Components\Field;
+use Illuminate\Validation\ValidationException;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
+use Pelmered\FilamentMoneyField\Tests\TestCase;
+
+pest()->project()->github('pelmered/filament-money-field');
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,14 +19,7 @@
 |
 */
 
-// uses(Tests\TestCase::class)->in('Feature');
-
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Field;
-use Illuminate\Validation\ValidationException;
-use Pelmered\FilamentMoneyField\Tests\Components\FormTestComponent;
-
-pest()->project()->github('pelmered/filament-money-field');
+uses(TestCase::class)->in('Unit', 'Components', 'Forms');
 
 /*
 |--------------------------------------------------------------------------
@@ -47,11 +48,11 @@ expect()->extend('toBeOne', function () {
 */
 
 /**
- * Replaces all non-breaking spaces in the given string with the Unicode character for non-breaking space.
+ * Replaces all non-breaking spaces in the given string with regular spaces.
  */
 function replaceNonBreakingSpaces(string $string): string
 {
-    return preg_replace('/\s/', "\xc2\xa0", $string);
+    return str_replace(["\xC2\xA0", "\xE2\x80\xAF"], ' ', $string);
 }
 
 function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
@@ -62,14 +63,14 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
             ->components([$field])
             ->fill([$field->getName() => $value])
             ->validate();
-    } catch (ValidationException $exception) {
-        if ($assertsCallback) {
-            $assertsCallback($exception, $field);
+    } catch (ValidationException $validationException) {
+        if ($assertsCallback !== null) {
+            $assertsCallback($validationException, $field);
         }
 
         return [
-            'errors' => $exception->validator->errors()->toArray()[$field->getStatePath()],
-            'failed' => $exception->validator->failed()[$field->getStatePath()],
+            'errors' => $validationException->validator->errors()->toArray()[$field->getStatePath()],
+            'failed' => $validationException->validator->failed()[$field->getStatePath()],
         ];
     }
 

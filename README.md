@@ -14,20 +14,26 @@ This package would give "1 234,56 kr", while most other solutions probably would
 [![License](https://poser.pugx.org/pelmered/filament-money-field/license)](https://packagist.org/packages/pelmered/filament-money-field)
 
 [![Tests](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/coverage/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/type/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/complexity/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
-[![OtterWise Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/crap/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Test Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/coverage/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Type Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/type/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Complexity](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/complexity/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
+[![Crap](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/crap/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
 
-[![Tested on PHP 8.2 to 8.3](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat)](https://otterwise.app/github/pelmered/filament-money-field)
+
+
+
+[![Tested with Laravel 11 to 12](https://img.shields.io/badge/Tested%20with%20Laravel-11%20%7C%2012-brightgreen?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![Tested on PHP 8.2 to 8.4](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3%20|%208.4-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 [![Tested on OS:es Linux, MacOS, Windows](https://img.shields.io/badge/Tested%20on%20lastest%20versions%20of-%20Ubuntu%20|%20MacOS%20|%20Windows-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 
 ## Requirements
 
 - PHP 8.2 or higher
-- Filament 3.0 or higher
+- Laravel 11.24.1 or higher
+- Filament 3.2 or higher
 - [PHP Internationalization extension (intl)](https://www.php.net/manual/en/intro.intl.php)
-- The database column should be a integers with minor units (i.e. cents) and not a float (Floats should never be used for storing money).
+- The database column type should be a either decimal or integer (amount stored with minor units i.e. cents).
 
 ## Key features
 
@@ -49,9 +55,15 @@ This package would give "1 234,56 kr", while most other solutions probably would
 composer require pelmered/filament-money-field
 ```
 
-## Configure your locale
+## Upgrade to 2.* from 1.*
 
-### Set the default currency and locale
+See [upgrade guide](UPGRADE.md).
+
+## Configuration
+
+### Configure your locale
+
+#### Set the default currency and locale
 
 **Set the default options for currency and locale so that you don't have to set them for every field.**
 
@@ -66,8 +78,7 @@ MONEY_DEFAULT_CURRENCY=SEK
 php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider" --tag="config"
 ```
 
-
-### Decimals and significant digits
+#### Decimals and significant digits
 
 The number of decimals and significant digits can be set in the config file. Defaults to 2.
 
@@ -78,6 +89,7 @@ MONEY_DECIMAL_DIGITS=2 // Gives 2 decimals, e.g. $1,234.56
 ```
 
 For significant digits, use negative values. For example -2 will give you 2 significant digits. 
+This is only for displaying the amount. The amount will always be saved with full precision. 
 
 ```env
 //with input 12345678
@@ -93,6 +105,84 @@ MoneyEntry::make('price')->decimals(2);
 MoneyColumn::make('price')->decimals(-2);
 ```
 
+### Configuration for saving currency per field in database (Recommended, especially for multi-currency applications) 
+
+#### Migrations
+
+Each money column needs a corresponding currency column with the name `{money_column_name}_currency` 
+
+For new columns
+```php
+Schema::table('tablename', function (Blueprint $table) {
+    $table->money('price'); // This will create two columns, 'price' (integer) and 'price_currency' (char(3))
+});
+```
+For changing existing columns, in this case a column called `price`.
+```php
+Schema::table('tablename', function (Blueprint $table) {
+    $table->char('price_currency', 3)->after('price')->change();
+    $this->index(['price', 'price_currency']);
+});
+```
+Available column types(methods) on the Blueprint object are:
+
+| Method            | With int storage        | With decimal storage        |
+|-------------------|-------------------------|-----------------------------|
+| `money()`         | `BigInteger`            | `Decimal(12, 3)`            |
+| `nullableMoney()` | `BigInteger (Nullable)` | `Decimal(12, 3) (Nullable)` |
+| `smallMoney()`    | `SmallInteger`          | `Decimal(6, 3)`             |
+| `unsignedMoney()` | `BigInteger (Unigned)`  | `Decimal(12, 3) (Unsigned)` |
+
+
+Don't forget to run your migrations.
+
+#### Casts
+
+
+Each money column should have a cast that casts the column to a Money object and the currency column should have a cast that casts the column to a Currency object
+
+```php
+use Pelmered\FilamentMoneyField\Casts\CurrencyCast;
+use Pelmered\FilamentMoneyField\Casts\MoneyCast;
+
+protected function casts(): array
+{
+    return [
+        'price' => MoneyCast::class,
+        'price_currency' => CurrencyCast::class,
+        'another_price' => MoneyCast::class,
+        'another_price_currency' => CurrencyCast::class,
+    ];
+}
+```
+Or as a property:
+```php
+protected $casts = [
+    'price' => MoneyCast::class,
+    'price_currency' => CurrencyCast::class,
+    'another_price' => MoneyCast::class,
+    'another_price_currency' => CurrencyCast::class,
+];
+```
+This will give you value objects for the money and currency columns when you acceess them in your code. 
+For example `$model->price` will get you a `\Money\Money` object. To access the amount you need to write `$model->price->getAmount()`.
+Currency columns gives you a `\Pelmered\FilamentMoneyField\Currencies\Currency` object, and to get the currency code as a string you need to write `$model->priceCurrency->getCode()`.
+
+Value objects are great in most cases, but if you don't want to use them in your code, you can add an [accessor](https://laravel.com/docs/12.x/eloquent-mutators#accessors-and-mutators) for getting the raw values instead. This will cast your values to strings:
+```php
+protected function price(): Attribute
+{
+    return Attribute::make(
+        get: static fn (string $value) => $value
+    );
+}
+protected function priceCurrency(): Attribute
+{
+    return Attribute::make(
+        get: static fn (string $value) => $value,
+    );
+}
+````
 
 ## Usage
 
@@ -118,7 +208,10 @@ MoneyInput::make('price')
     ->maxValue(10000) // Add min and max value (in minor units, i.e. cents) to the input field. In this case no values over 100
     ->step(100) // Step value for the input field. In this case only multiples of 100 are allowed.
     ->decimals(0)
-    ->getSymbolPlacement('after'), // Possible options: 'after', 'before', 'none'. Defaults to 'before'
+    ->getSymbolPlacement('after') // Possible options: 'after', 'before', 'none'. Defaults to 'before'
+    ->hideCurrencySymbol() // Hide currency symbol.
+    ->currencySwitcherEnabled() // Enable the currency switcher (if it is disabled globally in the config file).
+    ->currencySwitcherDisabled() // Disable the currency switcher (if it is enabled globally in the config file).
 ```
 
 ### Table column
@@ -140,7 +233,8 @@ MoneyColumn::make('price')
     ->short(), // Short format, e.g. $1.23M instead of $1,234,567.89
 
 MoneyColumn::make('price')
-    ->short(showCurrencySymbol: false), // Short format without currency symbol, e.g. 1.23M instead of $1.23M
+    ->short()
+    ->hideCurrencySymbol(), // Short format without currency symbol, e.g. 1.23M instead of $1.23M
 
 MoneyColumn::make('price')
     ->decimals(4)
@@ -238,8 +332,6 @@ MoneyInput::make('price')->decimals(function () {
 Contact me or create an issue if you want something of this, or something else. 
 I appreciate if you could tell me a bit about your use case for that feature as well. 
 
-- Improve the input mask.
-- Add support for dynamic currency and locale based on current user.
 - Currency conversions. Set what base currency the value in the database is and then convert to the current users preferred currency on the fly. Not sure how edit/create should be handled in this case.
 
 ## Contributing
@@ -250,5 +342,5 @@ When you are submitting a PR, I appreciate if you:
 
 - Add tests for your code. Not a strict requirement. Ask for guidance if you are unsure. I will try to help if I have time. 
 - Run the test suite and make sure it passes with `composer test`.
-- Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. 
+- Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. You might also try to fix the code automatically with `composer fix`.
 
