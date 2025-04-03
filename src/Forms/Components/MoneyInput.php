@@ -16,7 +16,6 @@ use Pelmered\FilamentMoneyField\Enum\CurrencySymbolPlacement;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-use PhpStaticAnalysis\Attributes\Type;
 
 class MoneyInput extends TextInput
 {

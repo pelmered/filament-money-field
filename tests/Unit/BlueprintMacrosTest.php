@@ -2,9 +2,6 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
-use Illuminate\Support\Facades\Config;
-use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
-
 
 it('registers database macros', function (): void {
     // Test that the macros for Blueprint are registered
@@ -22,8 +19,8 @@ it('has correct blueprint money macro implementation', function ($macro, $config
     $blueprint = new Blueprint('test_table');
 
     $moneyColumn = $blueprint->{$macro}('price');
-    $columns = $blueprint->getColumns();
-    $commands = $blueprint->getCommands();
+    $columns     = $blueprint->getColumns();
+    $commands    = $blueprint->getCommands();
 
     expect($moneyColumn)->toBe($columns[0]);
     $moneyColumnAttributes = $moneyColumn->getAttributes();
@@ -38,7 +35,7 @@ it('has correct blueprint money macro implementation', function ($macro, $config
 
     expect($currencyColumnAttributes)->toMatchArray($expected['currency']);
 
-    if(isset($expected['index'])) {
+    if (isset($expected['index'])) {
         $indexes = \Illuminate\Support\Arr::where($commands, function ($command): bool {
             return $command instanceof \Illuminate\Support\Fluent && $command->index;
         });
@@ -54,182 +51,182 @@ it('has correct blueprint money macro implementation', function ($macro, $config
 
 })->with([
     'money' => [
-        'macro' => 'money',
-        'config' => [],
+        'macro'    => 'money',
+        'config'   => [],
         'expected' => [
             'price' => [
-                'type' => 'bigInteger',
-                'name' => 'price',
+                'type'          => 'bigInteger',
+                'name'          => 'price',
                 'autoIncrement' => false,
-                'unsigned' => false,
+                'unsigned'      => false,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
             'index' => [
-                'name' => 'index',
-                'index' => 'test_table_price_currency_price_index',
-                'columns' => ['price_currency', 'price']
-            ]
+                'name'    => 'index',
+                'index'   => 'test_table_price_currency_price_index',
+                'columns' => ['price_currency', 'price'],
+            ],
         ],
     ],
     'money_decimal' => [
-        'macro' => 'money',
+        'macro'  => 'money',
         'config' => [
             'store' => [
-                'format' => 'decimal'
+                'format' => 'decimal',
             ],
         ],
         'expected' => [
             'price' => [
-                'type' => 'decimal',
-                'name' => 'price',
-                'total' => 12,
+                'type'   => 'decimal',
+                'name'   => 'price',
+                'total'  => 12,
                 'places' => 3,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
         ],
     ],
     'money_custom_currency_suffix' => [
-        'macro' => 'money',
+        'macro'  => 'money',
         'config' => [
             'currency_column_suffix' => '_my_currency',
         ],
         'expected' => [
             'price' => [
-                'type' => 'bigInteger',
-                'name' => 'price',
+                'type'          => 'bigInteger',
+                'name'          => 'price',
                 'autoIncrement' => false,
-                'unsigned' => false,
+                'unsigned'      => false,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_my_currency',
+                'type'   => 'string',
+                'name'   => 'price_my_currency',
                 'length' => 6,
             ],
         ],
     ],
     'smallMoney' => [
-        'macro' => 'smallMoney',
-        'config' => [],
+        'macro'    => 'smallMoney',
+        'config'   => [],
         'expected' => [
             'price' => [
-                'type' => 'smallInteger',
-                'name' => 'price',
+                'type'          => 'smallInteger',
+                'name'          => 'price',
                 'autoIncrement' => false,
-                'unsigned' => true,
+                'unsigned'      => true,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
         ],
     ],
     'smallMoney_decimal' => [
-        'macro' => 'smallMoney',
+        'macro'  => 'smallMoney',
         'config' => [
             'store' => [
-                'format' => 'decimal'
+                'format' => 'decimal',
             ],
         ],
         'expected' => [
             'price' => [
-                'type' => 'decimal',
-                'name' => 'price',
-                'total' => 6,
+                'type'   => 'decimal',
+                'name'   => 'price',
+                'total'  => 6,
                 'places' => 3,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
         ],
     ],
     'nullableMoney' => [
-        'macro' => 'nullableMoney',
-        'config' => [],
+        'macro'    => 'nullableMoney',
+        'config'   => [],
         'expected' => [
             'price' => [
-                'type' => 'bigInteger',
-                'name' => 'price',
+                'type'          => 'bigInteger',
+                'name'          => 'price',
                 'autoIncrement' => false,
-                'unsigned' => true,
-                'nullable' => true,
+                'unsigned'      => true,
+                'nullable'      => true,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
         ],
     ],
     'nullableMoney_decimal' => [
-        'macro' => 'nullableMoney',
+        'macro'  => 'nullableMoney',
         'config' => [
             'store' => [
-                'format' => 'decimal'
+                'format' => 'decimal',
             ],
         ],
         'expected' => [
             'price' => [
-                'type' => 'decimal',
-                'name' => 'price',
-                'total' => 12,
-                'places' => 3,
+                'type'     => 'decimal',
+                'name'     => 'price',
+                'total'    => 12,
+                'places'   => 3,
                 'nullable' => true,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
-        ]
+        ],
     ],
     'unsignedMoney' => [
-        'macro' => 'unsignedMoney',
-        'config' => [],
+        'macro'    => 'unsignedMoney',
+        'config'   => [],
         'expected' => [
             'price' => [
-                'type' => 'bigInteger',
-                'name' => 'price',
+                'type'          => 'bigInteger',
+                'name'          => 'price',
                 'autoIncrement' => false,
-                'unsigned' => true,
+                'unsigned'      => true,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
-        ]
+        ],
     ],
     'unsignedMoney_decimal' => [
-        'macro' => 'unsignedMoney',
+        'macro'  => 'unsignedMoney',
         'config' => [
             'store' => [
-                'format' => 'decimal'
+                'format' => 'decimal',
             ],
         ],
         'expected' => [
             'price' => [
-                'type' => 'decimal',
-                'name' => 'price',
-                'total' => 12,
+                'type'   => 'decimal',
+                'name'   => 'price',
+                'total'  => 12,
                 'places' => 3,
             ],
             'currency' => [
-                'type' => 'string',
-                'name' => 'price_currency',
+                'type'   => 'string',
+                'name'   => 'price_currency',
                 'length' => 6,
             ],
-        ]
+        ],
     ],
 
 ]);

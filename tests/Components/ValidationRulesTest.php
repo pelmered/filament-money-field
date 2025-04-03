@@ -2,7 +2,6 @@
 
 use Filament\Forms\ComponentContainer;
 use Illuminate\Support\Facades\Validator;
-use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;

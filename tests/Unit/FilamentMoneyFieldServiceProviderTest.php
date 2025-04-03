@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Schema\ColumnDefinition;
 use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
 

@@ -49,8 +49,6 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
         Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
 
-
-
         Blueprint::macro('money', function (string $name, ?string $indexName = null) {
             $currencySuffix = config('filament-money-field.currency_column_suffix');
 
