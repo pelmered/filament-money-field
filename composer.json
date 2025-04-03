@@ -70,7 +70,8 @@
             "composer test"
         ],
         "lint": [
-            "composer check"
+            "composer pint",
+            "composer phpstan"
         ],
         "fix": [
             "composer pint --fix",
