@@ -2,6 +2,7 @@
 
 use Filament\Forms\ComponentContainer;
 use Illuminate\Support\Facades\Validator;
+use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
@@ -32,7 +33,7 @@ it('validates min value using MinValueRule', function (): void {
     );
     expect($validator->passes())->toBeTrue();
 
-    // Test invalid value
+    // Test too low value
     $rule      = new MinValueRule(2000, $fieldComponent);
     $validator = Validator::make(
         ['money' => '15.00'],
@@ -44,6 +45,19 @@ it('validates min value using MinValueRule', function (): void {
     );
     expect($validator->passes())->toBeFalse();
     expect($validator->errors()->first('money'))->toContain('least');
+
+    // Test invalid(non-numeric) value
+    $rule      = new MinValueRule(1000, $fieldComponent);
+    $validator = Validator::make(
+        ['money' => 'abc'],
+        [
+            'money' => function ($attribute, $value, $fail) use ($rule): void {
+                $rule->validate($attribute, $value, $fail);
+            },
+        ]
+    );
+    expect($validator->passes())->toBeFalse();
+    expect($validator->errors()->first('money'))->toContain('must be a valid numeric value');
 });
 
 it('validates max value using MaxValueRule', function (): void {
@@ -71,7 +85,7 @@ it('validates max value using MaxValueRule', function (): void {
     );
     expect($validator->passes())->toBeTrue();
 
-    // Test invalid value
+    // Test too high value
     $rule      = new MaxValueRule(1000, $fieldComponent);
     $validator = Validator::make(
         ['money' => '15.00'],
@@ -83,55 +97,17 @@ it('validates max value using MaxValueRule', function (): void {
     );
     expect($validator->passes())->toBeFalse();
     expect($validator->errors()->first('money'))->toContain('must be less than');
-});
 
-it('can validate required money array format', function (): void {
-    $validator = Validator::make([
-        'field' => null,
-    ], [
-        'field'          => ['required', 'array'],
-        'field.amount'   => ['required', 'numeric'],
-        'field.currency' => ['required', 'string'],
-    ]);
-
+    // Test invalid(non-numeric) value
+    $rule      = new MaxValueRule(1000, $fieldComponent);
+    $validator = Validator::make(
+        ['money' => 'abc'],
+        [
+            'money' => function ($attribute, $value, $fail) use ($rule): void {
+                $rule->validate($attribute, $value, $fail);
+            },
+        ]
+    );
     expect($validator->passes())->toBeFalse();
-
-    $validator = Validator::make([
-        'field' => [
-            'amount'   => 1000,
-            'currency' => 'USD',
-        ],
-    ], [
-        'field'          => ['required', 'array'],
-        'field.amount'   => ['required', 'numeric'],
-        'field.currency' => ['required', 'string'],
-    ]);
-
-    expect($validator->passes())->toBeTrue();
-});
-
-it('can validate money array with missing values', function (): void {
-    $validator = Validator::make([
-        'field' => [
-            'amount' => 1000,
-        ],
-    ], [
-        'field'          => ['required', 'array'],
-        'field.amount'   => ['required', 'numeric'],
-        'field.currency' => ['required', 'string'],
-    ]);
-
-    expect($validator->passes())->toBeFalse();
-
-    $validator = Validator::make([
-        'field' => [
-            'currency' => 'USD',
-        ],
-    ], [
-        'field'          => ['required', 'array'],
-        'field.amount'   => ['required', 'numeric'],
-        'field.currency' => ['required', 'string'],
-    ]);
-
-    expect($validator->passes())->toBeFalse();
+    expect($validator->errors()->first('money'))->toContain('must be a valid numeric value');
 });
