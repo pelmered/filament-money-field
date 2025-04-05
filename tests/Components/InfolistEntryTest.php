@@ -1,11 +1,9 @@
 <?php
 
-use Filament\Infolists\ComponentContainer;
 use Illuminate\Support\Facades\Config;
 use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
 
 it('formats money value correctly', function (): void {
     $component = createInfolistTestComponent([MoneyEntry::make('amount')]);

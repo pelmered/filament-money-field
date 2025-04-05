@@ -7,7 +7,6 @@ use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 
 it('accepts form input money in numeric format', function (): void {

@@ -1,13 +1,9 @@
 <?php
 
 use Filament\Forms;
-use Filament\Infolists;
 use Filament\Forms\Components\Field;
-use Filament\Infolists\ComponentContainer;
+use Filament\Infolists;
 use Illuminate\Validation\ValidationException;
-use Livewire\Component;
-use Money\Currency;
-use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
@@ -94,17 +90,17 @@ function createTestComponent($type = 'form', $components = [], $fieldName = 'amo
 {
     if (count($components) <= 0) {
         $components = match ($type) {
-            'form' => [MoneyInput::make($fieldName)],
+            'form'     => [MoneyInput::make($fieldName)],
             'infolist' => [MoneyEntry::make($fieldName)],
-            'table' => [MoneyColumn::make($fieldName)],
-            default => [],
+            'table'    => [MoneyColumn::make($fieldName)],
+            default    => [],
         };
     }
 
     return (match ($type) {
-        'form' => Forms\ComponentContainer::make(FormTestComponent::make()),
+        'form'     => Forms\ComponentContainer::make(FormTestComponent::make()),
         'infolist' => Infolists\ComponentContainer::make(InfolistTestComponent::make()),
-        //'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
+        // 'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
         default => throw new Exception('Unknown component type: '.$type),
     })
         ->statePath($statePath)
@@ -115,6 +111,7 @@ function createFormTestComponent($components = [], $fill = [], $fieldName = 'amo
 {
     $components = createTestComponent('form', $components, $fieldName, $statePath);
     $components->fill($fill);
+
     return $components;
 }
 

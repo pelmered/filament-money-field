@@ -43,13 +43,19 @@ class MoneyFormatter
             ? $value
             : new Money((int) $value, $currency instanceof Currency ? $currency->toMoneyCurrency() : $currency);
 
-        if (!$showCurrencySymbol) {
-            return self::getNumberFormatter(
+        if (! $showCurrencySymbol) {
+            $formatted = self::getNumberFormatter(
                 $locale,
                 NumberFormatter::DECIMAL,
                 $decimals,
                 false
-            )->format($money->getAmount()/100);
+            )->format($money->getAmount() / 100);
+
+            if ($formatted === false) {
+                return '';
+            }
+
+            return $formatted;
         }
 
         return static::formatMoney($money, $locale, $outputStyle, $decimals);
@@ -97,7 +103,6 @@ class MoneyFormatter
         if ($value instanceof Money) {
             $value = $value->getAmount();
         }
-
 
         if ($value === '' || $value === null) {
             return '';
