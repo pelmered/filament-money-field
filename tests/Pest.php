@@ -111,14 +111,14 @@ function createTestComponent($type = 'form', $components = [], $fieldName = 'amo
         ->components($components);
 }
 
-function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount', $statePath = 'data')
+function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount', $statePath = 'data'): \Filament\Forms\ComponentContainer|\Filament\Infolists\ComponentContainer
 {
     $components = createTestComponent('form', $components, $fieldName, $statePath);
     $components->fill($fill);
     return $components;
 }
 
-function createInfolistTestComponent($components = [], $fieldName = 'amount', $statePath = 'data'): MoneyEntry
+function createInfolistTestComponent($components = [], string $fieldName = 'amount', string $statePath = 'data'): MoneyEntry
 {
     return createTestComponent('infolist', $components, $fieldName, $statePath)
         ->getComponent($statePath.'.'.$fieldName);
