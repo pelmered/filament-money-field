@@ -29,7 +29,8 @@ class MoneyEntry extends TextEntry
                 $state,
                 $component->getCurrency(),
                 $component->getLocale(),
-                decimals: $this->getDecimals()
+                decimals: $this->getDecimals(),
+                showCurrencySymbol: $this->showCurrencySymbol,
             );
         });
     }

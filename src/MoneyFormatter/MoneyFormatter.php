@@ -33,6 +33,7 @@ class MoneyFormatter
         string $locale,
         int $outputStyle = NumberFormatter::CURRENCY,
         int $decimals = 2,
+        bool $showCurrencySymbol = true,
     ): string {
         if ($value === '' || $value === null) {
             return '';
@@ -41,6 +42,15 @@ class MoneyFormatter
         $money = $value instanceof Money
             ? $value
             : new Money((int) $value, $currency instanceof Currency ? $currency->toMoneyCurrency() : $currency);
+
+        if (!$showCurrencySymbol) {
+            return self::getNumberFormatter(
+                $locale,
+                NumberFormatter::DECIMAL,
+                $decimals,
+                false
+            )->format($money->getAmount()/100);
+        }
 
         return static::formatMoney($money, $locale, $outputStyle, $decimals);
     }
@@ -84,7 +94,12 @@ class MoneyFormatter
         int $decimals = 2,
         bool $showCurrencySymbol = true
     ): string {
-        if (! is_numeric($value)) {
+        if ($value instanceof Money) {
+            $value = $value->getAmount();
+        }
+
+
+        if ($value === '' || $value === null) {
             return '';
         }
 
@@ -181,7 +196,7 @@ class MoneyFormatter
         return Currency::fromCode($defaultCurrencyCode);
     }
 
-    private static function getNumberFormatter(string $locale, int $style, int $decimals = 2): NumberFormatter
+    private static function getNumberFormatter(string $locale, int $style, int $decimals = 2, bool $showCurrencySymbol = true): NumberFormatter
     {
         $config = config('filament-money-field');
 
@@ -193,7 +208,7 @@ class MoneyFormatter
             $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimals);
         }
 
-        if ($config['intl_currency_symbol']) {
+        if ($showCurrencySymbol && $config['intl_currency_symbol']) {
             $intlCurrencySymbol = $numberFormatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
             if ($numberFormatter->getTextAttribute(NumberFormatter::POSITIVE_PREFIX) !== '') {
                 // "\xc2\xa0" is a non-breaking space
