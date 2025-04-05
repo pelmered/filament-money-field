@@ -7,25 +7,24 @@ use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
+use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 
 it('accepts form input money in numeric format', function (): void {
-    $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([MoneyInput::make('price')])
-        // ->fill(['price' => 'test']);
-        ->fill(['price' => new Money(12345600, new Currency('USD'))]);
-
+    $component = createFormTestComponent(
+        [MoneyInput::make('price')],
+        ['price' => new Money(12345600, new Currency('USD'))],
+        'price',
+    );
     expect($component->getState()['price']->getAmount())->toEqual('12345600');
 });
 
 it('accepts null state and returns null', function (): void {
-    $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([MoneyInput::make('price')])
-        ->fill(['price' => null]);
-
-    expect($component->getState()['price'])->amount->toBeNull();
+    $component = createFormTestComponent(
+        [MoneyInput::make('amount')],
+        ['amount' => null],
+    );
+    expect($component->getState()['amount'])->amount->toBeNull();
 });
 
 it('triggers exception for non-numeric state', function (): void {
@@ -39,13 +38,12 @@ it('triggers exception for non-numeric state', function (): void {
 it('sets currency symbol placement after with global config', function (): void {
     config(['filament-money-field.form_currency_symbol_placement' => 'after']);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([MoneyInput::make('price')])
-        ->fill(['price' => 20]);
-
+    $component = createFormTestComponent(
+        [MoneyInput::make('amount')],
+        ['amount' => 20],
+    );
     /** @var MoneyInput $field */
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('data.amount');
     expect($field->getSuffixLabel())->toEqual('$');
     expect($field->getPrefixLabel())->toBeNull();
 });
@@ -53,12 +51,11 @@ it('sets currency symbol placement after with global config', function (): void 
 it('sets currency symbol placement before with global config', function (): void {
     config(['filament-money-field.form_currency_symbol_placement' => 'before']);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([MoneyInput::make('price')])
-        ->fill(['price' => 20]);
-
-    $field = $component->getComponent('data.price');
+    $component = createFormTestComponent(
+        [MoneyInput::make('amount')],
+        ['amount' => 20],
+    );
+    $field = $component->getComponent('data.amount');
     expect($field->getPrefixLabel())->toEqual('$');
     expect($field->getSuffixLabel())->toBeNull();
 });
@@ -66,36 +63,34 @@ it('sets currency symbol placement before with global config', function (): void
 it('hides currency symbol with global config', function (): void {
     config(['filament-money-field.form_currency_symbol_placement' => 'hidden']);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([MoneyInput::make('price')])
-        ->fill(['price' => 20]);
-
-    $field = $component->getComponent('data.price');
+    $component = createFormTestComponent(
+        [MoneyInput::make('amount')],
+        ['amount' => 20],
+    );
+    $field = $component->getComponent('data.amount');
     expect($field->getPrefixLabel())->toBeNull();
     expect($field->getSuffixLabel())->toBeNull();
 });
 
 it('sets currency symbol placement after with on field config', function (): void {
-    $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([MoneyInput::make('price')->symbolPlacement('after')])
-        ->fill(['price' => 20]);
+    $component = createFormTestComponent(
+        [MoneyInput::make('amount')->symbolPlacement('after')],
+        ['amount' => 20],
+    );
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('data.amount');
 
-    // dd($field);
     expect($field->getSuffixLabel())->toEqual('$');
     expect($field->getPrefixLabel())->toBeNull();
 });
 
 it('sets currency symbol placement before with on field config', function (): void {
-    $component = ComponentContainer::make(FormTestComponent::make())
-        ->statePath('data')
-        ->components([MoneyInput::make('price')->symbolPlacement('before')])
-        ->fill(['price' => 20]);
+    $component = createFormTestComponent(
+        [MoneyInput::make('amount')->symbolPlacement('before')],
+        ['amount' => 20],
+    );
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('data.amount');
     expect($field->getPrefixLabel())->toEqual('$');
     expect($field->getSuffixLabel())->toBeNull();
 });
@@ -103,10 +98,10 @@ it('sets currency symbol placement before with on field config', function (): vo
 it('hides currency symbol with on field config', function (): void {
     $component = ComponentContainer::make(FormTestComponent::make())
         ->statePath('data')
-        ->components([MoneyInput::make('price')->symbolPlacement('hidden')])
-        ->fill(['price' => 20]);
+        ->components([MoneyInput::make('amount')->symbolPlacement('hidden')])
+        ->fill(['amount' => 20]);
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('data.amount');
     expect($field->getPrefixLabel())->toBeNull();
     expect($field->getSuffixLabel())->toBeNull();
 });

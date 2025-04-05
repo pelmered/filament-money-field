@@ -1,9 +1,19 @@
 <?php
 
-use Filament\Forms\ComponentContainer;
+use Filament\Forms;
+use Filament\Infolists;
 use Filament\Forms\Components\Field;
+use Filament\Infolists\ComponentContainer;
 use Illuminate\Validation\ValidationException;
+use Livewire\Component;
+use Money\Currency;
+use Money\Money;
+use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
+use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
+use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\TableTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 pest()->project()->github('pelmered/filament-money-field');
@@ -58,7 +68,7 @@ function replaceNonBreakingSpaces(string $string): string
 function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
 {
     try {
-        ComponentContainer::make(FormTestComponent::make())
+        \Filament\Forms\ComponentContainer::make(FormTestComponent::make())
             ->statePath('data')
             ->components([$field])
             ->fill([$field->getName() => $value])
@@ -75,4 +85,41 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
     }
 
     return true;
+}
+
+/**
+ * @throws Exception
+ */
+function createTestComponent($type = 'form', $components = [], $fieldName = 'amount', $statePath = 'data'): Forms\ComponentContainer|Infolists\ComponentContainer
+{
+    if (count($components) <= 0) {
+        $components = match ($type) {
+            'form' => [MoneyInput::make($fieldName)],
+            'infolist' => [MoneyEntry::make($fieldName)],
+            'table' => [MoneyColumn::make($fieldName)],
+            default => [],
+        };
+    }
+
+    return (match ($type) {
+        'form' => Forms\ComponentContainer::make(FormTestComponent::make()),
+        'infolist' => Infolists\ComponentContainer::make(InfolistTestComponent::make()),
+        //'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
+        default => throw new Exception('Unknown component type: '.$type),
+    })
+        ->statePath($statePath)
+        ->components($components);
+}
+
+function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount', $statePath = 'data')
+{
+    $components = createTestComponent('form', $components, $fieldName, $statePath);
+    $components->fill($fill);
+    return $components;
+}
+
+function createInfolistTestComponent($components = [], $fieldName = 'amount', $statePath = 'data'): MoneyEntry
+{
+    return createTestComponent('infolist', $components, $fieldName, $statePath)
+        ->getComponent($statePath.'.'.$fieldName);
 }
