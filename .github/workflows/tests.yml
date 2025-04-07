@@ -3,9 +3,7 @@ name: Tests
 
 on:
   push:
-    branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
   test:
@@ -13,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        php: [8.2, 8.3]
+        php: [8.2, 8.3, 8.4]
         #dependencies: [lowest, highest]
         stability: [prefer-lowest, prefer-stable]
         #stability: [prefer-stable]
@@ -23,20 +21,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: intl, fileinfo, zip
-      - name: Setup problem matchers
-        run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+          extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath
+
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
       - name: Execute tests
-        run: vendor/bin/pest --testsuite=default
+        run: vendor/bin/pest
 
   report-metrics:
     runs-on: ubuntu-latest
@@ -51,13 +49,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath
           coverage: pcov
 
       - name: Install dependencies
-        run: composer update --prefer-stable --prefer-dist --no-interaction
+        run: composer install --no-interaction
 
-      - name: Execute tests
+      - name: Setup testbench
+        run: php vendor/bin/testbench package:purge-skeleton --ansi
+
+      - name: Execute tests with coverage
         run: vendor/bin/pest --coverage-clover=reports/coverage/test-coverage-clover.xml
 
       - name: Execute type coverage tests

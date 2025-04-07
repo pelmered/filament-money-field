@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Concerns\FormatsAttributes;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\MoneyFormatter;
+use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
 readonly class MinValueRule implements ValidationRule
 {
@@ -33,7 +33,7 @@ readonly class MinValueRule implements ValidationRule
                         'The {attribute} must be at least {value}.',
                         [
                             '{attribute}' => $this->formatAttribute($attribute),
-                            '{value}'     => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
+                            '{value}'     => MoneyFormatter::numberFormat($this->min, $locale),
                         ]
                     )
                 );

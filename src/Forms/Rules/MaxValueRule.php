@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Concerns\FormatsAttributes;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\MoneyFormatter;
+use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
 
 readonly class MaxValueRule implements ValidationRule
 {
@@ -33,7 +33,7 @@ readonly class MaxValueRule implements ValidationRule
                         'The {attribute} must be less than or equal to {value}.',
                         [
                             '{attribute}' => $this->formatAttribute($attribute),
-                            '{value}'     => MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale),
+                            '{value}'     => MoneyFormatter::numberFormat($this->max, $locale),
                         ]
                     )
                 );
