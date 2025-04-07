@@ -18,10 +18,7 @@ This package would give "1 234,56 kr", while most other solutions probably would
 [![Type Coverage](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/type/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
 [![Complexity](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/complexity/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
 [![Crap](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/crap/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
-
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat)](https://otterwise.app/github/pelmered/filament-money-field)
-
-
 
 [![Tested with Laravel 11 to 12](https://img.shields.io/badge/Tested%20with%20Laravel-11%20%7C%2012-brightgreen?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 [![Tested on PHP 8.2 to 8.4](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3%20|%208.4-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
@@ -42,10 +39,11 @@ This package would give "1 234,56 kr", while most other solutions probably would
   - Input field with currency symbols and (optional) input mask.
   - Column for tables.
   - Entry for infolists.
-- Comprehensive test suite.
+- Modern and strict tooling. PHP 8.2+, PEST, PHPStan Level 8, Pint, Rector.
+- Comprehensive test suite. 100 % type coverage and 99+ % test coverage.
 - Configure currency and locale globally or per field.
 - Validation rules for valid numeric input, and min/max values.
-- A [money formatter class](https://github.com/pelmered/filament-money-field/blob/main/src/MoneyFormatter.php) that could be used in your project. Any public method there is considered stable and will not change without major version update.
+- A [money formatter class](MONEY-FORMATTER.md) that could be used in your project. Any public method there is considered stable and will not change without major version update. See [documentation](MONEY-FORMATTER.md) for details.
 
 **Are you using this package to make profits? Please consider [sponsoring me](https://github.com/sponsors/pelmered).**
 
@@ -137,7 +135,6 @@ Available column types(methods) on the Blueprint object are:
 Don't forget to run your migrations.
 
 #### Casts
-
 
 Each money column should have a cast that casts the column to a Money object and the currency column should have a cast that casts the column to a Currency object
 
@@ -325,7 +322,6 @@ MoneyInput::make('price')->decimals(function () {
     return 0;
 });
 ```
-
 
 ## Roadmap / Ideas for the future
 
