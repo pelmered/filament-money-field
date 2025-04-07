@@ -78,7 +78,7 @@ class MoneyFormatter
             }
         }
         elseif(is_int($value)) {
-            $value = ($value / (10 ** $minorDecimals));
+            $value /= 10 ** $minorDecimals;
         }
 
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
