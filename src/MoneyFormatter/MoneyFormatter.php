@@ -61,31 +61,24 @@ class MoneyFormatter
         return static::formatMoney($money, $locale, $outputStyle, $decimals);
     }
 
-    public static function formatAsDecimal(
-        null|int|string|Money $value,
-        Currency|MoneyCurrency $currency,
-        string $locale,
-        int $decimals = 2,
-    ): string {
-        if ($value === null) {
-            return '';
-        }
-
-        if ($value instanceof Money) {
-            $currency = $value->getCurrency();
-            $value    = $value->getAmount();
-        }
-
-        return static::format($value, $currency, $locale, NumberFormatter::DECIMAL, $decimals);
-    }
-
     public static function numberFormat(
         null|int|float|string $value,
         string $locale,
         int $decimals = 2,
+        int $minorDecimals = 2
     ): string {
         if (! is_numeric($value)) {
             return '';
+        }
+
+        if (is_float($value) || (is_string($value) && str_contains($value, '.'))) {
+            if ($decimals < 0) {
+                $value = (int) ($value * (10 ** $decimals));
+                $value = (int) ($value * (10 ** abs($decimals)));
+            }
+        }
+        elseif(is_int($value)) {
+            $value = ($value / (10 ** $minorDecimals));
         }
 
         $numberFormatter = self::getNumberFormatter($locale, NumberFormatter::DECIMAL, $decimals);
@@ -114,11 +107,9 @@ class MoneyFormatter
 
         // No need to abbreviate if the value is less than 1000
         if ($value < 100000) {
-            if (! $showCurrencySymbol) {
-                return static::numberFormat((int) $value / 100, $locale, decimals: $decimals);
-            }
+            $outputStyle = $showCurrencySymbol ? NumberFormatter::CURRENCY : NumberFormatter::DECIMAL;
 
-            return static::format($value, $currency, $locale, $decimals);
+            return static::format($value, $currency, $locale, $outputStyle, decimals: $decimals);
         }
 
         $abbreviated = (string) Number::abbreviate((int) $value / 100, 0, abs($decimals));

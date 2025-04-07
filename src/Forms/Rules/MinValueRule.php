@@ -33,7 +33,7 @@ readonly class MinValueRule implements ValidationRule
                         'The {attribute} must be at least {value}.',
                         [
                             '{attribute}' => $this->formatAttribute($attribute),
-                            '{value}'     => MoneyFormatter::formatAsDecimal($this->min, $currencyCode, $locale),
+                            '{value}'     => MoneyFormatter::numberFormat($this->min, $locale),
                         ]
                     )
                 );

@@ -72,7 +72,7 @@ class MoneyInput extends TextInput
             $currency = Currency::fromMoney($state);
             $locale   = $component->getLocale();
 
-            return MoneyFormatter::formatAsDecimal((int) $amount, $currency, $locale, $this->getDecimals());
+            return MoneyFormatter::numberFormat((int) $amount, $locale, $this->getDecimals());
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {

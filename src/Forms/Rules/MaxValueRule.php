@@ -33,7 +33,7 @@ readonly class MaxValueRule implements ValidationRule
                         'The {attribute} must be less than or equal to {value}.',
                         [
                             '{attribute}' => $this->formatAttribute($attribute),
-                            '{value}'     => MoneyFormatter::formatAsDecimal($this->max, $currencyCode, $locale),
+                            '{value}'     => MoneyFormatter::numberFormat($this->max, $locale),
                         ]
                     )
                 );

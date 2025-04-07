@@ -174,13 +174,13 @@ it('formats money in sek', function (mixed $input, string $expectedOutput): void
     expect($cleanResult)->toEqual($cleanExpected);
 })->with(provideMoneyDataSek());
 
-it('formats decimal money in usd', function (mixed $input, string $expectedOutput): void {
-    expect(MoneyFormatter::formatAsDecimal($input, Currency::fromCode('USD'), 'en_US'))
+it('formats decimal money with US locale', function (mixed $input, string $expectedOutput): void {
+    expect(MoneyFormatter::numberFormat($input, 'en_US'))
         ->toBe(replaceNonBreakingSpaces($expectedOutput));
 })->with(provideDecimalMoneyDataUsd());
 
-it('formats decimal money in sek', function (mixed $input, string $expectedOutput): void {
-    $result        = MoneyFormatter::formatAsDecimal($input, Currency::fromCode('SEK'), 'sv_SE');
+it('formats decimal money with Swedish locale', function (mixed $input, string $expectedOutput): void {
+    $result        = MoneyFormatter::numberFormat($input, 'sv_SE');
     $cleanResult   = replaceNonBreakingSpaces($result);
     $cleanExpected = replaceNonBreakingSpaces($expectedOutput);
 
