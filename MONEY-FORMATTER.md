@@ -1,6 +1,6 @@
 # MoneyFormatter Documentation
 
-This document describes the public API of the `Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter` class. This class provides static methods for formatting and parsing monetary values according to different locales and formatting rules.
+This document describes the public API of the `Pelmered\LaraPara\MoneyFormatter\MoneyFormatter` class. This class provides static methods for formatting and parsing monetary values according to different locales and formatting rules.
 
 All public methods listed here are considered part of the stable API and adhere to semantic versioning.
 
@@ -35,7 +35,7 @@ public static function formatMoney(
 ```php
 use Money\Money;
 use Money\Currency;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 $money = new Money(123456, new Currency('USD'));
 echo MoneyFormatter::formatMoney($money, 'en_US'); // Output: $1,234.56
@@ -64,7 +64,7 @@ public static function format(
 **Parameters:**
 
 -   `$value`: (`null|int|string|Money\Money`) The value to format. Can be an integer (minor units), a numeric string, a `Money\Money` object, or null/empty string.
--   `$currency`: (`Pelmered\FilamentMoneyField\Currencies\Currency|Money\Currency`) The currency object or code.
+-   `$currency`: (`Pelmered\LaraPara\Currencies\Currency|Money\Currency`) The currency object or code.
 -   `$locale`: (`string`) The locale string.
 -   `$outputStyle`: (`int`, optional) The `NumberFormatter` style. Defaults to `NumberFormatter::CURRENCY`. See PHP Documentation for [all available styles](https://www.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants).
 -   `$decimals`: (`int`, optional) Number of decimal places. Defaults to 2. Use negative values for significant digits.
@@ -77,8 +77,8 @@ public static function format(
 **Example:**
 
 ```php
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\Currencies\Currency;
 
 // Using integer (minor units)
 echo MoneyFormatter::format(123456, Currency::fromCode('USD'), 'en_US'); // Output: $1,234.56
@@ -126,7 +126,7 @@ public static function numberFormat(
 **Example:**
 
 ```php
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 echo MoneyFormatter::numberFormat(1234.56, 'en_US'); // Output: 1,234.56
 echo MoneyFormatter::numberFormat('1234.56', 'en_US'); // Output: 1,234.56
@@ -164,7 +164,7 @@ public static function formatShort(
 **Parameters:**
 
 -   `$value`: (`null|int|string|Money\Money`) The value to format (minor units, numeric string, or Money object).
--   `$currency`: (`Pelmered\FilamentMoneyField\Currencies\Currency|Money\Currency`) The currency object or code.
+-   `$currency`: (`Pelmered\LaraPara\Currencies\Currency|Money\Currency`) The currency object or code.
 -   `$locale`: (`string`) The locale string.
 -   `$decimals`: (`int`, optional) Number of decimal places for the abbreviated number. Defaults to 2. Use negative values for significant digits.
 -   `$showCurrencySymbol`: (`bool`, optional) Whether to include the currency symbol. Defaults to true.
@@ -176,8 +176,8 @@ public static function formatShort(
 **Example:**
 
 ```php
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\Currencies\Currency;
 
 // Values >= 100000 minor units (1000) are abbreviated
 echo MoneyFormatter::formatShort(123456, Currency::fromCode('USD'), 'en_US'); // Output: $1.23K
@@ -214,7 +214,7 @@ public static function parseDecimal(
 **Parameters:**
 
 -   `$moneyString`: (`?string`) The localized decimal string to parse.
--   `$currency`: (`Pelmered\FilamentMoneyField\Currencies\Currency|Money\Currency`) The currency object or code.
+-   `$currency`: (`Pelmered\LaraPara\Currencies\Currency|Money\Currency`) The currency object or code.
 -   `$locale`: (`string`) The locale string used for parsing rules (decimal/grouping separators).
 -   `$decimals`: (`int`, optional) The expected number of decimal places in the input string. Defaults to 2.
 
@@ -226,8 +226,8 @@ public static function parseDecimal(
 **Example:**
 
 ```php
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\Currencies\Currency;
 
 echo MoneyFormatter::parseDecimal('1,234.56', Currency::fromCode('USD'), 'en_US'); // Output: '123456'
 echo MoneyFormatter::parseDecimal('1.234,56', Currency::fromCode('EUR'), 'de_DE'); // Output: '123456'
@@ -252,23 +252,23 @@ Retrieves the formatting rules (symbol, separators, digits) for a specific curre
 public static function getFormattingRules(
     string $locale,
     Currency|MoneyCurrency $currency
-): Pelmered\FilamentMoneyField\MoneyFormatter\CurrencyFormattingRules
+): Pelmered\LaraPara\MoneyFormatter\CurrencyFormattingRules
 ```
 
 **Parameters:**
 
 -   `$locale`: (`string`) The locale string.
--   `$currency`: (`Pelmered\FilamentMoneyField\Currencies\Currency|Money\Currency`) The currency object or code.
+-   `$currency`: (`Pelmered\LaraPara\Currencies\Currency|Money\Currency`) The currency object or code.
 
 **Returns:**
 
--   (`Pelmered\FilamentMoneyField\MoneyFormatter\CurrencyFormattingRules`) An object containing the formatting rules.
+-   (`Pelmered\LaraPara\MoneyFormatter\CurrencyFormattingRules`) An object containing the formatting rules.
 
 **Example:**
 
 ```php
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\Currencies\Currency;
 
 $rules_usd = MoneyFormatter::getFormattingRules('en_US', Currency::fromCode('USD'));
 echo $rules_usd->currencySymbol;    // Output: $
@@ -290,19 +290,19 @@ echo $rules_sek->fractionDigits;    // Output: 2
 Gets the default currency configured for the application. Reads from `config('filament-money-field.default_currency')` or falls back to `Filament\Infolists\Infolist::$defaultCurrency`.
 
 ```php
-public static function getDefaultCurrency(): Pelmered\FilamentMoneyField\Currencies\Currency
+public static function getDefaultCurrency(): Pelmered\LaraPara\Currencies\Currency
 ```
 
 **Parameters:** None.
 
 **Returns:**
 
--   (`Pelmered\FilamentMoneyField\Currencies\Currency`) The default currency object.
+-   (`Pelmered\LaraPara\Currencies\Currency`) The default currency object.
 
 **Example:**
 
 ```php
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 // Assuming default currency is set to 'EUR' in config
 $defaultCurrency = MoneyFormatter::getDefaultCurrency();

@@ -89,3 +89,17 @@ In the `.env` file you can configure like this:
 ```env
 MONEY_AVAILABLE_CURRENCIES=USD,EUR,GBP
 ```
+
+## Money Formatter breaking changes
+
+### `formatAsDecimal()` is removed
+
+`formatAsDecimal()` has been removed. Use `numberFormat()` instead. The method signature is the same except the second parameter(currency) is removed. 
+
+#### Example:
+```php
+MoneyFormatter::formatAsDecimal(123456, Currency::fromCode('USD')); // Output: $1,234.56
+// should be changed to:
+MoneyFormatter::numberFormat(123456); // Output: $1,234.56
+
+``

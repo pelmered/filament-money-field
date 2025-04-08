@@ -163,7 +163,7 @@ protected $casts = [
 ```
 This will give you value objects for the money and currency columns when you acceess them in your code. 
 For example `$model->price` will get you a `\Money\Money` object. To access the amount you need to write `$model->price->getAmount()`.
-Currency columns gives you a `\Pelmered\FilamentMoneyField\Currencies\Currency` object, and to get the currency code as a string you need to write `$model->priceCurrency->getCode()`.
+Currency columns gives you a `\Pelmered\LaraPara\Currencies\Currency` object, and to get the currency code as a string you need to write `$model->priceCurrency->getCode()`.
 
 Value objects are great in most cases, but if you don't want to use them in your code, you can add an [accessor](https://laravel.com/docs/12.x/eloquent-mutators#accessors-and-mutators) for getting the raw values instead. This will cast your values to strings:
 ```php

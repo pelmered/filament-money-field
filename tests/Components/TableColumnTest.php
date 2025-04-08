@@ -75,7 +75,7 @@ it('hides value when column is hidden', function (): void {
 });
 
 it('formats money with international currency symbol when configured', function (): void {
-    Config::set('filament-money-field.intl_currency_symbol', true);
+    Config::set('larapara.intl_currency_symbol', true);
 
     $column = MoneyColumn::make('amount');
     $state  = new Money(12345, new Currency('USD'));

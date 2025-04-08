@@ -5,7 +5,7 @@ namespace Pelmered\FilamentMoneyField\Tests\Unit\Synthesizers;
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Mockery;
 use Money\Money;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
+use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Synthesizers\MoneySynthesizer;
 
 afterEach(function (): void {
