@@ -201,6 +201,7 @@ it('throws exception with unsupported currency', function (): void {
     expect(function (): void {
         validationTester((new MoneyInput('totalAmount'))->currency('SOMETHING'), 20);
     })->toThrow(UnsupportedCurrency::class);
+
 });
 
 it('allows label to be overrided', function (): void {
