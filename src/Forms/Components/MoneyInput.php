@@ -10,11 +10,11 @@ use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
-use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
-use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Enum\CurrencySymbolPlacement;
+use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
+use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 class MoneyInput extends TextInput

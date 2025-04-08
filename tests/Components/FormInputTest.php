@@ -5,6 +5,7 @@ use Filament\Forms\Components\Actions\Action;
 use Illuminate\Validation\ValidationException;
 use Money\Currency;
 use Money\Money;
+use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
@@ -201,7 +202,6 @@ it('throws exception with unsupported currency', function (): void {
     expect(function (): void {
         validationTester((new MoneyInput('totalAmount'))->currency('SOMETHING'), 20);
     })->toThrow(UnsupportedCurrency::class);
-
 });
 
 it('allows label to be overrided', function (): void {
