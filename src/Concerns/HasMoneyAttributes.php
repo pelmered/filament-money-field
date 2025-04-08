@@ -3,7 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
-use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
+use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
