@@ -1,5 +1,7 @@
 <?php
 
+use Pelmered\LaraPara\Currencies\Providers\ISOCurrenciesProvider;
+
 return [
     /*
     |---------------------------------------------------------------------------
