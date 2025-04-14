@@ -21,12 +21,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
     public function boot(): void
     {
-        $this->publishes([
-            __DIR__.'/../config/filament-money-field.php' => config_path('filament-money-field.php'),
-        ], 'filament-money-field');
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/filament-money-field.php', 'filament-money-field'
-        );
+        parent::boot();
 
         Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
@@ -34,6 +29,8 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
     public function register(): void
     {
+        parent::register();
+
         $this->app->bind(CurrencyCollection::class, function (): CurrencyCollection {
             return new CurrencyCollection;
         });
