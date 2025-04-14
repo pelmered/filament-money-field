@@ -28,25 +28,17 @@ readonly class MinValueRule implements ValidationRule
             );
 
             if ($minorValue < $this->min) {
-                $fail(
-                    strtr(
-                        'The {attribute} must be at least {value}.',
-                        [
-                            '{attribute}' => $this->formatAttribute($attribute),
-                            '{value}'     => MoneyFormatter::numberFormat($this->min, $locale),
-                        ]
-                    )
-                );
+                $fail('filament-money-field::validation.min_value')
+                    ->translate([
+                        'attribute' => $this->formatAttribute($attribute),
+                        'value'     => MoneyFormatter::numberFormat($this->min, $locale),
+                    ]);
             }
         } catch (ParserException) {
-            $fail(
-                strtr(
-                    'The {attribute} must be a valid numeric value.',
-                    [
-                        '{attribute}' => $this->formatAttribute($attribute),
-                    ]
-                )
-            );
+            $fail('filament-money-field::validation.numeric_value')
+                ->translate([
+                    'attribute' => $this->formatAttribute($attribute),
+                ]);
         }
     }
 }
