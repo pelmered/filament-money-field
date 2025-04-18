@@ -3,9 +3,6 @@
 namespace Pelmered\FilamentMoneyField;
 
 use Livewire\Livewire;
-use Pelmered\FilamentMoneyField\Commands\CacheCommand;
-use Pelmered\FilamentMoneyField\Commands\ClearCacheCommand;
-use Pelmered\LaraPara\Currencies\CurrencyCollection;
 use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
 use Pelmered\FilamentMoneyField\Synthesizers\MoneySynthesizer;
 use Spatie\LaravelPackageTools\Package;
@@ -28,15 +25,5 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
         Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
-    }
-
-    public function register(): void
-    {
-        parent::register();
-
-        $this->app->bind(CurrencyCollection::class, function (): CurrencyCollection {
-            return new CurrencyCollection;
-        });
-
     }
 }

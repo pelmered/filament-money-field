@@ -8,7 +8,6 @@ use Money\Money;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
-use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 
 it('accepts form input money in numeric format', function (): void {
     $component = createFormTestComponent(
