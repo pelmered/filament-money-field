@@ -3,9 +3,9 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
-use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
+use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 trait HasMoneyAttributes
