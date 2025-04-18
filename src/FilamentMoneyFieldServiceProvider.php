@@ -19,17 +19,17 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)
-            ->hasConfigFile();
+            ->hasConfigFile()
+            ->hasTranslations()
+            ->hasCommands([
+                CacheCommand::class,
+                ClearCacheCommand::class,
+            ]);
     }
 
     public function boot(): void
     {
-        $this->publishes([
-            __DIR__.'/../config/filament-money-field.php' => config_path('filament-money-field.php'),
-        ], 'filament-money-field');
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/filament-money-field.php', 'filament-money-field'
-        );
+        parent::boot();
 
         // Requires Laravel 11.27.1
         // See: https://github.com/laravel/framework/pull/52928
@@ -40,11 +40,6 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
                 clear: ClearCacheCommand::class,
             );
         }
-
-        $this->commands([
-            CacheCommand::class,
-            ClearCacheCommand::class,
-        ]);
 
         Livewire::propertySynthesizer(CurrencySynthesizer::class);
         Livewire::propertySynthesizer(MoneySynthesizer::class);
@@ -106,6 +101,8 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
     public function register(): void
     {
+        parent::register();
+
         $this->app->bind(CurrencyCollection::class, function (): CurrencyCollection {
             return new CurrencyCollection;
         });

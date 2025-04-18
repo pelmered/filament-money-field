@@ -28,25 +28,17 @@ readonly class MaxValueRule implements ValidationRule
             );
 
             if ($minorValue > $this->max) {
-                $fail(
-                    strtr(
-                        'The {attribute} must be less than or equal to {value}.',
-                        [
-                            '{attribute}' => $this->formatAttribute($attribute),
-                            '{value}'     => MoneyFormatter::numberFormat($this->max, $locale),
-                        ]
-                    )
-                );
+                $fail('filament-money-field::validation.max_value')
+                    ->translate([
+                        'attribute' => $this->formatAttribute($attribute),
+                        'value'     => MoneyFormatter::numberFormat($this->max, $locale),
+                    ]);
             }
         } catch (ParserException) {
-            $fail(
-                strtr(
-                    'The {attribute} must be a valid numeric value.',
-                    [
-                        '{attribute}' => $this->formatAttribute($attribute),
-                    ]
-                )
-            );
+            $fail('filament-money-field::validation.numeric_value')
+                ->translate([
+                    'attribute' => $this->formatAttribute($attribute),
+                ]);
         }
     }
 }
