@@ -3,3 +3,4 @@
 .phpunit.cache/
 coverage.xml
 composer.lock
+/reports/*
