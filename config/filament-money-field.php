@@ -73,7 +73,7 @@ return [
     | Currency symbol placement
     |---------------------------------------------------------------------------
     |
-    | Where the dunit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'hidden'.
+    | Where the unit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'hidden'.
     | Note: In most non-English speaking European countries,
     | the currency symbol is after the amount and is preceded by a space (as in "10 €")
     |
@@ -158,7 +158,7 @@ return [
     | Currency cast
     |---------------------------------------------------------------------------
     |
-    | Which currency object shouldPelmered\FilamentMoneyField\Casts\CurrencyCast should cast to?
+    | Which currency object should Pelmered\FilamentMoneyField\Casts\CurrencyCast should cast to?
     | Supported values are:
     | - 'Pelmered\FilamentMoneyField\Currencies\Currency::class'
     | - 'Money\Currency::class'
