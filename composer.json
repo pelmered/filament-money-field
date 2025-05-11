@@ -44,6 +44,9 @@
         "spatie/laravel-ray": "^1.39",
         "rector/rector": "^2.0"
     },
+    "conflict": {
+        "phpstan/phpstan": "2.1.12"
+    },
     "extra": {
         "laravel": {
             "providers": [
