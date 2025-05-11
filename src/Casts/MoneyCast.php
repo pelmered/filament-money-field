@@ -66,7 +66,7 @@ class MoneyCast implements CastsAttributes
             default                 => $value,
         };
 
-        return $amount ? (int) $amount : null;
+        return $amount !== null ? (int) $amount : null;
     }
 
     #[Param(value: 'array{0?: int, 1?: string, amount?: int, currency?: string}|Money|int|string|null')]

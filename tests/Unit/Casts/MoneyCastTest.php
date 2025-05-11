@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Casts\MoneyCast;
+use Pelmered\FilamentMoneyField\Tests\Support\Models\Post;
 
 class TestModel extends Model
 {
@@ -149,6 +150,18 @@ it('handles array input', function (): void {
     expect($money)->toBeInstanceOf(Money::class);
     expect($money->getAmount())->toEqual('98765');
     expect($money->getCurrency()->getCode())->toEqual('JPY');
+});
+
+it('handles zero values create', function (): void {
+    $model        = new Post([
+        'price_currency' => 'USD',
+        'price'          => 0,
+    ]);
+
+    $money = $model->getAttribute('price');
+    expect($money)->toBeInstanceOf(Money::class);
+    expect($money->getAmount())->toEqual('0');
+    expect($money->getCurrency()->getCode())->toEqual('USD');
 });
 
 it('handles zero values', function (): void {
