@@ -29,7 +29,8 @@
         "filament/support": "^v3.2.39",
         "moneyphp/money": "^4.0",
         "illuminate/support": "^11.24 | ^12",
-        "php-static-analysis/attributes": "^0.3.1 | ^0.4.0"
+        "php-static-analysis/attributes": "^0.3.1 | ^0.4.0",
+        "pelmered/larapara": "dev-main"
     },
     "require-dev": {
         "filament/filament": "^3.2",
@@ -43,6 +44,9 @@
         "spatie/laravel-ray": "^1.39",
         "rector/rector": "^2.0"
     },
+    "conflict": {
+        "phpstan/phpstan": "2.1.12"
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -51,7 +55,7 @@
         }
     },
     "scripts": {
-        "phpstan": "vendor/bin/phpstan analyse src --level=8",
+        "phpstan": "vendor/bin/phpstan analyse src --level=8 --memory-limit=-1",
         "pint": "vendor/bin/pint",
         "post-autoload-dump": [
             "@clear",

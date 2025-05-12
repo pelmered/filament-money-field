@@ -63,7 +63,7 @@ it('handles null value gracefully', function (): void {
 });
 
 it('formats with international currency symbol when configured', function (): void {
-    Config::set('filament-money-field.intl_currency_symbol', true);
+    Config::set('larapara.intl_currency_symbol', true);
 
     $component = createInfolistTestComponent();
     $formatted = $component->formatState(new Money(12345, new Currency('USD')));

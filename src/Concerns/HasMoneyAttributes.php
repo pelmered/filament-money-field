@@ -3,10 +3,10 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
-use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
-use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\Currencies\Currency;
+use Pelmered\LaraPara\Currencies\CurrencyRepository;
+use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 trait HasMoneyAttributes
 {

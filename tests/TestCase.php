@@ -11,6 +11,7 @@ use Illuminate\Contracts\Config\Repository;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
+use Pelmered\LaraPara\LaraParaServiceProvider;
 
 use function Orchestra\Testbench\artisan;
 
@@ -31,6 +32,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             SupportServiceProvider::class,
 
             // This package service provider
+            LaraParaServiceProvider::class,
             FilamentMoneyFieldServiceProvider::class,
         ];
     }

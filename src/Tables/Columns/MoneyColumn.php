@@ -5,7 +5,7 @@ namespace Pelmered\FilamentMoneyField\Tables\Columns;
 use Filament\Tables\Columns\TextColumn;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 class MoneyColumn extends TextColumn
 {

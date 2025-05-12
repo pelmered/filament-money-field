@@ -10,12 +10,12 @@ use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
-use Pelmered\FilamentMoneyField\Currencies\CurrencyRepository;
-use Pelmered\FilamentMoneyField\Enum\CurrencySymbolPlacement;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\MoneyFormatter\MoneyFormatter;
+use Pelmered\LaraPara\Currencies\Currency;
+use Pelmered\LaraPara\Currencies\CurrencyRepository;
+use Pelmered\LaraPara\Enum\CurrencySymbolPlacement;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {
@@ -89,7 +89,7 @@ class MoneyInput extends TextInput
 
     protected function prepare(): void
     {
-        $this->currencyColumn = $this->name.config('filament-money-field.currency_column_suffix', '_currency');
+        $this->currencyColumn = $this->name.config('larapara.currency_column_suffix', '_currency');
         $symbolPlacement      = $this->getSymbolPlacement();
         $getCurrencySymbol    = function (MoneyInput $component): string {
             return MoneyFormatter::getFormattingRules(

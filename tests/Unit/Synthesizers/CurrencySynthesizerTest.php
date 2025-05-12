@@ -4,8 +4,8 @@ namespace Pelmered\FilamentMoneyField\Tests\Unit\Synthesizers;
 
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Mockery;
-use Pelmered\FilamentMoneyField\Currencies\Currency;
 use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
+use Pelmered\LaraPara\Currencies\Currency;
 
 afterEach(function (): void {
     Mockery::close();
