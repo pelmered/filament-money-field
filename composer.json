@@ -55,7 +55,7 @@
         }
     },
     "scripts": {
-        "phpstan": "vendor/bin/phpstan analyse src --level=8",
+        "phpstan": "vendor/bin/phpstan analyse src --level=8 --memory-limit=-1",
         "pint": "vendor/bin/pint",
         "post-autoload-dump": [
             "@clear",

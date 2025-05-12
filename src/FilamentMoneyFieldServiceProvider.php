@@ -3,11 +3,11 @@
 namespace Pelmered\FilamentMoneyField;
 
 use Livewire\Livewire;
+use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
+use Pelmered\FilamentMoneyField\Synthesizers\MoneySynthesizer;
 use Pelmered\LaraPara\Commands\CacheCommand;
 use Pelmered\LaraPara\Commands\ClearCacheCommand;
 use Pelmered\LaraPara\Currencies\CurrencyCollection;
-use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
-use Pelmered\FilamentMoneyField\Synthesizers\MoneySynthesizer;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
