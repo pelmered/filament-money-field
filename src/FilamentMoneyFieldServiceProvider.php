@@ -2,6 +2,12 @@
 
 namespace Pelmered\FilamentMoneyField;
 
+use Livewire\Livewire;
+use Pelmered\FilamentMoneyField\Synthesizers\CurrencySynthesizer;
+use Pelmered\FilamentMoneyField\Synthesizers\MoneySynthesizer;
+use Pelmered\LaraPara\Commands\CacheCommand;
+use Pelmered\LaraPara\Commands\ClearCacheCommand;
+use Pelmered\LaraPara\Currencies\CurrencyCollection;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -12,13 +18,39 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)
-            ->hasConfigFile();
+            ->hasConfigFile()
+            ->hasTranslations()
+            ->hasCommands([
+                CacheCommand::class,
+                ClearCacheCommand::class,
+            ]);
     }
 
     public function boot(): void
     {
-        $this->publishes([
-            __DIR__.'/../config/filament-money-field.php' => config_path('filament-money-field.php'),
-        ], 'config');
+        parent::boot();
+
+        // Requires Laravel 11.27.1
+        // See: https://github.com/laravel/framework/pull/52928
+        /** @phpstan-ignore function.alreadyNarrowedType  */
+        if (method_exists($this, 'optimizes')) {
+            $this->optimizes(
+                optimize: CacheCommand::class,
+                clear: ClearCacheCommand::class,
+            );
+        }
+
+        Livewire::propertySynthesizer(CurrencySynthesizer::class);
+        Livewire::propertySynthesizer(MoneySynthesizer::class);
+    }
+
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(CurrencyCollection::class, function (): CurrencyCollection {
+            return new CurrencyCollection;
+        });
+
     }
 }

@@ -1,0 +1,11 @@
+
+includes:
+  - vendor/larastan/larastan/extension.neon
+  - vendor/php-static-analysis/phpstan-extension/extension.neon
+
+parameters:
+
+  paths:
+    - src/
+
+  level: 8

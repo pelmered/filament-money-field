@@ -3,12 +3,15 @@
 namespace Pelmered\FilamentMoneyField\Tables\Columns;
 
 use Filament\Tables\Columns\TextColumn;
+use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
-use Pelmered\FilamentMoneyField\MoneyFormatter;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 class MoneyColumn extends TextColumn
 {
     use HasMoneyAttributes;
+
+    protected bool $showCurrencySymbol = true;
 
     protected function setUp(): void
     {
@@ -17,9 +20,15 @@ class MoneyColumn extends TextColumn
         $this->isMoney = true;
         $this->numeric();
 
-        $this->formatStateUsing(function (MoneyColumn $component, null|int|string $state): string {
+        $this->formatStateUsing(function (MoneyColumn $component, Money|int|string|null $state): string {
+            if ($state === null) {
+                return '';
+            }
+
+            $amount = $state instanceof Money ? $state->getAmount() : $state;
+
             return MoneyFormatter::format(
-                $state,
+                $amount,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals()
@@ -27,17 +36,30 @@ class MoneyColumn extends TextColumn
         });
     }
 
-    public function short(bool $showCurrencySymbol = true): static
+    public function short(): static
     {
-        $this->formatStateUsing(function (MoneyColumn $component, null|int|string $state) use ($showCurrencySymbol) {
+        $this->formatStateUsing(function (MoneyColumn $component, Money|int|string|null $state): string {
+            if ($state === null) {
+                return '';
+            }
+
+            $amount = $state instanceof Money ? $state->getAmount() : $state;
+
             return MoneyFormatter::formatShort(
-                $state,
+                $amount,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals(),
-                showCurrencySymbol: $showCurrencySymbol,
+                showCurrencySymbol: $component->showCurrencySymbol,
             );
         });
+
+        return $this;
+    }
+
+    public function hideCurrencySymbol(bool $hideCurrencySymbol = true): static
+    {
+        $this->showCurrencySymbol = ! $hideCurrencySymbol;
 
         return $this;
     }

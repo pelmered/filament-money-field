@@ -2,13 +2,20 @@
 
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
-use Closure;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Support\RawJs;
+use Illuminate\Database\Eloquent\Model;
+use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\MoneyFormatter;
+use Pelmered\LaraPara\Currencies\Currency;
+use Pelmered\LaraPara\Currencies\CurrencyRepository;
+use Pelmered\LaraPara\Enum\CurrencySymbolPlacement;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 class MoneyInput extends TextInput
 {
@@ -16,15 +23,7 @@ class MoneyInput extends TextInput
 
     protected ?string $symbolPlacement = null;
 
-    /**
-     * @var scalar | Closure | null
-     */
-    protected $maxValue = null;
-
-    /**
-     * @var scalar | Closure | null
-     */
-    protected $minValue = null;
+    protected ?bool $currencySwitcher = null;
 
     protected function setUp(): void
     {
@@ -32,40 +31,71 @@ class MoneyInput extends TextInput
 
         $this->prepare();
 
-        $this->formatStateUsing(function (MoneyInput $component, null|int|string $state): ?string {
+        $this->suffixAction(function (MoneyInput $component) {
+            if ($component->shouldHaveCurrencySwitcher()) {
+
+                $currencies = CurrencyRepository::getAvailableCurrencies();
+
+                return Action::make('changeCurrency')
+                    ->icon('heroicon-m-arrow-path')
+                    ->tooltip('Change currency')
+                    ->form([
+                        Select::make('currency')
+                            ->label('Currency')
+                            ->options($currencies->toSelectArray())
+                            ->required()
+                            ->live(),
+                    ])
+                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
+                        $money    = $record->{$component->name};
+                        $currency = $data['currency'];
+
+                        $record->{$component->name} = new Money(
+                            $money->getAmount(),
+                            Currency::fromCode($currency)->toMoneyCurrency()
+                        );
+
+                        $record->save();
+                    });
+            }
+        });
+
+        $this->formatStateUsing(function (MoneyInput $component, mixed $state): string {
 
             $this->prepare();
 
-            $currency = $component->getCurrency();
+            if (! $state instanceof Money) {
+                return '';
+            }
+
+            $amount   = $state->getAmount();
+            $currency = Currency::fromMoney($state);
             $locale   = $component->getLocale();
 
-            if (is_null($state)) {
-                return null;
-            }
-            if (! is_numeric($state)) {
-                return $state;
-            }
-
-            return MoneyFormatter::formatAsDecimal((int) $state, $currency, $locale, $this->getDecimals());
+            return MoneyFormatter::numberFormat((int) $amount, $locale, $this->getDecimals());
         });
 
-        $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?string {
-            $currency = $component->getCurrency();
-            $state    = MoneyFormatter::parseDecimal((string) $state, $currency, $component->getLocale(), $this->getDecimals());
-
-            if (! is_numeric($state)) {
+        $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
+            if (! $state) {
                 return null;
             }
 
-            return $state;
+            $currency = $component->getCurrency();
+            $amount   = MoneyFormatter::parseDecimal((string) $state, $currency, $component->getLocale(), $this->getDecimals());
+
+            return new Money((int) $amount, $currency->toMoneyCurrency());
         });
     }
 
     protected function prepare(): void
     {
-        $symbolPlacement   = $this->getSymbolPlacement();
-        $getCurrencySymbol = function (MoneyInput $component) {
-            return MoneyFormatter::getFormattingRules($component->getLocale(), $component->getCurrency())->currencySymbol;
+        $this->currencyColumn = $this->name.config('larapara.currency_column_suffix', '_currency');
+        $symbolPlacement      = $this->getSymbolPlacement();
+        $getCurrencySymbol    = function (MoneyInput $component): string {
+            return MoneyFormatter::getFormattingRules(
+                $component->getLocale(),
+                $component->getCurrency()
+            )->currencySymbol;
         };
 
         match ($symbolPlacement) {
@@ -75,8 +105,11 @@ class MoneyInput extends TextInput
         };
 
         if (config('filament-money-field.use_input_mask')) {
-            $this->mask(function (MoneyInput $component) {
-                $formattingRules = MoneyFormatter::getFormattingRules($component->getLocale(), $component->getCurrency());
+            $this->mask(function (MoneyInput $component): \Filament\Support\RawJs {
+                $formattingRules = MoneyFormatter::getFormattingRules(
+                    $component->getLocale(),
+                    $component->getCurrency()
+                );
 
                 return RawJs::make(
                     strtr(
@@ -94,18 +127,29 @@ class MoneyInput extends TextInput
 
     public function getSymbolPlacement(): string
     {
-        return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', 'before');
+        return $this->symbolPlacement ?? config('filament-money-field.form_currency_symbol_placement', CurrencySymbolPlacement::Before->value);
     }
 
-    public function symbolPlacement(string|\Closure|null $symbolPlacement = null): static
+    public function symbolPlacement(CurrencySymbolPlacement|string $placement): static
     {
-        $this->symbolPlacement = $this->evaluate($symbolPlacement);
-
-        if (! in_array($this->symbolPlacement, ['before', 'after', 'hidden'])) {
-            throw new \InvalidArgumentException('Symbol placement must be either "before", "after" or "hidden".');
+        if ($placement instanceof CurrencySymbolPlacement) {
+            $placement = $placement->value;
         }
 
+        if (! in_array($placement, CurrencySymbolPlacement::values())) {
+            throw new \InvalidArgumentException(
+                'Currency symbol placement must be one of: '.implode(', ', CurrencySymbolPlacement::values())
+            );
+        }
+
+        $this->symbolPlacement = $placement;
+
         return $this;
+    }
+
+    public function hideCurrencySymbol(): static
+    {
+        return $this->symbolPlacement(CurrencySymbolPlacement::Hidden->value);
     }
 
     public function minValue(mixed $value): static
@@ -113,7 +157,7 @@ class MoneyInput extends TextInput
         $this->minValue = $value;
 
         $this->rule(
-            static function (MoneyInput $component) {
+            static function (MoneyInput $component): MinValueRule {
                 return new MinValueRule((int) $component->getMinValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMinValue())
@@ -127,11 +171,30 @@ class MoneyInput extends TextInput
         $this->maxValue = $value;
 
         $this->rule(
-            static function (MoneyInput $component) {
+            static function (MoneyInput $component): MaxValueRule {
                 return new MaxValueRule((int) $component->getMaxValue(), $component);
             },
             static fn (MoneyInput $component): bool => filled($component->getMaxValue())
         );
+
+        return $this;
+    }
+
+    protected function shouldHaveCurrencySwitcher(): bool
+    {
+        return $this->currencySwitcher ?? config('filament-money-field.currency_switcher_enabled_default', true);
+    }
+
+    public function currencySwitcherEnabled(): static
+    {
+        $this->currencySwitcher = true;
+
+        return $this;
+    }
+
+    public function currencySwitcherDisabled(): static
+    {
+        $this->currencySwitcher = false;
 
         return $this;
     }

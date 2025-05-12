@@ -1,0 +1,47 @@
+# github action that checks code with Rector
+name: Code Check
+
+on:
+    push:
+    pull_request: null
+
+jobs:
+    php-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Run Laravel Pint
+              uses: aglipanci/laravel-pint-action@latest
+              with:
+                  verboseMode: true
+                  testMode: true
+                  onlyDirty: true
+                  configPath: ./pint.json
+
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  # Must be used to trigger workflow after push
+                  token: ${{ secrets.ACCESS_TOKEN }}
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                php-version: 8.2
+                coverage: none
+
+            - name: Install dependencies
+              run: composer install --no-interaction
+
+            - run: vendor/bin/rector --ansi
+
+            - uses: stefanzweifel/git-auto-commit-action@v5
+              with:
+                commit_message: '[rector] Rector fixes'
+                commit_author: 'Peter Elmered <peter@elmered.com>'
+                commit_user_email: 'peter@elmered.com'
+
+            - uses: php-actions/phpstan@v3

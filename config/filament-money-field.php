@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |---------------------------------------------------------------------------
     | Default locale
@@ -12,17 +11,6 @@ return [
     |
     */
     'default_locale' => env('MONEY_DEFAULT_LOCALE', 'en_US'),
-
-    /*
-    |---------------------------------------------------------------------------
-    | Default currency
-    |---------------------------------------------------------------------------
-    |
-    | The currency ISO code to use if not set on the field.
-    | For example: USD, EUR, SEK, etc.
-    |
-    */
-    'default_currency' => env('MONEY_DEFAULT_CURRENCY', 'USD'),
 
     /*
     |---------------------------------------------------------------------------
@@ -46,24 +34,23 @@ return [
 
     /*
     |---------------------------------------------------------------------------
-    | International currency symbol
-    |---------------------------------------------------------------------------
-    |
-    | Use international currency symbols. For example: USD, EUR, SEK instead of $, €, kr etc.
-    |
-    */
-    'intl_currency_symbol' => env('MONEY_INTL_CURRENCY_SYMBOL', false),
-
-    /*
-    |---------------------------------------------------------------------------
     | Currency symbol placement
     |---------------------------------------------------------------------------
     |
-    | Where the dunit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'hidden'.
+    | Where the unit should be on form fields. Options are 'before' (prefix), 'after' (suffix) or 'hidden'.
     | Note: In most non-English speaking European countries,
     | the currency symbol is after the amount and is preceded by a space (as in "10 €")
     |
     */
     'form_currency_symbol_placement' => env('MONEY_UNIT_PLACEMENT', 'before'),
 
+    /*
+    |---------------------------------------------------------------------------
+    | Currency switcher enabled on fields by default
+    |---------------------------------------------------------------------------
+    |
+    | Should the currency switcher be enabled on fields by default.
+    | You can change this on a per-field basis with ->currencySwitcherEnabled() and ->currencySwitcherDisabled().
+    */
+    'currency_switcher_enabled_default' => env('MONEY_CURRENCY_SWITCHER_ENABLED', true),
 ];

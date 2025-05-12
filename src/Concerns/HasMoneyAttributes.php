@@ -3,31 +3,34 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
-use Filament\Infolists\Infolist;
-use Money\Currencies\ISOCurrencies;
-use Money\Currency;
-use Pelmered\FilamentMoneyField\Exceptions\UnsupportedCurrency;
+use Pelmered\LaraPara\Currencies\Currency;
+use Pelmered\LaraPara\Currencies\CurrencyRepository;
+use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
+use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 trait HasMoneyAttributes
 {
     protected Currency $currency;
 
+    protected ?string $currencyColumn = null;
+
     protected string $locale;
 
     protected ?int $decimals = null;
 
-    protected ?string $monetarySeparator = null;
+    protected ?bool $inMinor = null;
 
     public function getCurrency(): Currency
     {
-        return $this->currency ?? $this->getDefaultCurrency();
-    }
+        if (isset($this->currency)) {
+            return $this->currency;
+        }
 
-    protected function getDefaultCurrency(): Currency
-    {
-        $defaultCurrencyCode = (string) (config('filament-money-field.default_currency') ?? Infolist::$defaultCurrency);
+        if ($this->getRecord()) {
+            return Currency::fromCode($this->getRecord()->{$this->getCurrencyColumn()});
+        }
 
-        return $this->currency($defaultCurrencyCode)->getCurrency();
+        return MoneyFormatter::getDefaultCurrency();
     }
 
     public function getLocale(): string
@@ -38,13 +41,56 @@ trait HasMoneyAttributes
     public function currency(string|Closure $currencyCode): static
     {
         /** @var non-empty-string $currencyCode */
-        $currencyCode   = (string) $this->evaluate($currencyCode);
-        $this->currency = new Currency($currencyCode);
-        $currencies     = new ISOCurrencies;
+        $currencyCode = (string) $this->evaluate($currencyCode);
+        $currency     = Currency::fromCode($currencyCode);
 
-        if (! $currencies->contains($this->currency)) {
-            throw new UnsupportedCurrency($currencyCode);
+        if (! CurrencyRepository::isValid($currency)) {
+            throw new UnsupportedCurrency($currency->getCode());
         }
+
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    protected function getInMinorUnits(): bool
+    {
+        if ($this->inMinor !== null) {
+            return $this->inMinor;
+        }
+
+        $storeFormat = config('filament-money-field.store.format');
+
+        return $storeFormat === 'int';
+    }
+
+    public function inMajorUnits(): static
+    {
+        $this->inMinor = false;
+
+        return $this;
+    }
+
+    public function notInMinor(): static
+    {
+        return $this->inMajorUnits();
+    }
+
+    public function inMinor(): static
+    {
+        $this->inMinor = true;
+
+        return $this;
+    }
+
+    protected function getCurrencyColumn(): string
+    {
+        return $this->currencyColumn ?? config('filament-money-field.default_currency_column');
+    }
+
+    public function currencyColumn(string|Closure $column): static
+    {
+        $this->currencyColumn = $this->evaluate($column);
 
         return $this;
     }
