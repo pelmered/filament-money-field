@@ -88,7 +88,7 @@ trait HasMoneyAttributes
 
     protected function getCurrencyColumn(): string
     {
-        return $this->currencyColumn ?? config('filament-money-field.default_currency_column');
+        return $this->currencyColumn ?? $this->name.config('larapara.currency_column_suffix', '_currency');
     }
 
     public function currencyColumn(string|Closure $column): static
