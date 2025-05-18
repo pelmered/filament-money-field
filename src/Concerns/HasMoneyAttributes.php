@@ -27,7 +27,10 @@ trait HasMoneyAttributes
         }
 
         if ($this->getRecord()) {
-            return Currency::fromCode($this->getRecord()->{$this->getCurrencyColumn()});
+            $currencyCode = $this->getRecord()->{$this->getCurrencyColumn()};
+            if ($currencyCode) {
+                return Currency::fromCode($currencyCode);
+            }
         }
 
         return MoneyFormatter::getDefaultCurrency();
