@@ -72,7 +72,7 @@ trait HasMoneyAttributes
             return $this->inMinor;
         }
 
-        $storeFormat = config('filament-money-field.store.format');
+        $storeFormat = config('larapara.store.format');
 
         return $storeFormat === 'int';
     }
