@@ -28,8 +28,8 @@ trait HasMoneyAttributes
         }
 
         $state = match (true) {
-            $this instanceof \Filament\Forms\Components\Field => $this->getState(),
-            $this instanceof \Filament\Tables\Columns\Column => $this->getState(),
+            $this instanceof \Pelmered\FilamentMoneyField\Forms\Components\MoneyInput => $this->getState(),
+            $this instanceof \Pelmered\FilamentMoneyField\Forms\Components\MoneyColumn => $this->getState(),
             default => null,
         };
         if ($state instanceof Money) {
