@@ -25,10 +25,8 @@ class MoneyColumn extends TextColumn
                 return '';
             }
 
-            $amount = $state instanceof Money ? $state->getAmount() : $state;
-
             return MoneyFormatter::format(
-                $amount,
+                $state instanceof Money ? $state->getAmount() : $state,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals()
@@ -43,10 +41,8 @@ class MoneyColumn extends TextColumn
                 return '';
             }
 
-            $amount = $state instanceof Money ? $state->getAmount() : $state;
-
             return MoneyFormatter::formatShort(
-                $amount,
+                $state instanceof Money ? $state->getAmount() : $state,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals(),
