@@ -5,14 +5,11 @@ namespace Pelmered\FilamentMoneyField\Forms\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Money\Exception\ParserException;
-use Pelmered\FilamentMoneyField\Concerns\FormatsAttributes;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 readonly class MaxValueRule implements ValidationRule
 {
-    use FormatsAttributes;
-
     public function __construct(private int $max, private MoneyInput $component) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
@@ -30,14 +27,14 @@ readonly class MaxValueRule implements ValidationRule
             if ($minorValue > $this->max) {
                 $fail('filament-money-field::validation.max_value')
                     ->translate([
-                        'attribute' => $this->formatAttribute($attribute),
+                        'attribute' => $this->component->getValidationAttribute(),
                         'value'     => MoneyFormatter::numberFormat($this->max, $locale),
                     ]);
             }
         } catch (ParserException) {
             $fail('filament-money-field::validation.numeric_value')
                 ->translate([
-                    'attribute' => $this->formatAttribute($attribute),
+                    'attribute' => $this->component->getValidationAttribute(),
                 ]);
         }
     }
