@@ -33,7 +33,7 @@
         "pelmered/larapara": "dev-main"
     },
     "require-dev": {
-        "filament/filament": "^3.2",
+        "filament/filament": "^4.0",
         "orchestra/testbench": "^9.0",
         "nunomaduro/collision": "^8.0",
         "laravel/pint": "^1.16",

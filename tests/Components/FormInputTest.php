@@ -1,13 +1,15 @@
 <?php
 
 use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Actions\Action;
+
 use Illuminate\Validation\ValidationException;
 use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
 
 it('accepts form input money in numeric format', function (): void {
     $component = createFormTestComponent(
@@ -15,7 +17,8 @@ it('accepts form input money in numeric format', function (): void {
         ['price' => new Money(12345600, new Currency('USD'))],
         'price',
     );
-    expect($component->getState()['price']->getAmount())->toEqual('12345600');
+
+    expect($component->getComponent('price')->getState())->toEqual('123,456.00');
 });
 
 it('accepts null state and returns null', function (): void {
@@ -42,7 +45,7 @@ it('sets currency symbol placement after with global config', function (): void 
         ['amount' => 20],
     );
     /** @var MoneyInput $field */
-    $field = $component->getComponent('data.amount');
+    $field = $component->getComponent('amount');
     expect($field->getSuffixLabel())->toEqual('$');
     expect($field->getPrefixLabel())->toBeNull();
 });
@@ -54,7 +57,7 @@ it('sets currency symbol placement before with global config', function (): void
         [MoneyInput::make('amount')],
         ['amount' => 20],
     );
-    $field = $component->getComponent('data.amount');
+    $field = $component->getComponent('amount');
     expect($field->getPrefixLabel())->toEqual('$');
     expect($field->getSuffixLabel())->toBeNull();
 });
@@ -66,7 +69,7 @@ it('hides currency symbol with global config', function (): void {
         [MoneyInput::make('amount')],
         ['amount' => 20],
     );
-    $field = $component->getComponent('data.amount');
+    $field = $component->getComponent('amount');
     expect($field->getPrefixLabel())->toBeNull();
     expect($field->getSuffixLabel())->toBeNull();
 });
@@ -77,7 +80,7 @@ it('sets currency symbol placement after with on field config', function (): voi
         ['amount' => 20],
     );
 
-    $field = $component->getComponent('data.amount');
+    $field = $component->getComponent('amount');
 
     expect($field->getSuffixLabel())->toEqual('$');
     expect($field->getPrefixLabel())->toBeNull();
@@ -89,25 +92,25 @@ it('sets currency symbol placement before with on field config', function (): vo
         ['amount' => 20],
     );
 
-    $field = $component->getComponent('data.amount');
+    $field = $component->getComponent('amount');
     expect($field->getPrefixLabel())->toEqual('$');
     expect($field->getSuffixLabel())->toBeNull();
 });
 
 it('hides currency symbol with on field config', function (): void {
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('amount')->symbolPlacement('hidden')])
         ->fill(['amount' => 20]);
 
-    $field = $component->getComponent('data.amount');
+    $field = $component->getComponent('amount');
     expect($field->getPrefixLabel())->toBeNull();
     expect($field->getSuffixLabel())->toBeNull();
 });
 
 it('throws exception when currency symbol placement in invalid on field', function (): void {
     expect(function (): void {
-        ComponentContainer::make(FormTestComponent::make())
+        Schema::make(FormTestComponent::make())
             ->statePath('data')
             ->components([MoneyInput::make('price')->symbolPlacement('invalid')])
             ->fill(['price' => 20]);
@@ -117,12 +120,12 @@ it('throws exception when currency symbol placement in invalid on field', functi
 it('makes input mask', function (): void {
     config(['filament-money-field.use_input_mask' => true]);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
         ->fill(['price' => 20]);
 
-    expect($component->getComponent('data.price')->getMask()->toHtml())
+    expect($component->getComponent('price')->getMask()->toHtml())
         ->toContain('money($input');
 });
 
@@ -206,12 +209,12 @@ it('throws exception with unsupported currency', function (): void {
 it('allows label to be overrided', function (): void {
     $field = (new MoneyInput('price'))->label('Custom Label');
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])
         ->fill([$field->getName() => 45345]);
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
     expect($field->getLabel())->toEqual('Custom Label');
 });
 
@@ -220,19 +223,19 @@ it('resolves label closures', function (): void {
         return 'Custom Label in Closure';
     });
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])
         ->fill([$field->getName() => 45345]);
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
     expect($field->getLabel())->toEqual('Custom Label in Closure');
 });
 
 it('sets decimals on field', function (): void {
     // Test with decimals(1)
     $field     = (new MoneyInput('price'))->decimals(1);
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])
         ->fill([$field->getName() => new Money(2345345, new Currency('USD'))]);
@@ -242,7 +245,7 @@ it('sets decimals on field', function (): void {
 
     // Test with decimals(3)
     $field     = (new MoneyInput('price'))->decimals(3);
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])
         ->fill([$field->getName() => new Money(2345345, new Currency('USD'))]);
@@ -252,7 +255,7 @@ it('sets decimals on field', function (): void {
 
     // Test with negative decimals(-2)
     $field     = (new MoneyInput('price'))->decimals(-2);
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([$field])
         ->fill([$field->getName() => new Money(2345345, new Currency('USD'))]);
@@ -262,7 +265,7 @@ it('sets decimals on field', function (): void {
 });
 
 it('accepts form input money with money cast', function (): void {
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price_cast')])
         ->fill(['price_cast' => new Money(12345600, new Currency('USD'))]);
@@ -274,7 +277,7 @@ it('allows setting a currency column', function (): void {
     // Set up currencies
     config(['filament-money-field.available_currencies' => ['USD', 'EUR', 'SEK']]);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([
             MoneyInput::make('price')
@@ -290,13 +293,13 @@ it('allows setting a currency column', function (): void {
 it('allows can enable or disable currency switcher with global config', function (): void {
     config(['filament-money-field.currency_switcher_enabled_default' => false]);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
         ->fill(['price' => new Money(123456, new Currency('EUR'))]);
 
     /** @var MoneyInput $field */
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
 
     expect($field)->toBeInstanceOf(MoneyInput::class);
 
@@ -304,13 +307,13 @@ it('allows can enable or disable currency switcher with global config', function
 
     config(['filament-money-field.currency_switcher_enabled_default' => true]);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
         ->fill(['price' => new Money(123456, new Currency('EUR'))]);
 
     /** @var MoneyInput $field */
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
 
     expect($field)->toBeInstanceOf(MoneyInput::class);
 
@@ -322,7 +325,7 @@ it('allows to override currency switcher with field config', function (): void {
     // Global config = false, field config = true => enabled
     config(['filament-money-field.currency_switcher_enabled_default' => false]);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([
             MoneyInput::make('price')->currencySwitcherEnabled(),
@@ -330,7 +333,7 @@ it('allows to override currency switcher with field config', function (): void {
         ->fill(['price' => new Money(123456, new Currency('EUR'))]);
 
     /** @var MoneyInput $field */
-    $field  = $component->getComponent('data.price');
+    $field  = $component->getComponent('price');
     $action = $field->getSuffixActions()['changeCurrency'];
 
     expect($field)->toBeInstanceOf(MoneyInput::class);
@@ -339,7 +342,7 @@ it('allows to override currency switcher with field config', function (): void {
     // Global config = true, field config = false => disabled
     config(['filament-money-field.currency_switcher_enabled_default' => true]);
 
-    $component = ComponentContainer::make(FormTestComponent::make())
+    $component = Schema::make(FormTestComponent::make())
         ->statePath('data')
         ->components([
             MoneyInput::make('price')->currencySwitcherDisabled(),
@@ -347,7 +350,7 @@ it('allows to override currency switcher with field config', function (): void {
         ->fill(['price' => new Money(123456, new Currency('EUR'))]);
 
     /** @var MoneyInput $field */
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
 
     expect($field)->toBeInstanceOf(MoneyInput::class);
     expect($field->getSuffixActions())->toBeEmpty();
