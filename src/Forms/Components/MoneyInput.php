@@ -31,9 +31,8 @@ class MoneyInput extends TextInput
 
         $this->prepare();
 
-        $this->suffixAction(function (MoneyInput $component) {
+        $this->suffixAction(function (MoneyInput $component): Action | null {
             if ($component->shouldHaveCurrencySwitcher()) {
-
                 $currencies = CurrencyRepository::getAvailableCurrencies();
 
                 return Action::make('changeCurrency')
@@ -58,6 +57,8 @@ class MoneyInput extends TextInput
                         $record->save();
                     });
             }
+
+            return null;
         });
 
         $this->formatStateUsing(function (MoneyInput $component, mixed $state): string {
