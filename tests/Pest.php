@@ -43,7 +43,7 @@ uses(TestCase::class)->in('Unit', 'Components', 'Forms');
 |
 */
 
-expect()->extend('toBeInstanceOfWithVersions', function ($class4, $class3) {
+expect()->extend('toBeInstanceOfWithVersions', function ($class4, $class3): void {
     if(Helper::isFilament3())
     {
         $this->toBeInstanceOf($class3);
@@ -156,7 +156,7 @@ function createInfolistTestComponent($components = [], $fill = [], ?string $fiel
         //->getComponent($fieldName);
 }
 
-function getComponent($testComponent, $componentName): MoneyInput|MoneyEntry
+function getComponent($testComponent, string $componentName): MoneyInput|MoneyEntry
 {
     return $testComponent->getComponent((Helper::isFilament3() ? 'data.' : '').$componentName);
 }
