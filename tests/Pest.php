@@ -14,6 +14,7 @@ use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\Filament3\FormTestComponent as F3FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\TableTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 pest()->project()->github('pelmered/filament-money-field');
@@ -119,9 +120,9 @@ function createTestComponent($type = 'form', array $components = [], ?string $fi
     if (Helper::isFilament3())
     {
         return (match ($type) {
-            'form'     => Forms\ComponentContainer::make(F3FormTestComponent::make()),
-            'infolist' => Infolists\ComponentContainer::make(InfolistTestComponent::make()),
-            // 'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
+            'form'     => \Filament\Forms\ComponentContainer::make(F3FormTestComponent::make()),
+            'infolist' => \Filament\Infolists\ComponentContainer::make(InfolistTestComponent::make()),
+            //'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
             default => throw new Exception('Unknown component type: '.$type),
         })
             ->statePath('data')
@@ -131,7 +132,7 @@ function createTestComponent($type = 'form', array $components = [], ?string $fi
     return (match ($type) {
         'form'     => Schema::make(FormTestComponent::make()),
         'infolist' => Schema::make(InfolistTestComponent::make()),
-        // 'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
+        //'table' =>  Schema::make(TableTestComponent::make()),
         default => throw new Exception('Unknown component type: '.$type),
     })
         ->components($components);
