@@ -3,7 +3,7 @@ name: Code Check
 
 on:
     push:
-    pull_request: null
+    pull_request:
 
 jobs:
     php-lint:
@@ -24,13 +24,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-              with:
+              #with:
                   # Must be used to trigger workflow after push
-                  token: ${{ secrets.ACCESS_TOKEN }}
+                  # token: ${{ secrets.ACCESS_TOKEN }}
 
             - uses: shivammathur/setup-php@v2
               with:
-                php-version: 8.2
+                php-version: 8.4
                 coverage: none
 
             - name: Install dependencies
@@ -38,7 +38,7 @@ jobs:
 
             - run: vendor/bin/rector --ansi
 
-            - uses: stefanzweifel/git-auto-commit-action@v5
+            - uses: stefanzweifel/git-auto-commit-action@v6
               with:
                 commit_message: '[rector] Rector fixes'
                 commit_author: 'Peter Elmered <peter@elmered.com>'

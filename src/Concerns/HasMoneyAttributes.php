@@ -98,8 +98,12 @@ trait HasMoneyAttributes
 
     protected function getCurrencyColumn(): string
     {
-        return $this->currencyColumn ?? $this->name.config('larapara.currency_column_suffix', '_currency');
-        // config('filament-money-field.default_currency_column');
+        return $this->currencyColumn ?? $this->getCurrencyColumnDefault();
+    }
+
+    protected function getCurrencyColumnDefault(): string
+    {
+        return $this->getName().config('larapara-filament-money-field.currency_column_suffix', '_currency');
     }
 
     public function currencyColumn(string|Closure $column): static
