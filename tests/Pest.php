@@ -1,17 +1,20 @@
 <?php
 
+use Filament\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action as F3Action;
 use Filament\Forms\Components\Field;
 use Filament\Infolists;
+use Filament\Schemas\Schema;
 use Illuminate\Validation\ValidationException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
+use Pelmered\FilamentMoneyField\Helper;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\Filament3\FormTestComponent as F3FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\TableTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
-use Filament\Schemas\Schema;
 
 pest()->project()->github('pelmered/filament-money-field');
 
@@ -39,9 +42,18 @@ uses(TestCase::class)->in('Unit', 'Components', 'Forms');
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
+expect()->extend('toBeInstanceOfWithVersions', function ($class4, $class3) {
+    if(Helper::isFilament3())
+    {
+        $this->toBeInstanceOf($class3);
+    }
+    else
+    {
+        $this->toBeInstanceOf($class4);
+    }
 });
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -65,11 +77,12 @@ function replaceNonBreakingSpaces(string $string): string
 function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
 {
     try {
-        Schema::make(FormTestComponent::make())
-            ->statePath('data')
-            ->components([$field])
-            ->fill([$field->getName() => $value])
-            ->validate();
+        $component = createFormTestComponent(
+            [$field],
+            [$field->getName() => $value]
+        );
+
+        $component->validate();
     } catch (ValidationException $validationException) {
         if ($assertsCallback !== null) {
             $assertsCallback($validationException, $field);
@@ -87,8 +100,13 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 /**
  * @throws Exception
  */
-function createTestComponent($type = 'form', $components = [], $fieldName = 'amount'): Schema
+function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null)
 {
+    if (!$fieldName)
+    {
+        $fieldName = $components[0]->getName();
+    }
+
     if (count($components) <= 0) {
         $components = match ($type) {
             'form'     => [MoneyInput::make($fieldName)],
@@ -96,6 +114,18 @@ function createTestComponent($type = 'form', $components = [], $fieldName = 'amo
             'table'    => [MoneyColumn::make($fieldName)],
             default    => [],
         };
+    }
+
+    if (Helper::isFilament3())
+    {
+        return (match ($type) {
+            'form'     => Forms\ComponentContainer::make(F3FormTestComponent::make()),
+            'infolist' => Infolists\ComponentContainer::make(InfolistTestComponent::make()),
+            // 'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
+            default => throw new Exception('Unknown component type: '.$type),
+        })
+            ->statePath('data')
+            ->components($components);
     }
 
     return (match ($type) {
@@ -107,7 +137,7 @@ function createTestComponent($type = 'form', $components = [], $fieldName = 'amo
         ->components($components);
 }
 
-function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount'): Schema
+function createFormTestComponent($components = [], $fill = [], ?string $fieldName = null)
 {
     $components = createTestComponent('form', $components, $fieldName);
     $components->fill($fill);
@@ -115,8 +145,17 @@ function createFormTestComponent($components = [], $fill = [], $fieldName = 'amo
     return $components;
 }
 
-function createInfolistTestComponent($components = [], string $fieldName = 'amount'): MoneyEntry
+function createInfolistTestComponent($components = [], $fill = [], ?string $fieldName = null)
 {
-    return createTestComponent('infolist', $components, $fieldName)
-        ->getComponent($fieldName);
+    $components = createTestComponent('infolist', $components, $fieldName);
+    //dd($components);
+    $components->state($fill);
+
+    return $components;
+        //->getComponent($fieldName);
+}
+
+function getComponent($testComponent, $componentName): MoneyInput|MoneyEntry
+{
+    return $testComponent->getComponent((Helper::isFilament3() ? 'data.' : '').$componentName);
 }
