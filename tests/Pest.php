@@ -11,6 +11,7 @@ use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\TableTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
+use Filament\Schemas\Schema;
 
 pest()->project()->github('pelmered/filament-money-field');
 
@@ -64,7 +65,7 @@ function replaceNonBreakingSpaces(string $string): string
 function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
 {
     try {
-        \Filament\Forms\ComponentContainer::make(FormTestComponent::make())
+        Schema::make(FormTestComponent::make())
             ->statePath('data')
             ->components([$field])
             ->fill([$field->getName() => $value])
@@ -86,7 +87,7 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 /**
  * @throws Exception
  */
-function createTestComponent($type = 'form', $components = [], $fieldName = 'amount', $statePath = 'data'): Forms\ComponentContainer|Infolists\ComponentContainer
+function createTestComponent($type = 'form', $components = [], $fieldName = 'amount'): Schema
 {
     if (count($components) <= 0) {
         $components = match ($type) {
@@ -98,25 +99,24 @@ function createTestComponent($type = 'form', $components = [], $fieldName = 'amo
     }
 
     return (match ($type) {
-        'form'     => Forms\ComponentContainer::make(FormTestComponent::make()),
-        'infolist' => Infolists\ComponentContainer::make(InfolistTestComponent::make()),
+        'form'     => Schema::make(FormTestComponent::make()),
+        'infolist' => Schema::make(InfolistTestComponent::make()),
         // 'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
         default => throw new Exception('Unknown component type: '.$type),
     })
-        ->statePath($statePath)
         ->components($components);
 }
 
-function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount', $statePath = 'data'): \Filament\Forms\ComponentContainer|\Filament\Infolists\ComponentContainer
+function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount'): Schema
 {
-    $components = createTestComponent('form', $components, $fieldName, $statePath);
+    $components = createTestComponent('form', $components, $fieldName);
     $components->fill($fill);
 
     return $components;
 }
 
-function createInfolistTestComponent($components = [], string $fieldName = 'amount', string $statePath = 'data'): MoneyEntry
+function createInfolistTestComponent($components = [], string $fieldName = 'amount'): MoneyEntry
 {
-    return createTestComponent('infolist', $components, $fieldName, $statePath)
-        ->getComponent($statePath.'.'.$fieldName);
+    return createTestComponent('infolist', $components, $fieldName)
+        ->getComponent($fieldName);
 }

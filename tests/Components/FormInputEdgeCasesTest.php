@@ -1,17 +1,18 @@
 <?php
 
 use Filament\Forms\ComponentContainer;
-use Filament\Forms\Get;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\TestComponent;
 
 it('handles empty string properly', function (): void {
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('money')])
-        ->getComponent('data.money');
+        ->getComponent('money');
 
     // Using an empty string should result in a null value
     $moneyValue = $component->getState('');
@@ -23,7 +24,7 @@ it('handles extremely large amounts properly', function (): void {
     // Use actual Money object directly since filling with string isn't working
     $largeMoneyValue = new Money('999999999999', new Currency('USD'));
 
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('money')])
         ->fill(['money' => $largeMoneyValue]);
@@ -36,7 +37,7 @@ it('handles extremely large amounts properly', function (): void {
 
 it('handles currency changes gracefully', function (): void {
     // First test with USD currency
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('money')->currency('USD')])
         ->fill(['money' => new Money('12345', new Currency('USD'))]);
@@ -48,7 +49,7 @@ it('handles currency changes gracefully', function (): void {
     expect($state['money']->getCurrency()->getCode())->toBe('USD');
 
     // Create a new component with EUR currency but use the same Money object with USD
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('money')->currency('EUR')])
         ->fill(['money' => new Money('12345', new Currency('EUR'))]);
@@ -62,7 +63,7 @@ it('handles currency changes gracefully', function (): void {
 });
 
 it('handles negative values correctly', function (): void {
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
         ->fill(['price' => new Money('-50000', new Currency('USD'))]);
@@ -71,7 +72,7 @@ it('handles negative values correctly', function (): void {
 });
 
 it('handles zero values correctly', function (): void {
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
         ->fill(['price' => new Money('0', new Currency('USD'))]);
@@ -80,7 +81,7 @@ it('handles zero values correctly', function (): void {
 });
 
 it('handles empty string as null', function (): void {
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([MoneyInput::make('price')])
         ->fill(['price' => '']);
@@ -89,20 +90,20 @@ it('handles empty string as null', function (): void {
 });
 
 it('handles custom step values', function (): void {
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([
             MoneyInput::make('price')->step(0.01),
         ])
         ->fill(['price' => new Money('10001', new Currency('USD'))]);
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
 
     expect($field->getStep())->toBe(0.01);
 });
 
 it('handles hidden state correctly', function (): void {
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([
             MoneyInput::make('price')
@@ -113,7 +114,7 @@ it('handles hidden state correctly', function (): void {
             'hide_price' => false,
         ]);
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
     expect($field->isHidden())->toBeFalse();
 
     $component->fill([
@@ -125,7 +126,7 @@ it('handles hidden state correctly', function (): void {
 });
 
 it('handles disabled state correctly', function (): void {
-    $component = ComponentContainer::make(TestComponent::make())
+    $component = Schema::make(TestComponent::make())
         ->statePath('data')
         ->components([
             MoneyInput::make('price')
@@ -136,7 +137,7 @@ it('handles disabled state correctly', function (): void {
             'disable_price' => false,
         ]);
 
-    $field = $component->getComponent('data.price');
+    $field = $component->getComponent('price');
     expect($field->isDisabled())->toBeFalse();
 
     $component->fill([
