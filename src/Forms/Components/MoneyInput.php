@@ -2,6 +2,7 @@
 
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
+use Filament\Forms\Components\Actions\Action as F3Action;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -12,6 +13,7 @@ use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
+use Pelmered\FilamentMoneyField\Helper;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Enum\CurrencySymbolPlacement;
@@ -36,7 +38,9 @@ class MoneyInput extends TextInput
 
                 $currencies = CurrencyRepository::getAvailableCurrencies();
 
-                return Action::make('changeCurrency')
+                $actionClass = Helper::isFilament3() ? F3Action::class : Action::class;
+
+                return $actionClass::make('changeCurrency')
                     ->icon('heroicon-m-arrow-path')
                     ->tooltip('Change currency')
                     ->form([

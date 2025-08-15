@@ -6,36 +6,56 @@ use Money\Money;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 
 it('formats money value correctly', function (): void {
-    $component = createInfolistTestComponent([MoneyEntry::make('amount')]);
-    $formatted = $component->formatState(new Money(12345, new Currency('USD')));
+
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')],
+        ['amount' => new Money(12345, new Currency('USD'))],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
+
+    $formatted = $entry->formatState($component->getState()['amount']);
 
     expect($formatted)->toEqual('$123.45');
 });
 
 it('formats money value with custom currency', function (): void {
-    $component = createInfolistTestComponent([MoneyEntry::make('amount')->currency('EUR')]);
-    $formatted = $component->formatState(new Money(12345, new Currency('EUR')));
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')->currency('EUR')],
+        ['amount' => new Money(12345, new Currency('EUR'))],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
+
+    $formatted = $entry->formatState($component->getState()['amount']);
 
     expect($formatted)->toEqual('€123.45');
 });
 
 it('formats money value with custom locale', function (): void {
-    $component = createInfolistTestComponent([MoneyEntry::make('amount')->locale('sv_SE')]);
-    $formatted = $component->formatState(new Money(12345, new Currency('USD')));
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')->locale('sv_SE')],
+        ['amount' => new Money(12345, new Currency('USD'))],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
 
-    expect(replaceNonBreakingSpaces($formatted))->toContain('123,45');
-    expect(replaceNonBreakingSpaces($formatted))->toContain('$');
+    $formatted = $entry->formatState($component->getState()['amount']);
+
+    expect(replaceNonBreakingSpaces($formatted))->toEqual('123,45 US$');
 });
 
 it('formats money with custom currency and locale', function (): void {
     $component = createInfolistTestComponent(
-        [MoneyEntry::make('price')->currency('SEK')->locale('sv_SE')],
-        'price',
+        [MoneyEntry::make('amount')->currency('SEK')->locale('sv_SE')],
+        ['amount' => new Money(12345, new Currency('SEK'))],
+        'amount',
     );
-    $formatted = $component->formatState(new Money(12345, new Currency('SEK')));
+    $entry = getComponent($component, 'amount');
 
-    expect(replaceNonBreakingSpaces($formatted))->toContain('123,45');
-    expect(replaceNonBreakingSpaces($formatted))->toContain('kr');
+    $formatted = $entry->formatState($component->getState()['amount']);
+
+    expect(replaceNonBreakingSpaces($formatted))->toEqual('123,45 kr');
 });
 
 it('formats money with short format', function (): void {
@@ -49,15 +69,27 @@ it('formats money with short format', function (): void {
 });
 
 it('formats money with custom decimal precision2', function (): void {
-    $component = createInfolistTestComponent([MoneyEntry::make('amount')->decimals(0)]);
-    $formatted = $component->formatState(new Money(12345, new Currency('USD')));
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')->decimals(0)],
+        ['amount' => new Money(12345, new Currency('USD'))],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
+
+    $formatted = $entry->formatState($component->getState()['amount']);
 
     expect($formatted)->toEqual('$123');
 });
 
 it('handles null value gracefully', function (): void {
-    $component = createInfolistTestComponent();
-    $formatted = $component->formatState(null);
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')->decimals(0)],
+        ['amount' => null],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
+
+    $formatted = $entry->formatState($component->getState()['amount']);
 
     expect($formatted)->toEqual('');
 });
@@ -65,23 +97,41 @@ it('handles null value gracefully', function (): void {
 it('formats with international currency symbol when configured', function (): void {
     Config::set('larapara.intl_currency_symbol', true);
 
-    $component = createInfolistTestComponent();
-    $formatted = $component->formatState(new Money(12345, new Currency('USD')));
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')],
+        ['amount' => new Money(12345, new Currency('USD'))],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
+
+    $formatted = $entry->formatState($component->getState()['amount']);
 
     expect(replaceNonBreakingSpaces($formatted))->toContain('USD');
     expect(replaceNonBreakingSpaces($formatted))->toContain('123');
 });
 
 it('hides currency symbol2', function (): void {
-    $component = createInfolistTestComponent([MoneyEntry::make('amount')->hideCurrencySymbol()]);
-    $formatted = $component->formatState(new Money(12345, new Currency('USD')));
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')->hideCurrencySymbol()],
+        ['amount' => new Money(12345, new Currency('USD'))],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
+
+    $formatted = $entry->formatState($component->getState()['amount']);
 
     expect(replaceNonBreakingSpaces($formatted))->toBe('123.45');
 });
 
 it('hides currency symbol short format', function (): void {
-    $component = createInfolistTestComponent([MoneyEntry::make('amount')->short()->hideCurrencySymbol()]);
-    $formatted = $component->formatState(new Money(12345678, new Currency('USD')));
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('amount')->short()->hideCurrencySymbol()],
+        ['amount' => new Money(12345678, new Currency('USD'))],
+        'amount',
+    );
+    $entry = getComponent($component, 'amount');
+
+    $formatted = $entry->formatState($component->getState()['amount']);
 
     expect(replaceNonBreakingSpaces($formatted))->toBe('123.46K');
 });
