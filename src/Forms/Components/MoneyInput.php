@@ -69,11 +69,11 @@ class MoneyInput extends TextInput
                 return '';
             }
 
-            $amount   = $state->getAmount();
-            $currency = Currency::fromMoney($state);
-            $locale   = $component->getLocale();
-
-            return MoneyFormatter::numberFormat((int) $amount, $locale, $this->getDecimals());
+            return MoneyFormatter::numberFormat(
+                (int) $state->getAmount(),
+                $component->getLocale(),
+                $this->getDecimals()
+            );
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
@@ -90,7 +90,6 @@ class MoneyInput extends TextInput
 
     protected function prepare(): void
     {
-        $this->currencyColumn = $this->name.config('larapara.currency_column_suffix', '_currency');
         $symbolPlacement      = $this->getSymbolPlacement();
         $getCurrencySymbol    = function (MoneyInput $component): string {
             return MoneyFormatter::getFormattingRules(

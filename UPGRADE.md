@@ -8,8 +8,8 @@ _-As of now, this is required, will be made optional in the future.-_
 Each money column should have a cast that casts the column to a Money object and the currency column should have a cast that casts the column to a Currency object
 
 ```php
-use Pelmered\FilamentMoneyField\Casts\CurrencyCast;
-use Pelmered\FilamentMoneyField\Casts\MoneyCast;
+use Pelmered\Larapara\Casts\CurrencyCast;
+use Pelmered\Larapara\Casts\MoneyCast;
 
 protected function casts(): array
 {

@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
+use Money\Money;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
@@ -26,8 +27,20 @@ trait HasMoneyAttributes
             return $this->currency;
         }
 
-        if ($this->getRecord()) {
-            return Currency::fromCode($this->getRecord()->{$this->getCurrencyColumn()});
+        $state = match (true) {
+            $this instanceof \Pelmered\FilamentMoneyField\Forms\Components\MoneyInput => $this->getState(),
+            $this instanceof \Pelmered\FilamentMoneyField\Forms\Components\MoneyColumn => $this->getState(),
+            default => null,
+        };
+        if ($state instanceof Money) {
+            return Currency::fromMoney($state);
+        }
+
+        if ($record = $this->getRecord()) {
+            $currencyCode = $record->{$this->getCurrencyColumn()};
+            if ($currencyCode) {
+                return Currency::fromCode($currencyCode);
+            }
         }
 
         return MoneyFormatter::getDefaultCurrency();
@@ -59,7 +72,7 @@ trait HasMoneyAttributes
             return $this->inMinor;
         }
 
-        $storeFormat = config('filament-money-field.store.format');
+        $storeFormat = config('larapara.store.format');
 
         return $storeFormat === 'int';
     }
