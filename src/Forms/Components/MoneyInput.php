@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
+use Pelmered\FilamentMoneyField\Casts\MoneyCast;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
@@ -86,6 +87,17 @@ class MoneyInput extends TextInput
 
             return new Money((int) $amount, $currency->toMoneyCurrency());
         });
+    }
+
+    /**
+     * @return array<StateCast>
+     */
+    public function getDefaultStateCasts(): array
+    {
+        return [
+            ...parent::getDefaultStateCasts(),
+            app(MoneyCast::class, ['moneyInput' => $this]),
+        ];
     }
 
     protected function prepare(): void
