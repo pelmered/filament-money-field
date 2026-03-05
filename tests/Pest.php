@@ -87,7 +87,7 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 /**
  * @throws Exception
  */
-function createTestComponent($type = 'form', $components = [], $fieldName = 'amount'): Schema
+function createTestComponent($type = 'form', $components = [], ?string $fieldName = 'amount'): Schema
 {
     if (count($components) <= 0) {
         $components = match ($type) {
@@ -107,7 +107,7 @@ function createTestComponent($type = 'form', $components = [], $fieldName = 'amo
         ->components($components);
 }
 
-function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount'): Schema
+function createFormTestComponent($components = [], ?array $fill = [], $fieldName = 'amount'): Schema
 {
     $components = createTestComponent('form', $components, $fieldName);
     $components->fill($fill);
