@@ -107,7 +107,7 @@ function createTestComponent($type = 'form', $components = [], ?string $fieldNam
         ->components($components);
 }
 
-function createFormTestComponent($components = [], ?array $fill = [], $fieldName = 'amount'): Schema
+function createFormTestComponent($components = [], ?array $fill = [], ?string $fieldName = 'amount'): Schema
 {
     $components = createTestComponent('form', $components, $fieldName);
     $components->fill($fill);
