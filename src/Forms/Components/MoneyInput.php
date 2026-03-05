@@ -45,7 +45,7 @@ class MoneyInput extends TextInput
                             ->required()
                             ->live(),
                     ])
-                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
+                    ->action(function (array $data, MoneyInput $component, Model $record): void {
                         $money    = $record->{$component->name};
                         $currency = $data['currency'];
 
