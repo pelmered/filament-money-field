@@ -80,7 +80,7 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 /**
  * @throws Exception
  */
-function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null)
+function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null): Schema
 {
     if (! $fieldName) {
         $fieldName = $components[0]->getName();
@@ -104,7 +104,7 @@ function createTestComponent($type = 'form', array $components = [], ?string $fi
         ->components($components);
 }
 
-function createFormTestComponent($components = [], $fill = [], ?string $fieldName = null)
+function createFormTestComponent($components = [], ?array $fill = [], ?string $fieldName = null): Schema
 {
     $components = createTestComponent('form', $components, $fieldName);
     $components->fill($fill);

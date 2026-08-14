@@ -32,7 +32,6 @@ class MoneyInput extends TextInput
 
         $this->suffixAction(function (MoneyInput $component): ?Action {
             if ($component->shouldHaveCurrencySwitcher()) {
-
                 $currencies = CurrencyRepository::getAvailableCurrencies();
 
                 return Action::make('changeCurrency')

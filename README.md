@@ -119,7 +119,7 @@ For changing existing columns, in this case a column called `price`.
 ```php
 Schema::table('tablename', function (Blueprint $table) {
     $table->char('price_currency', 3)->after('price')->change();
-    $this->index(['price', 'price_currency']);
+    $table->index(['price', 'price_currency']);
 });
 ```
 Available column types(methods) on the Blueprint object are:
