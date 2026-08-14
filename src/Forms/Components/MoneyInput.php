@@ -2,18 +2,15 @@
 
 namespace Pelmered\FilamentMoneyField\Forms\Components;
 
-use Filament\Forms\Components\Actions\Action as F3Action;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\Helper;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Enum\CurrencySymbolPlacement;
@@ -33,24 +30,22 @@ class MoneyInput extends TextInput
 
         $this->prepare();
 
-        $this->suffixAction(function (MoneyInput $component): Action|F3Action|null {
+        $this->suffixAction(function (MoneyInput $component): ?Action {
             if ($component->shouldHaveCurrencySwitcher()) {
 
                 $currencies = CurrencyRepository::getAvailableCurrencies();
 
-                $actionClass = Helper::isFilament3() ? F3Action::class : Action::class;
-
-                return $actionClass::make('changeCurrency')
+                return Action::make('changeCurrency')
                     ->icon('heroicon-m-arrow-path')
                     ->tooltip('Change currency')
-                    ->form([
+                    ->schema([
                         Select::make('currency')
                             ->label('Currency')
                             ->options($currencies->toSelectArray())
                             ->required()
                             ->live(),
                     ])
-                    ->action(function (array $data, MoneyInput $component, Model $record, Form $form): void {
+                    ->action(function (array $data, MoneyInput $component, Model $record): void {
                         $money    = $record->{$component->name};
                         $currency = $data['currency'];
 
@@ -111,7 +106,7 @@ class MoneyInput extends TextInput
         };
 
         if (config('filament-money-field.use_input_mask')) {
-            $this->mask(function (MoneyInput $component): \Filament\Support\RawJs {
+            $this->mask(function (MoneyInput $component): RawJs {
                 $formattingRules = MoneyFormatter::getFormattingRules(
                     $component->getLocale(),
                     $component->getCurrency()

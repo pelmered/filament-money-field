@@ -1,11 +1,10 @@
 <?php
 
+use Filament\Schemas\Components\Component;
 use Illuminate\Support\Facades\Validator;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
-use Filament\Schemas\Components\Component;
 
 it('validates min value using MinValueRule', function (): void {
     // Create the input component for testing

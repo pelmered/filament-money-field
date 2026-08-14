@@ -14,7 +14,7 @@ it('formats money value correctly', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect($formatted)->toEqual('$123.45');
 });
@@ -27,7 +27,7 @@ it('formats money value with custom currency', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect($formatted)->toEqual('€123.45');
 });
@@ -40,7 +40,7 @@ it('formats money value with custom locale', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect(replaceNonBreakingSpaces($formatted))->toEqual('123,45 US$');
 });
@@ -53,7 +53,7 @@ it('formats money with custom currency and locale', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect(replaceNonBreakingSpaces($formatted))->toEqual('123,45 kr');
 });
@@ -76,7 +76,7 @@ it('formats money with custom decimal precision2', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect($formatted)->toEqual('$123');
 });
@@ -89,7 +89,7 @@ it('handles null value gracefully', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect($formatted)->toEqual('');
 });
@@ -104,7 +104,7 @@ it('formats with international currency symbol when configured', function (): vo
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect(replaceNonBreakingSpaces($formatted))->toContain('USD');
     expect(replaceNonBreakingSpaces($formatted))->toContain('123');
@@ -118,7 +118,7 @@ it('hides currency symbol2', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect(replaceNonBreakingSpaces($formatted))->toBe('123.45');
 });
@@ -131,7 +131,7 @@ it('hides currency symbol short format', function (): void {
     );
     $entry = getComponent($component, 'amount');
 
-    $formatted = $entry->formatState($component->getState()['amount']);
+    $formatted = $entry->formatState(getComponentState($component, 'amount'));
 
     expect(replaceNonBreakingSpaces($formatted))->toBe('123.46K');
 });

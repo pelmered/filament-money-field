@@ -6,7 +6,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
+use Filament\Schemas\Schema;
 use Livewire\Component;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 
@@ -20,11 +20,11 @@ class TableTestComponent extends Component implements HasForms, HasInfolists
         return new static;
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $infolist): Schema
     {
         return $infolist
             ->state([])
-            ->schema([
+            ->components([
                 MoneyEntry::make('amount')
                     ->currency('SEK')
                     ->locale('sv_SE')

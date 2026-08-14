@@ -27,8 +27,8 @@ This package would give "1 234,56 kr", while most other solutions probably would
 ## Requirements
 
 - PHP 8.2 or higher
-- Laravel 11.24.1 or higher
-- Filament 3.2 or higher
+- Laravel 11.28 or higher
+- Filament 4.0 or higher (Filament 4 and 5 are supported; use version 1.x of this package for Filament 3)
 - [PHP Internationalization extension (intl)](https://www.php.net/manual/en/intro.intl.php)
 - The database column type should be a either decimal or integer (amount stored with minor units i.e. cents).
 

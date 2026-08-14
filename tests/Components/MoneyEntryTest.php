@@ -2,7 +2,6 @@
 
 use Money\Currency;
 use Money\Money;
-use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 
 it('formats infolist money in usd', function (): void {
@@ -12,7 +11,7 @@ it('formats infolist money in usd', function (): void {
         'price',
     );
     $entry = getComponent($component, 'price');
-    $state = $component->getState()['price']; // I don't know why $entry->getState() dosen't work.
+    $state = getComponentState($component, 'price');
 
     expect($entry->formatState($state))->toEqual('$1,000,000.00');
 });
@@ -24,8 +23,7 @@ it('formats infolist money in usd with Money object', function (): void {
         'price',
     );
     $entry = getComponent($component, 'price');
-
-    $state = $component->getState()['price']; // I don't know why $entry->getState() dosen't work.
+    $state = getComponentState($component, 'price');
 
     expect($state)->toBeInstanceOf(Money::class);
     expect($entry->formatState($state))->toEqual('$1,000,000.00');
@@ -39,7 +37,7 @@ it('formats infolist money in sek', function (): void {
     );
     $entry = getComponent($component, 'price');
 
-    $formatted = $entry->formatState($component->getState()['price']);
+    $formatted = $entry->formatState(getComponentState($component, 'price'));
 
     expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces('10 000,00 kr'));
 });
@@ -66,7 +64,7 @@ it('formats infolist money in short format in sek', function (): void {
     );
     $entry = getComponent($component, 'price');
 
-    $formatted = $entry->formatState($component->getState()['price']);
+    $formatted = $entry->formatState(getComponentState($component, 'price'));
 
     expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces('1,24K kr'));
 });
@@ -79,7 +77,7 @@ it('formats infolist money in sek with no decimals', function (): void {
     );
     $entry = getComponent($component, 'price');
 
-    $formatted = $entry->formatState($component->getState()['price']);
+    $formatted = $entry->formatState(getComponentState($component, 'price'));
 
     expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces('10 000 kr'));
 });

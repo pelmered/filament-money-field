@@ -1,20 +1,15 @@
 <?php
 
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Get as F3Get;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Schema;
 use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\Helper;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\TestComponent;
 
 it('handles empty string properly', function (): void {
 
     $component = createFormTestComponent(
         [MoneyInput::make('price')],
-        [],
+        ['price' => ''],
         'price',
     );
 
@@ -36,10 +31,9 @@ it('handles extremely large amounts properly', function (): void {
         'money',
     );
 
-    $state = $component->getState();
-    expect($state)->toBeArray();
-    expect($state['money'])->toBeInstanceOf(Money::class);
-    expect($state['money']->getAmount())->toBe('999999999999');
+    $state = getComponentState($component, 'money');
+
+    expect($state)->toEqual('9,999,999,999.99');
 });
 
 it('handles currency changes gracefully', function (): void {
@@ -50,11 +44,8 @@ it('handles currency changes gracefully', function (): void {
         'money',
     );
 
-    $state = $component1->getState();
-    expect($state)->toBeArray();
-    expect($state['money'])->toBeInstanceOf(Money::class);
-    expect($state['money']->getAmount())->toBe('12345');
-    expect($state['money']->getCurrency()->getCode())->toBe('USD');
+    $state = getComponentState($component1, 'money');
+    expect($state)->toBe('123.45');
 
     // Create a new component with EUR currency but use the same Money object with USD
     $component2 = createFormTestComponent(
@@ -63,12 +54,8 @@ it('handles currency changes gracefully', function (): void {
         'money',
     );
 
-    $state = $component2->getState();
-    expect($state)->toBeArray();
-    expect($state['money'])->toBeInstanceOf(Money::class);
-    expect($state['money']->getAmount())->toBe('123456');
-    // The currency should match what we provided in the fill
-    expect($state['money']->getCurrency()->getCode())->toBe('EUR');
+    $state = getComponentState($component2, 'money');
+    expect($state)->toBe('1,234.56');
 });
 
 it('handles negative values correctly', function (): void {
@@ -78,7 +65,7 @@ it('handles negative values correctly', function (): void {
         'price',
     );
 
-    expect($component->getState()['price']->getAmount())->toBe('-50000');
+    expect(getComponentState($component, 'price'))->toBe('-500.00');
 });
 
 it('handles zero values correctly', function (): void {
@@ -88,7 +75,8 @@ it('handles zero values correctly', function (): void {
         'price',
     );
 
-    expect($component->getState()['price']->getAmount())->toBe('0');
+    $state = getComponentState($component, 'price');
+    expect($state)->toBe('0.00');
 });
 
 it('handles empty string as null', function (): void {
@@ -98,7 +86,7 @@ it('handles empty string as null', function (): void {
         'price',
     );
 
-    expect($component->getState()['price'])->toBeNull();
+    expect(getComponentState($component, 'price'))->toBeNull();
 });
 
 it('handles custom step values', function (): void {
@@ -108,20 +96,13 @@ it('handles custom step values', function (): void {
         'price',
     );
 
-    $field = getComponent($component,'price');
+    $field = getComponent($component, 'price');
 
     expect($field->getStep())->toBe(0.01);
 });
 
 it('handles hidden state correctly', function (): void {
-    if (Helper::isFilament3())
-    {
-        $moneyInput = MoneyInput::make('price')->hidden(fn (F3Get $get): bool => (bool) $get('hide_price'));
-    }
-    else
-    {
-        $moneyInput = MoneyInput::make('price')->hidden(fn (Get $get): bool => (bool) $get('hide_price'));
-    }
+    $moneyInput = MoneyInput::make('price')->hidden(fn (Get $get): bool => (bool) $get('hide_price'));
 
     $component = createFormTestComponent(
         [$moneyInput],
@@ -132,8 +113,7 @@ it('handles hidden state correctly', function (): void {
         'price',
     );
 
-
-    $field = getComponent($component,'price');
+    $field = getComponent($component, 'price');
     expect($field->isHidden())->toBeFalse();
 
     $component->fill([

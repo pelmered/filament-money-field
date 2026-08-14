@@ -1,5 +1,6 @@
 
 /vendor
+/vendor_high
 .phpunit.cache/
 coverage.xml
 composer.lock

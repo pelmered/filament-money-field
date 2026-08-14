@@ -1,20 +1,13 @@
 <?php
 
-use Filament\Actions\Action;
-use Filament\Forms;
-use Filament\Forms\Components\Actions\Action as F3Action;
 use Filament\Forms\Components\Field;
-use Filament\Infolists;
 use Filament\Schemas\Schema;
 use Illuminate\Validation\ValidationException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Pelmered\FilamentMoneyField\Helper;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\Filament3\FormTestComponent as F3FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\TableTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 pest()->project()->github('pelmered/filament-money-field');
@@ -43,19 +36,6 @@ uses(TestCase::class)->in('Unit', 'Components', 'Forms');
 |
 */
 
-expect()->extend('toBeInstanceOfWithVersions', function ($class4, $class3) {
-    if(Helper::isFilament3())
-    {
-        $this->toBeInstanceOf($class3);
-    }
-    else
-    {
-        $this->toBeInstanceOf($class4);
-    }
-});
-
-
-
 /*
 |--------------------------------------------------------------------------
 | Functions
@@ -78,12 +58,11 @@ function replaceNonBreakingSpaces(string $string): string
 function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
 {
     try {
-        $component = createFormTestComponent(
-            [$field],
-            [$field->getName() => $value]
-        );
-
-        $component->validate();
+        Schema::make(FormTestComponent::make())
+            ->statePath('data')
+            ->components([$field])
+            ->fill([$field->getName() => $value])
+            ->validate();
     } catch (ValidationException $validationException) {
         if ($assertsCallback !== null) {
             $assertsCallback($validationException, $field);
@@ -103,8 +82,7 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
  */
 function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null)
 {
-    if (!$fieldName)
-    {
+    if (! $fieldName) {
         $fieldName = $components[0]->getName();
     }
 
@@ -117,22 +95,10 @@ function createTestComponent($type = 'form', array $components = [], ?string $fi
         };
     }
 
-    if (Helper::isFilament3())
-    {
-        return (match ($type) {
-            'form'     => \Filament\Forms\ComponentContainer::make(F3FormTestComponent::make()),
-            'infolist' => \Filament\Infolists\ComponentContainer::make(InfolistTestComponent::make()),
-            //'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
-            default => throw new Exception('Unknown component type: '.$type),
-        })
-            ->statePath('data')
-            ->components($components);
-    }
-
     return (match ($type) {
         'form'     => Schema::make(FormTestComponent::make()),
         'infolist' => Schema::make(InfolistTestComponent::make()),
-        //'table' =>  Schema::make(TableTestComponent::make()),
+        // 'table' =>  Schema::make(TableTestComponent::make()),
         default => throw new Exception('Unknown component type: '.$type),
     })
         ->components($components);
@@ -149,14 +115,17 @@ function createFormTestComponent($components = [], $fill = [], ?string $fieldNam
 function createInfolistTestComponent($components = [], $fill = [], ?string $fieldName = null)
 {
     $components = createTestComponent('infolist', $components, $fieldName);
-    //dd($components);
     $components->state($fill);
 
     return $components;
-        //->getComponent($fieldName);
 }
 
 function getComponent($testComponent, $componentName): MoneyInput|MoneyEntry
 {
-    return $testComponent->getComponent((Helper::isFilament3() ? 'data.' : '').$componentName);
+    return $testComponent->getComponent($componentName);
+}
+
+function getComponentState($component, $componentName)
+{
+    return getComponent($component, $componentName)->getState();
 }
