@@ -13,11 +13,10 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Run Laravel Pint
-              uses: aglipanci/laravel-pint-action@latest
+              uses: aglipanci/laravel-pint-action@v2
               with:
                   verboseMode: true
                   testMode: true
-                  onlyDirty: true
                   configPath: ./pint.json
 
     check:

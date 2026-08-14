@@ -30,6 +30,9 @@ jobs:
           extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath
 
       - name: Pin Filament version
+        # bash on every OS: under PowerShell, composer.bat goes through cmd.exe,
+        # which treats ^ as an escape character and strips it from the constraint.
+        shell: bash
         run: composer require "filament/filament:${{ matrix.filament }}" --dev --no-update --no-interaction
 
       - name: Install dependencies
