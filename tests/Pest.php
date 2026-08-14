@@ -80,7 +80,7 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 /**
  * @throws Exception
  */
-function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null)
+function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null): \Filament\Schemas\Schema
 {
     if (! $fieldName) {
         $fieldName = $components[0]->getName();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelmered\FilamentMoneyField\Infolists\Components;
 
 use Filament\Infolists\Components\TextEntry;
