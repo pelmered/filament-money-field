@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
+use Pelmered\FilamentMoneyField\Tests\BrowserTestCase;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
@@ -24,6 +25,7 @@ pest()->project()->github('pelmered/filament-money-field');
 */
 
 uses(TestCase::class)->in('Unit', 'Components', 'Forms');
+uses(BrowserTestCase::class)->in('Browser');
 
 /*
 |--------------------------------------------------------------------------

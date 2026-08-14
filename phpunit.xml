@@ -14,6 +14,10 @@
     <testsuite name="Unit">
       <directory suffix="Test.php">./tests/Unit</directory>
     </testsuite>
+    <!-- Needs "npm ci" and "npx playwright install"; excluded from "composer test". -->
+    <testsuite name="Browser">
+      <directory suffix="Test.php">./tests/Browser</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>

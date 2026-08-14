@@ -35,11 +35,50 @@ jobs:
         shell: bash
         run: composer require "filament/filament:${{ matrix.filament }}" --dev --no-update --no-interaction
 
+      - name: Drop the browser test plugin
+        # This matrix does not run the Browser suite, and the plugin requires
+        # PHP >= 8.3, which would fail to resolve on the 8.2 jobs. Browser tests
+        # run in the dedicated "browser" job below.
+        shell: bash
+        run: composer remove --dev pestphp/pest-plugin-browser --no-update --no-interaction
+
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/pest
+        run: vendor/bin/pest --exclude-testsuite=Browser
+
+  browser:
+    runs-on: ubuntu-latest
+    name: Browser tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          # ext-sockets is required by pestphp/pest-plugin-browser.
+          extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath, sockets
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install Playwright
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Execute browser tests
+        run: composer test:browser
 
   report-metrics:
     runs-on: ubuntu-latest
@@ -64,10 +103,10 @@ jobs:
         run: php vendor/bin/testbench package:purge-skeleton --ansi
 
       - name: Execute tests with coverage
-        run: vendor/bin/pest --coverage-clover=reports/coverage/test-coverage-clover.xml
+        run: vendor/bin/pest --exclude-testsuite=Browser --coverage-clover=reports/coverage/test-coverage-clover.xml
 
       - name: Execute type coverage tests
-        run: vendor/bin/pest --type-coverage --type-coverage-json=reports/coverage/pest-types-coverage.json
+        run: vendor/bin/pest --exclude-testsuite=Browser --type-coverage --type-coverage-json=reports/coverage/pest-types-coverage.json
 
       - name: Upload Coverage Reports
         env:

@@ -5,3 +5,5 @@
 coverage.xml
 composer.lock
 /reports/*
+/node_modules
+/tests/Browser/Screenshots

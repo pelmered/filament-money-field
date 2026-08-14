@@ -340,3 +340,17 @@ When you are submitting a PR, I appreciate if you:
 - Run the test suite and make sure it passes with `composer test`.
 - Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. You might also try to fix the code automatically with `composer fix`.
 
+### Browser tests
+
+The `Browser` test suite uses [Pest browser testing](https://pestphp.com/docs/browser-testing) to cover the
+behaviour that only exists once Livewire, Alpine and Filament's JavaScript have booted — client-side value
+hydration, currency symbol placement and the input mask.
+
+It is **not** part of `composer test`, because it needs PHP 8.3+, Node and a Playwright browser:
+
+```bash
+npm ci
+npx playwright install chromium
+composer test:browser
+```
+
