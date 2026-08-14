@@ -112,7 +112,7 @@ function createFormTestComponent($components = [], ?array $fill = [], ?string $f
     return $components;
 }
 
-function createInfolistTestComponent($components = [], $fill = [], ?string $fieldName = null)
+function createInfolistTestComponent($components = [], array|object|null $fill = [], ?string $fieldName = null)
 {
     $components = createTestComponent('infolist', $components, $fieldName);
     $components->state($fill);
