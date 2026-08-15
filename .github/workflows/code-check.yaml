@@ -41,7 +41,16 @@ jobs:
 
             - run: vendor/bin/rector --ansi
 
+            - name: Format Rector output
+              # Rector's output is not necessarily Pint-clean. Without this the
+              # auto-commit below lands a commit that fails the php-lint job.
+              run: vendor/bin/pint --config ./pint.json
+
             - uses: stefanzweifel/git-auto-commit-action@v6
+              # Both push and pull_request fire for a branch with an open PR.
+              # Without this guard both runs auto-commit and race, and the loser
+              # fails with "atomic push failed ... fetch first".
+              if: github.event_name == 'push'
               with:
                 commit_message: '[rector] Rector fixes'
                 commit_author: 'Peter Elmered <peter@elmered.com>'

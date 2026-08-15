@@ -9,6 +9,7 @@ use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\Livewire\Partials\DataStoreOverride;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\StartSession;
@@ -64,7 +65,7 @@ class BrowserTestCase extends TestCase
             StartSession::class,
             ShareErrorsFromSession::class,
         ])->group(function (Router $router): void {
-            $router->get('/money-form', fn (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('money-tests::browser-page'));
+            $router->get('/money-form', fn (): Factory|\Illuminate\Contracts\View\View => view('money-tests::browser-page'));
         });
     }
 
