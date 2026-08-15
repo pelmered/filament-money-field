@@ -57,8 +57,6 @@ class BrowserTestCase extends TestCase
 
     protected function defineRoutes($router): void
     {
-        assert($router instanceof Router);
-
         // Testbench's HTTP kernel registers no middleware groups, so "web" is empty.
         // Livewire needs the session and the shared error bag to render.
         $router->middleware([
@@ -66,7 +64,7 @@ class BrowserTestCase extends TestCase
             StartSession::class,
             ShareErrorsFromSession::class,
         ])->group(function (Router $router): void {
-            $router->get('/money-form', fn () => view('money-tests::browser-page'));
+            $router->get('/money-form', fn (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('money-tests::browser-page'));
         });
     }
 
