@@ -96,6 +96,9 @@ jobs:
 
   report-metrics:
     runs-on: ubuntu-latest
+    # Reporting only. Coverage thresholds and the upload depend on an external
+    # service, so a failure here must not fail the build.
+    continue-on-error: true
 
     steps:
       - name: Checkout code
