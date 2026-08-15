@@ -9,6 +9,9 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      # One failing combination should not cancel the rest; otherwise a single
+      # platform-specific failure hides the state of every other job.
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         php: [8.2, 8.3, 8.4]
@@ -50,7 +53,14 @@ jobs:
 
   browser:
     runs-on: ubuntu-latest
-    name: Browser tests
+    strategy:
+      fail-fast: false
+      matrix:
+        # Browser tests run against every supported Filament major. PHP is pinned
+        # to 8.4 because pest-plugin-browser requires >= 8.3.
+        filament: ['^4.0', '^5.0']
+
+    name: Browser - F${{ matrix.filament }}
 
     steps:
       - name: Checkout code
@@ -64,8 +74,12 @@ jobs:
           extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath, sockets
           coverage: none
 
+      - name: Pin Filament version
+        shell: bash
+        run: composer require "filament/filament:${{ matrix.filament }}" --dev --no-update --no-interaction
+
       - name: Install dependencies
-        run: composer install --no-interaction
+        run: composer update --prefer-dist --no-interaction
 
       - uses: actions/setup-node@v4
         with:
