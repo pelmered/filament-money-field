@@ -55,10 +55,28 @@ composer env:f4
 composer test:f5
 composer test:f4
 
+# Run the Browser suite against one (needs "npm ci" + "npx playwright install chromium")
+composer test:browser:f5
+composer test:browser:f4
+
 # Serve the workbench app — F5 on :8000, F4 on :8004, both can run at once
 composer serve:f5
 composer serve:f4
 ```
+
+The two lanes are the ends of the support range, and the `browser` job in
+`.github/workflows/tests.yml` mirrors them:
+
+| Lane | Filament | Laravel | PHP |
+| --- | --- | --- | --- |
+| `f4` (lowest supported) | 4 | 11 (testbench `^9.0`) | 8.3 |
+| `f5` (latest stable) | 5 | 13 (testbench `^11.0`) | 8.5 |
+
+The `f4` lane targets PHP 8.3 rather than the package floor of 8.2 because
+`pest-plugin-browser` requires `^8.3`. Its generated config pins
+`config.platform.php` to 8.3, so dependencies resolve the same as CI even when
+the only local binary below 8.5 is 8.4; the scripts print the runtime PHP and
+flag the difference when it applies.
 
 `serve:*` boots a Filament panel at `/admin` with no login — `Workbench\App\Http\Middleware\AutoLogin`
 signs in the seeded demo user. The panel's brand name reports the running Filament,

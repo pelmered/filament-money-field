@@ -24,6 +24,12 @@ const CACHE_DIR = '.phpunit-f4.cache';
 
 const PORT = '8004';
 
+/**
+ * The lowest PHP this lane targets. Not 8.2, the package floor: pest-plugin-browser
+ * requires ^8.3, so the Browser suite cannot run any lower.
+ */
+const TARGET_PHP = '8.3';
+
 const SKELETON_AUTOLOAD = VENDOR_DIR.'/orchestra/testbench-core/laravel/bootstrap/autoload.php';
 
 $root = dirname(__DIR__);
@@ -36,6 +42,8 @@ $extra   = array_slice($argv, 2);
 putenv('COMPOSER='.COMPOSER_FILE);
 
 $php = resolvePhpBinary();
+
+announce($php, $command);
 
 exit(match ($command) {
     'install' => install($root, $php),
@@ -77,6 +85,12 @@ function install(string $root, string $php): int
     $composer['require-dev']['orchestra/testbench'] = '^9.0';
 
     $composer['config']['vendor-dir'] = VENDOR_DIR;
+
+    // Resolve for the lane's target PHP rather than whatever happens to be
+    // installed, so this matches the "lowest" browser job in CI even when the
+    // only local binary below 8.5 is 8.4. Symfony 8 needs 8.4, so an unpinned
+    // 8.4 install would quietly test a newer dependency set than CI does.
+    $composer['config']['platform']['php'] = TARGET_PHP;
 
     // Rewritten rather than dropped: the install below fires post-autoload-dump,
     // which purges the skeleton and re-runs package discovery through these.
@@ -149,7 +163,10 @@ function resolvePhpBinary(): string
         return PHP_BINARY;
     }
 
-    foreach (['php8.4', 'php84', 'php8.3', 'php83'] as $candidate) {
+    // 8.3 first: this lane exists to exercise the lowest supported stack. The
+    // window is 8.3 to 8.4 — Laravel 11 does not run on 8.5, and the Pest
+    // browser plugin requires 8.3, so 8.2 cannot run the Browser suite.
+    foreach (['php'.TARGET_PHP, 'php83', 'php8.4', 'php84'] as $candidate) {
         $path = trim((string) shell_exec('command -v '.escapeshellarg($candidate).' 2>/dev/null'));
 
         if ($path !== '') {
@@ -158,9 +175,24 @@ function resolvePhpBinary(): string
     }
 
     fail(
-        'Laravel 11 does not support PHP '.PHP_VERSION.'. Install PHP 8.4 (Herd ships it as "php84") '
-        .'or point PHP_F4 at a suitable binary.'
+        'Laravel 11 does not support PHP '.PHP_VERSION.'. Install PHP 8.3 (Herd: "herd install php@8.3") '
+        .'or point PHP_F4 at a binary between 8.3 and 8.4.'
     );
+}
+
+/**
+ * The resolved PHP version decides what this lane actually proves, and it is
+ * picked from whatever is installed — so state it rather than let it be guessed.
+ */
+function announce(string $php, string $command): void
+{
+    $version = trim((string) shell_exec(escapeshellarg($php).' -r "echo PHP_VERSION;" 2>/dev/null'));
+    $running = $version !== '' ? $version : 'unknown';
+
+    // Dependencies always resolve for TARGET_PHP; only the runtime can differ.
+    $drift = str_starts_with($running, TARGET_PHP.'.') ? '' : ' (resolved for '.TARGET_PHP.')';
+
+    fwrite(STDERR, '→ '.$command.' · '.VENDOR_DIR.'/ · PHP '.$running.$drift.PHP_EOL);
 }
 
 /** @param list<string> $arguments */

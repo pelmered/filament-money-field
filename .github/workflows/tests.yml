@@ -56,11 +56,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Browser tests run against every supported Filament major. PHP is pinned
-        # to 8.4 because pest-plugin-browser requires >= 8.3.
-        filament: ['^4.0', '^5.0']
+        # The two ends of the support range, mirroring the local "composer
+        # test:browser:f4" and "test:browser:f5" lanes. Testbench must be pinned
+        # too: pinning only Filament resolves the newest testbench, so the
+        # Filament 4 job would silently run on Laravel 13 and the lowest
+        # supported stack would never be browser tested.
+        include:
+          # PHP 8.3 rather than the supported floor of 8.2, because
+          # pest-plugin-browser requires >= 8.3. Testbench 9 is the Laravel 11 line.
+          - name: lowest
+            php: '8.3'
+            filament: '^4.0'
+            testbench: '^9.0'
+          # Testbench 11 is the Laravel 13 line.
+          - name: latest
+            php: '8.5'
+            filament: '^5.0'
+            testbench: '^11.0'
 
-    name: Browser - F${{ matrix.filament }}
+    name: Browser - ${{ matrix.name }} (PHP ${{ matrix.php }}, Filament ${{ matrix.filament }})
 
     steps:
       - name: Checkout code
@@ -69,14 +83,16 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: ${{ matrix.php }}
           # ext-sockets is required by pestphp/pest-plugin-browser.
           extensions: intl, fileinfo, zip, pdo, sqlite, pdo_sqlite, bcmath, sockets
           coverage: none
 
-      - name: Pin Filament version
+      - name: Pin Filament and Laravel versions
+        # bash on every OS: under PowerShell, composer.bat goes through cmd.exe,
+        # which treats ^ as an escape character and strips it from the constraint.
         shell: bash
-        run: composer require "filament/filament:${{ matrix.filament }}" --dev --no-update --no-interaction
+        run: composer require "filament/filament:${{ matrix.filament }}" "orchestra/testbench:${{ matrix.testbench }}" --dev --no-update --no-interaction
 
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction

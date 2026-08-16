@@ -104,6 +104,12 @@
         "test:f4": [
             "@php scripts/f4.php test --exclude-testsuite=Browser"
         ],
+        "test:browser:f5": [
+            "@php vendor/bin/pest -c phpunit.xml --testsuite=Browser"
+        ],
+        "test:browser:f4": [
+            "@php scripts/f4.php test --testsuite=Browser"
+        ],
         "serve:f5": [
             "Composer\\Config::disableProcessTimeout",
             "@composer serve"
