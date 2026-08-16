@@ -20,7 +20,7 @@ This package would give "1 234,56 kr", while most other solutions probably would
 [![Crap](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/crap/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat)](https://otterwise.app/github/pelmered/filament-money-field)
 
-[![Tested with Laravel 11 to 12](https://img.shields.io/badge/Tested%20with%20Laravel-11%20%7C%2012-brightgreen?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![Tested with Laravel 11 to 13](https://img.shields.io/badge/Tested%20with%20Laravel-11%20%7C%2012%20%7C%2013-brightgreen?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 [![Tested on PHP 8.2 to 8.4](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3%20|%208.4-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 [![Tested on OS:es Linux, MacOS, Windows](https://img.shields.io/badge/Tested%20on%20lastest%20versions%20of-%20Ubuntu%20|%20MacOS%20|%20Windows-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 
@@ -349,6 +349,70 @@ When you are submitting a PR, I appreciate if you:
 - Run the test suite and make sure it passes with `composer test`.
 - Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. You might also try to fix the code automatically with `composer fix`.
 
+### Test environments
+
+The package supports a range of Filament, Laravel and PHP versions, so the test suite can be run against
+three different dependency sets. Each one lives in its own vendor directory, so they can all stay installed
+at the same time and you can switch between them without reinstalling anything.
+
+| Environment | Filament | Laravel | PHP  |
+|-------------|----------|---------|------|
+| `lowest`    | 4        | 11      | 8.3  |
+| `middle`    | 5        | 12      | 8.4  |
+| `latest`    | 5        | 13      | 8.5  |
+
+`latest` is the ordinary `vendor/` directory you get from `composer install`, so if you just run
+`composer test` that is the one you are testing.
+
+```bash
+# Install or refresh an environment. Only needed once, or after changing composer.json.
+composer env:lowest
+composer env:middle
+
+# Run the test suite against one
+composer test:lowest
+composer test:middle
+composer test:latest
+```
+
+`lowest` and `middle` are built by `scripts/test-env.php`, which generates a `composer-<name>.json` and a
+`phpunit-<name>.xml` from the real `composer.json` and `phpunit.xml`. An environment can therefore never pin
+something the package does not actually support. Everything it generates is gitignored.
+
+Each environment resolves its dependencies for its target PHP version, so you get the same packages CI does
+even if you do not have that exact PHP version installed. The scripts print the PHP version they actually
+run on, and say so when it differs from the one the dependencies were resolved for:
+
+```
+→ lowest test · vendor-lowest/ · PHP 8.4.23 (resolved for 8.3)
+```
+
+`lowest` targets PHP 8.3 rather than 8.2, which is the package minimum, because the Pest browser plugin
+requires 8.3. Set `PHP_LOWEST` or `PHP_MIDDLE` to point an environment at a specific binary.
+
+These three environments are the same three combinations the `browser` job in
+`.github/workflows/tests.yml` runs.
+
+### Trying out a change in a real panel
+
+Every environment can serve a real Filament panel with the money components on it, which is the quickest way
+to see whether a change looks right in every supported version:
+
+```bash
+composer serve:lowest    # http://127.0.0.1:8004/admin
+composer serve:middle    # http://127.0.0.1:8006/admin
+composer serve:latest    # http://127.0.0.1:8000/admin
+```
+
+There is no login, you land straight in the panel. All three can run at the same time, so you can compare
+them side by side. The panel title tells you which versions you are looking at, for example
+`Money Field · Filament 4.12.6 · Laravel 11.x-dev · Livewire 3.8.4`.
+
+The panel is a [workbench](https://packages.tools/workbench.html) app under
+`workbench/`. It uses the same `Post` model the test suite does, so what you can click on there is what the
+tests cover: `MoneyInput` with a fixed currency and with a per-record currency column, `MoneyColumn` and
+`MoneyEntry` including the `short()` and `hideCurrencySymbol()` variants, and the min/max validation rules.
+
 ### Browser tests
 
 The `Browser` test suite uses [Pest browser testing](https://pestphp.com/docs/browser-testing) to cover the
@@ -360,6 +424,13 @@ It is **not** part of `composer test`, because it needs PHP 8.3+, Node and a Pla
 ```bash
 npm ci
 npx playwright install chromium
+
+# Against the default vendor/ directory
 composer test:browser
+
+# Or against a specific environment
+composer test:browser:lowest
+composer test:browser:middle
+composer test:browser:latest
 ```
 
