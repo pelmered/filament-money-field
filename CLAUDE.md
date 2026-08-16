@@ -69,7 +69,9 @@ composer serve:lowest  composer serve:middle  composer serve:latest
 
 The `browser` job in `.github/workflows/tests.yml` uses the same three names.
 Add an environment by adding an entry to `TEST_ENVIRONMENTS` in
-`scripts/test-env.php` and the matching `env:`/`test:`/`serve:` scripts.
+`scripts/test-env.php`, the matching `env:`/`test:`/`serve:` scripts, and its
+vendor directory to `exclude` in `pint.json` — Pint only skips `vendor` by
+default, so an unlisted one gets linted like source.
 
 `lowest` targets PHP 8.3 rather than the package floor of 8.2 because
 `pest-plugin-browser` requires `^8.3`. Each environment pins

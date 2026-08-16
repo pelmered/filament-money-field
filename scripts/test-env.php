@@ -26,6 +26,10 @@ declare(strict_types=1);
  * "php" is the version the environment targets: dependencies always resolve for
  * it, so this matches CI even when the installed binary is a different version.
  * "max_php" is the highest version the environment's Laravel runs on.
+ *
+ * Adding an environment also means adding its vendor directory to the "exclude"
+ * list in pint.json. Pint only skips "vendor" by default, so an unlisted one is
+ * linted like source and takes minutes instead of a second.
  */
 const TEST_ENVIRONMENTS = [
     // Lowest supported combination. PHP 8.3 rather than the package floor of
