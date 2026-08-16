@@ -47,8 +47,8 @@ it('tells you which cast is missing instead of letting a Money object hit the da
 })->throws(
     MissingMoneyCast::class,
     'Attribute [price] on model [Pelmered\FilamentMoneyField\Tests\Support\Models\PostWithoutCasts] is not cast to a Money object, '
-    .("so it cannot be saved. Add 'price' => ".MoneyCast::class.'::class and ')
-    .("'price_currency' => ".CurrencyCast::class.'::class'),
+    .('so it cannot be saved. Add \'price\' => \\'.MoneyCast::class.'::class and ')
+    .('\'price_currency\' => \\'.CurrencyCast::class.'::class'),
 );
 
 // The error the guard above replaces, kept to document why it exists.
