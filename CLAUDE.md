@@ -41,58 +41,59 @@ composer coverage
 
 ### Test Environments
 
-Three dependency sets live side by side, each in its own vendor directory. `f5`
-is the default `vendor/` and needs no driver; the others are built by
-`scripts/lane.php`, which generates `composer-<lane>.json` and
-`phpunit-<lane>.xml` from `composer.json` and `phpunit.xml` so no lane can drift
-from the real constraints. All generated files are gitignored.
+Three dependency sets live side by side, each in its own vendor directory.
+`latest` is the default `vendor/` and needs no driver; the others are built by
+`scripts/test-env.php`, which generates `composer-<name>.json` and
+`phpunit-<name>.xml` from `composer.json` and `phpunit.xml` so an environment
+cannot drift from the real constraints. All generated files are gitignored.
 
-| Lane | Filament | Laravel | PHP | Serves on |
+| Environment | Filament | Laravel | PHP | Serves on |
 | --- | --- | --- | --- | --- |
-| `f4` — lowest supported | 4 | 11 (testbench `^9.0`) | 8.3 | `:8004` |
-| `l12` — latest Filament, previous Laravel | 5 | 12 (testbench `^10.0`) | 8.4 | `:8006` |
-| `f5` — latest stable (default `vendor/`) | 5 | 13 (testbench `^11.0`) | 8.5 | `:8000` |
+| `lowest` — lowest supported | 4 | 11 (testbench `^9.0`) | 8.3 | `:8004` |
+| `middle` — latest Filament, previous Laravel | 5 | 12 (testbench `^10.0`) | 8.4 | `:8006` |
+| `latest` — default `vendor/` | 5 | 13 (testbench `^11.0`) | 8.5 | `:8000` |
 
 ```bash
 # Install or refresh an environment
-composer env:f5     composer env:f4     composer env:l12
+composer env:lowest    composer env:middle    composer env:latest
 
 # Run the suite against one
-composer test:f5    composer test:f4    composer test:l12
+composer test:lowest   composer test:middle   composer test:latest
 
 # Run the Browser suite (needs "npm ci" + "npx playwright install chromium")
-composer test:browser:f5   composer test:browser:f4   composer test:browser:l12
+composer test:browser:lowest   composer test:browser:middle   composer test:browser:latest
 
 # Serve the workbench app — all three can run at once
-composer serve:f5   composer serve:f4   composer serve:l12
+composer serve:lowest  composer serve:middle  composer serve:latest
 ```
 
-The `browser` job in `.github/workflows/tests.yml` mirrors these three lanes.
-Add a lane by adding an entry to `LANES` in `scripts/lane.php` and the matching
-`env:`/`test:`/`serve:` scripts.
+The `browser` job in `.github/workflows/tests.yml` uses the same three names.
+Add an environment by adding an entry to `TEST_ENVIRONMENTS` in
+`scripts/test-env.php` and the matching `env:`/`test:`/`serve:` scripts.
 
-The `f4` lane targets PHP 8.3 rather than the package floor of 8.2 because
-`pest-plugin-browser` requires `^8.3`. Each lane pins `config.platform.php` to
-its target, so dependencies resolve as CI resolves them even when the installed
-binary is a different version; the scripts print the runtime PHP and flag the
-difference when it applies.
+`lowest` targets PHP 8.3 rather than the package floor of 8.2 because
+`pest-plugin-browser` requires `^8.3`. Each environment pins
+`config.platform.php` to its target, so dependencies resolve as CI resolves them
+even when the installed binary is a different version; the scripts print the
+runtime PHP and flag the difference when it applies (override with
+`PHP_LOWEST` / `PHP_MIDDLE`).
 
 `serve:*` boots a Filament panel at `/admin` with no login — `Workbench\App\Http\Middleware\AutoLogin`
 signs in the seeded demo user. The panel's brand name reports the running Filament,
 Laravel and Livewire versions, so you can always see which environment you are on.
 `workbench/` is shared source, so one demo resource renders under both majors.
 
-Laravel 11 does not run on PHP 8.5, so the F4 scripts dispatch to a PHP 8.4 binary
-(`php84` or `php8.4` on `PATH`; override with `PHP_F4=/path/to/php`).
+Laravel 11 does not run on PHP 8.5, so `lowest` never uses the ambient PHP when it
+is 8.5; it searches upward from its target to its ceiling and stops at 8.4.
 
 **Testbench assumes the package vendor directory is named `vendor`.** Two places
-would otherwise silently run the F5 code from the F4 environment, and both are
-handled in `scripts/f4.php`:
+would otherwise silently run the default environment instead, and both are
+handled in `scripts/test-env.php`:
 - The served skeleton bootstraps from `<package>/vendor/autoload.php`, so
-  `env:f4`/`serve:f4` rewrite `vendor-f4/orchestra/testbench-core/laravel/bootstrap/autoload.php`
+  `env:*`/`serve:*` rewrite `vendor-<name>/orchestra/testbench-core/laravel/bootstrap/autoload.php`
   and abort loudly if that rewrite ever stops matching.
 - `testbench package:test` resolves the runner as `vendor/pestphp/pest/bin/pest`,
-  so `test:f4` invokes `vendor-f4/bin/pest` directly instead.
+  so `test:*` invokes `vendor-<name>/bin/pest` directly instead.
 
 ## Architecture
 

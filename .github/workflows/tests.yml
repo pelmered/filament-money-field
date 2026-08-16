@@ -56,8 +56,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The two ends of the support range, mirroring the local "composer
-        # test:browser:f4" and "test:browser:f5" lanes. Testbench must be pinned
+        # The three points across the support range, mirroring the local "composer
+        # test:browser:lowest" .. "test:browser:latest". Testbench must be pinned
         # too: pinning only Filament resolves the newest testbench, so the
         # Filament 4 job would silently run on Laravel 13 and the lowest
         # supported stack would never be browser tested.

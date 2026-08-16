@@ -92,44 +92,44 @@
         "test:all": [
             "@php vendor/bin/pest"
         ],
-        "env:f5": [
+        "env:lowest": [
+            "@php scripts/test-env.php lowest install"
+        ],
+        "env:middle": [
+            "@php scripts/test-env.php middle install"
+        ],
+        "env:latest": [
             "@composer update"
         ],
-        "env:f4": [
-            "@php scripts/lane.php f4 install"
+        "test:lowest": [
+            "@php scripts/test-env.php lowest test --exclude-testsuite=Browser"
         ],
-        "env:l12": [
-            "@php scripts/lane.php l12 install"
+        "test:middle": [
+            "@php scripts/test-env.php middle test --exclude-testsuite=Browser"
         ],
-        "test:f5": [
+        "test:latest": [
             "@php vendor/bin/pest -c phpunit.xml --exclude-testsuite=Browser"
         ],
-        "test:f4": [
-            "@php scripts/lane.php f4 test --exclude-testsuite=Browser"
+        "test:browser:lowest": [
+            "@php scripts/test-env.php lowest test --testsuite=Browser"
         ],
-        "test:l12": [
-            "@php scripts/lane.php l12 test --exclude-testsuite=Browser"
+        "test:browser:middle": [
+            "@php scripts/test-env.php middle test --testsuite=Browser"
         ],
-        "test:browser:f5": [
+        "test:browser:latest": [
             "@php vendor/bin/pest -c phpunit.xml --testsuite=Browser"
         ],
-        "test:browser:f4": [
-            "@php scripts/lane.php f4 test --testsuite=Browser"
+        "serve:lowest": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/test-env.php lowest serve"
         ],
-        "test:browser:l12": [
-            "@php scripts/lane.php l12 test --testsuite=Browser"
+        "serve:middle": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/test-env.php middle serve"
         ],
-        "serve:f5": [
+        "serve:latest": [
             "Composer\\Config::disableProcessTimeout",
             "@composer serve"
-        ],
-        "serve:f4": [
-            "Composer\\Config::disableProcessTimeout",
-            "@php scripts/lane.php f4 serve"
-        ],
-        "serve:l12": [
-            "Composer\\Config::disableProcessTimeout",
-            "@php scripts/lane.php l12 serve"
         ],
         "coverage": [
             "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
