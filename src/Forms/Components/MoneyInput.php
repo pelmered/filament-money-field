@@ -5,7 +5,6 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
 use Money\Money;
@@ -31,14 +30,14 @@ class MoneyInput extends TextInput
 
         $this->prepare();
 
-        $this->suffixAction(function (MoneyInput $component): Action | null {
+        $this->suffixAction(function (MoneyInput $component): ?Action {
             if ($component->shouldHaveCurrencySwitcher()) {
                 $currencies = CurrencyRepository::getAvailableCurrencies();
 
                 return Action::make('changeCurrency')
                     ->icon('heroicon-m-arrow-path')
                     ->tooltip('Change currency')
-                    ->form([
+                    ->schema([
                         Select::make('currency')
                             ->label('Currency')
                             ->options($currencies->toSelectArray())
@@ -106,7 +105,7 @@ class MoneyInput extends TextInput
         };
 
         if (config('filament-money-field.use_input_mask')) {
-            $this->mask(function (MoneyInput $component): \Filament\Support\RawJs {
+            $this->mask(function (MoneyInput $component): RawJs {
                 $formattingRules = MoneyFormatter::getFormattingRules(
                     $component->getLocale(),
                     $component->getCurrency()

@@ -26,23 +26,24 @@
     "require": {
         "php": "^8.2",
         "ext-intl": "*",
-        "filament/support": "^v4.0.0|^v5.0.0",
+        "filament/support": "^4.0 | ^5.0",
         "moneyphp/money": "^4.0",
-        "illuminate/support": "^11.24 | ^12 | ^13",
+        "illuminate/support": "^11.28 | ^12 | ^13",
         "php-static-analysis/attributes": "^0.3.1 | ^0.4.0",
         "pelmered/larapara": "dev-main"
     },
     "require-dev": {
-        "filament/filament": "^4.0",
-        "orchestra/testbench": "^9.0",
+        "filament/filament": "^4.0 | ^5.0",
+        "orchestra/testbench": "^9.0 | ^10.0 | ^11.0",
         "nunomaduro/collision": "^8.0",
         "laravel/pint": "^1.16",
-        "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-type-coverage": "^3.0",
+        "pestphp/pest": "^3.8 | ^4.0",
+        "pestphp/pest-plugin-type-coverage": "^3.8 | ^4.0",
         "larastan/larastan": "^3.0",
         "php-static-analysis/phpstan-extension": "^0.4.0",
         "spatie/laravel-ray": "^1.39",
-        "rector/rector": "^2.0"
+        "rector/rector": "^2.0",
+        "pestphp/pest-plugin-browser": "^4.3"
     },
     "conflict": {
         "phpstan/phpstan": "2.1.12"
@@ -83,7 +84,10 @@
             "composer phpstan --fix"
         ],
         "test": [
-            "@php vendor/bin/testbench package:test"
+            "@php vendor/bin/testbench package:test --exclude-testsuite=Browser"
+        ],
+        "test:browser": [
+            "@php vendor/bin/pest --testsuite=Browser"
         ],
         "coverage": [
             "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"

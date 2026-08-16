@@ -1,6 +1,9 @@
 
 /vendor
+/vendor_high
 .phpunit.cache/
 coverage.xml
 composer.lock
 /reports/*
+/node_modules
+/tests/Browser/Screenshots

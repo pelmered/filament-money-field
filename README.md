@@ -27,8 +27,8 @@ This package would give "1 234,56 kr", while most other solutions probably would
 ## Requirements
 
 - PHP 8.2 or higher
-- Laravel 11.24.1 or higher
-- Filament 3.2 or higher
+- Laravel 11.28 or higher
+- Filament 4.0 or higher (Filament 4 and 5 are supported; use version 1.x of this package for Filament 3)
 - [PHP Internationalization extension (intl)](https://www.php.net/manual/en/intro.intl.php)
 - The database column type should be a either decimal or integer (amount stored with minor units i.e. cents).
 
@@ -339,4 +339,18 @@ When you are submitting a PR, I appreciate if you:
 - Add tests for your code. Not a strict requirement. Ask for guidance if you are unsure. I will try to help if I have time. 
 - Run the test suite and make sure it passes with `composer test`.
 - Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. You might also try to fix the code automatically with `composer fix`.
+
+### Browser tests
+
+The `Browser` test suite uses [Pest browser testing](https://pestphp.com/docs/browser-testing) to cover the
+behaviour that only exists once Livewire, Alpine and Filament's JavaScript have booted — client-side value
+hydration, currency symbol placement and the input mask.
+
+It is **not** part of `composer test`, because it needs PHP 8.3+, Node and a Playwright browser:
+
+```bash
+npm ci
+npx playwright install chromium
+composer test:browser
+```
 

@@ -4,7 +4,7 @@ namespace Pelmered\FilamentMoneyField\Tests\Support\Components;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Livewire\Component;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 
@@ -21,10 +21,10 @@ class FormTestComponent extends Component implements HasForms
         return new static;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return $form
-            ->schema([
+            ->components([
                 MoneyInput::make('price')
                     ->minValue(100)
                     ->maxValue(1000),

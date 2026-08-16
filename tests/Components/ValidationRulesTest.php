@@ -1,11 +1,10 @@
 <?php
 
+use Filament\Schemas\Components\Component;
 use Illuminate\Support\Facades\Validator;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
-use Filament\Schemas\Components\Component;
 
 it('validates min value using MinValueRule', function (): void {
     // Create the input component for testing
@@ -18,7 +17,7 @@ it('validates min value using MinValueRule', function (): void {
     $validator = Validator::make(
         ['money' => '15.00'],
         [
-            'money' => function (string $attribute, $value, \Closure $fail) use ($rule): void {
+            'money' => function (string $attribute, $value, Closure $fail) use ($rule): void {
                 $rule->validate($attribute, $value, $fail);
             },
         ]
@@ -30,7 +29,7 @@ it('validates min value using MinValueRule', function (): void {
     $validator = Validator::make(
         ['money' => '15.00'],
         [
-            'money' => function (string $attribute, $value, \Closure $fail) use ($rule): void {
+            'money' => function (string $attribute, $value, Closure $fail) use ($rule): void {
                 $rule->validate($attribute, $value, $fail);
             },
         ]
@@ -43,7 +42,7 @@ it('validates min value using MinValueRule', function (): void {
     $validator = Validator::make(
         ['money' => 'abc'],
         [
-            'money' => function (string $attribute, $value, \Closure $fail) use ($rule): void {
+            'money' => function (string $attribute, $value, Closure $fail) use ($rule): void {
                 $rule->validate($attribute, $value, $fail);
             },
         ]
@@ -63,7 +62,7 @@ it('validates max value using MaxValueRule', function (): void {
     $validator = Validator::make(
         ['money' => '15.00'],
         [
-            'money' => function (string $attribute, $value, \Closure $fail) use ($rule): void {
+            'money' => function (string $attribute, $value, Closure $fail) use ($rule): void {
                 $rule->validate($attribute, $value, $fail);
             },
         ]
@@ -75,7 +74,7 @@ it('validates max value using MaxValueRule', function (): void {
     $validator = Validator::make(
         ['money' => '15.00'],
         [
-            'money' => function (string $attribute, $value, \Closure $fail) use ($rule): void {
+            'money' => function (string $attribute, $value, Closure $fail) use ($rule): void {
                 $rule->validate($attribute, $value, $fail);
             },
         ]
@@ -88,7 +87,7 @@ it('validates max value using MaxValueRule', function (): void {
     $validator = Validator::make(
         ['money' => 'abc'],
         [
-            'money' => function (string $attribute, $value, \Closure $fail) use ($rule): void {
+            'money' => function (string $attribute, $value, Closure $fail) use ($rule): void {
                 $rule->validate($attribute, $value, $fail);
             },
         ]
