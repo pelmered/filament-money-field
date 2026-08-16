@@ -5,8 +5,13 @@
 /composer-f4.json
 /composer-f4.lock
 /phpunit-f4.xml
+/vendor-l12
+/composer-l12.json
+/composer-l12.lock
+/phpunit-l12.xml
 .phpunit.cache/
 .phpunit-f4.cache/
+.phpunit-l12.cache/
 coverage.xml
 composer.lock
 /reports/*

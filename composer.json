@@ -96,19 +96,28 @@
             "@composer update"
         ],
         "env:f4": [
-            "@php scripts/f4.php install"
+            "@php scripts/lane.php f4 install"
+        ],
+        "env:l12": [
+            "@php scripts/lane.php l12 install"
         ],
         "test:f5": [
             "@php vendor/bin/pest -c phpunit.xml --exclude-testsuite=Browser"
         ],
         "test:f4": [
-            "@php scripts/f4.php test --exclude-testsuite=Browser"
+            "@php scripts/lane.php f4 test --exclude-testsuite=Browser"
+        ],
+        "test:l12": [
+            "@php scripts/lane.php l12 test --exclude-testsuite=Browser"
         ],
         "test:browser:f5": [
             "@php vendor/bin/pest -c phpunit.xml --testsuite=Browser"
         ],
         "test:browser:f4": [
-            "@php scripts/f4.php test --testsuite=Browser"
+            "@php scripts/lane.php f4 test --testsuite=Browser"
+        ],
+        "test:browser:l12": [
+            "@php scripts/lane.php l12 test --testsuite=Browser"
         ],
         "serve:f5": [
             "Composer\\Config::disableProcessTimeout",
@@ -116,7 +125,11 @@
         ],
         "serve:f4": [
             "Composer\\Config::disableProcessTimeout",
-            "@php scripts/f4.php serve"
+            "@php scripts/lane.php f4 serve"
+        ],
+        "serve:l12": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/lane.php l12 serve"
         ],
         "coverage": [
             "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"

@@ -41,42 +41,41 @@ composer coverage
 
 ### Test Environments
 
-Two dependency sets live side by side: the default `vendor/` (Filament 5 / Laravel 13)
-and `vendor-f4/` (Filament 4 / Laravel 11). `scripts/f4.php` generates `composer-f4.json`
-and `phpunit-f4.xml` from `composer.json` and `phpunit.xml`, so the two cannot drift.
-All generated files are gitignored.
+Three dependency sets live side by side, each in its own vendor directory. `f5`
+is the default `vendor/` and needs no driver; the others are built by
+`scripts/lane.php`, which generates `composer-<lane>.json` and
+`phpunit-<lane>.xml` from `composer.json` and `phpunit.xml` so no lane can drift
+from the real constraints. All generated files are gitignored.
+
+| Lane | Filament | Laravel | PHP | Serves on |
+| --- | --- | --- | --- | --- |
+| `f4` — lowest supported | 4 | 11 (testbench `^9.0`) | 8.3 | `:8004` |
+| `l12` — latest Filament, previous Laravel | 5 | 12 (testbench `^10.0`) | 8.4 | `:8006` |
+| `f5` — latest stable (default `vendor/`) | 5 | 13 (testbench `^11.0`) | 8.5 | `:8000` |
 
 ```bash
 # Install or refresh an environment
-composer env:f5
-composer env:f4
+composer env:f5     composer env:f4     composer env:l12
 
 # Run the suite against one
-composer test:f5
-composer test:f4
+composer test:f5    composer test:f4    composer test:l12
 
-# Run the Browser suite against one (needs "npm ci" + "npx playwright install chromium")
-composer test:browser:f5
-composer test:browser:f4
+# Run the Browser suite (needs "npm ci" + "npx playwright install chromium")
+composer test:browser:f5   composer test:browser:f4   composer test:browser:l12
 
-# Serve the workbench app — F5 on :8000, F4 on :8004, both can run at once
-composer serve:f5
-composer serve:f4
+# Serve the workbench app — all three can run at once
+composer serve:f5   composer serve:f4   composer serve:l12
 ```
 
-The two lanes are the ends of the support range, and the `browser` job in
-`.github/workflows/tests.yml` mirrors them:
-
-| Lane | Filament | Laravel | PHP |
-| --- | --- | --- | --- |
-| `f4` (lowest supported) | 4 | 11 (testbench `^9.0`) | 8.3 |
-| `f5` (latest stable) | 5 | 13 (testbench `^11.0`) | 8.5 |
+The `browser` job in `.github/workflows/tests.yml` mirrors these three lanes.
+Add a lane by adding an entry to `LANES` in `scripts/lane.php` and the matching
+`env:`/`test:`/`serve:` scripts.
 
 The `f4` lane targets PHP 8.3 rather than the package floor of 8.2 because
-`pest-plugin-browser` requires `^8.3`. Its generated config pins
-`config.platform.php` to 8.3, so dependencies resolve the same as CI even when
-the only local binary below 8.5 is 8.4; the scripts print the runtime PHP and
-flag the difference when it applies.
+`pest-plugin-browser` requires `^8.3`. Each lane pins `config.platform.php` to
+its target, so dependencies resolve as CI resolves them even when the installed
+binary is a different version; the scripts print the runtime PHP and flag the
+difference when it applies.
 
 `serve:*` boots a Filament panel at `/admin` with no login — `Workbench\App\Http\Middleware\AutoLogin`
 signs in the seeded demo user. The panel's brand name reports the running Filament,

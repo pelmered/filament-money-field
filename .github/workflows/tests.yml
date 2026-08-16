@@ -68,6 +68,12 @@ jobs:
             php: '8.3'
             filament: '^4.0'
             testbench: '^9.0'
+          # Latest Filament on the previous Laravel. Neither end of the range
+          # covers this pairing, and testbench 10 is the Laravel 12 line.
+          - name: middle
+            php: '8.4'
+            filament: '^5.0'
+            testbench: '^10.0'
           # Testbench 11 is the Laravel 13 line.
           - name: latest
             php: '8.5'
