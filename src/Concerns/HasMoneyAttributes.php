@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
+use Money\Money;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
@@ -20,10 +21,16 @@ trait HasMoneyAttributes
 
     protected ?bool $inMinor = null;
 
-    public function getCurrency(): Currency
+    public function getCurrency(mixed $state = null): Currency
     {
         if (isset($this->currency)) {
             return $this->currency;
+        }
+
+        // A Money state already carries the currency it was stored with, which is
+        // more specific than the record's currency column or the configured default.
+        if ($state instanceof Money) {
+            return Currency::fromMoney($state);
         }
 
         // A record that has no currency yet (a create form, a nullable column) falls

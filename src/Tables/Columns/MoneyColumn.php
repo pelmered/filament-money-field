@@ -29,7 +29,7 @@ class MoneyColumn extends TextColumn
 
             return MoneyFormatter::format(
                 $state instanceof Money ? $state->getAmount() : $state,
-                $component->getCurrency(),
+                $component->getCurrency($state),
                 $component->getLocale(),
                 decimals: $this->getDecimals()
             );
@@ -45,7 +45,7 @@ class MoneyColumn extends TextColumn
 
             return MoneyFormatter::formatShort(
                 $state instanceof Money ? $state->getAmount() : $state,
-                $component->getCurrency(),
+                $component->getCurrency($state),
                 $component->getLocale(),
                 decimals: $this->getDecimals(),
                 showCurrencySymbol: $component->showCurrencySymbol,
