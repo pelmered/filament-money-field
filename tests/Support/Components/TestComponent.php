@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelmered\FilamentMoneyField\Tests\Support\Components;
 
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Livewire\Component;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 
@@ -21,7 +23,7 @@ class TestComponent extends Component implements HasForms
         return new static;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return $form
             ->schema([

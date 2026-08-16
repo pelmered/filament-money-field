@@ -8,6 +8,7 @@ use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Foundation\Application;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
@@ -40,7 +41,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      * @return void
      */
     protected function defineEnvironment($app)
@@ -75,6 +76,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function defineDatabaseMigrations()
     {
+        $this->loadMigrationsFrom(__DIR__.'/Support/Database/Migrations');
+
         artisan($this, 'migrate', ['--database' => 'testbench']);
 
         $this->beforeApplicationDestroyed(

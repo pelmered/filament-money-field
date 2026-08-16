@@ -1,5 +1,10 @@
 {
   "preset": "laravel",
+  "exclude": [
+    "vendor_high",
+    "vendor-lowest",
+    "vendor-middle"
+  ],
   "rules": {
     "binary_operator_spaces": {
       "default": "align_single_space_minimal",

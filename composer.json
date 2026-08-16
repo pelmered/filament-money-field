@@ -26,23 +26,24 @@
     "require": {
         "php": "^8.2",
         "ext-intl": "*",
-        "filament/support": "^v3.2.39",
+        "filament/support": "^4.0 | ^5.0",
         "moneyphp/money": "^4.0",
-        "illuminate/support": "^11.24 | ^12",
+        "illuminate/support": "^11.28 | ^12 | ^13",
         "php-static-analysis/attributes": "^0.3.1 | ^0.4.0",
         "pelmered/larapara": "dev-main"
     },
     "require-dev": {
-        "filament/filament": "^3.2",
-        "orchestra/testbench": "^9.0",
+        "filament/filament": "^4.0 | ^5.0",
+        "orchestra/testbench": "^9.0 | ^10.0 | ^11.0",
         "nunomaduro/collision": "^8.0",
         "laravel/pint": "^1.16",
-        "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-type-coverage": "^3.0",
+        "pestphp/pest": "^3.8 | ^4.0",
+        "pestphp/pest-plugin-type-coverage": "^3.8 | ^4.0",
         "larastan/larastan": "^3.0",
         "php-static-analysis/phpstan-extension": "^0.4.0",
         "spatie/laravel-ray": "^1.39",
-        "rector/rector": "^2.0"
+        "rector/rector": "^2.0",
+        "pestphp/pest-plugin-browser": "^4.3"
     },
     "conflict": {
         "phpstan/phpstan": "2.1.12"
@@ -83,7 +84,52 @@
             "composer phpstan --fix"
         ],
         "test": [
-            "@php vendor/bin/testbench package:test"
+            "@php vendor/bin/testbench package:test --exclude-testsuite=Browser"
+        ],
+        "test:browser": [
+            "@php vendor/bin/pest --testsuite=Browser"
+        ],
+        "test:all": [
+            "@php vendor/bin/pest"
+        ],
+        "env:lowest": [
+            "@php scripts/test-env.php lowest install"
+        ],
+        "env:middle": [
+            "@php scripts/test-env.php middle install"
+        ],
+        "env:latest": [
+            "@composer update"
+        ],
+        "test:lowest": [
+            "@php scripts/test-env.php lowest test --exclude-testsuite=Browser"
+        ],
+        "test:middle": [
+            "@php scripts/test-env.php middle test --exclude-testsuite=Browser"
+        ],
+        "test:latest": [
+            "@php vendor/bin/pest -c phpunit.xml --exclude-testsuite=Browser"
+        ],
+        "test:browser:lowest": [
+            "@php scripts/test-env.php lowest test --testsuite=Browser"
+        ],
+        "test:browser:middle": [
+            "@php scripts/test-env.php middle test --testsuite=Browser"
+        ],
+        "test:browser:latest": [
+            "@php vendor/bin/pest -c phpunit.xml --testsuite=Browser"
+        ],
+        "serve:lowest": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/test-env.php lowest serve"
+        ],
+        "serve:middle": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/test-env.php middle serve"
+        ],
+        "serve:latest": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer serve"
         ],
         "coverage": [
             "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"

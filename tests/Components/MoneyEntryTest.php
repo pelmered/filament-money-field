@@ -1,74 +1,83 @@
 <?php
 
-use Filament\Infolists\ComponentContainer;
+use Money\Currency;
+use Money\Money;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
 
 it('formats infolist money in usd', function (): void {
-    $entry = MoneyEntry::make('price');
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('price')],
+        ['price' => 100000000],
+        'price',
+    );
+    $entry = getComponent($component, 'price');
+    $state = getComponentState($component, 'price');
 
-    $component = ComponentContainer::make(InfolistTestComponent::make())
-        ->components([$entry])
-        ->state([$entry->getName() => 100000000]);
+    expect($entry->formatState($state))->toEqual('$1,000,000.00');
+});
 
-    $entry = $component->getComponent('price');
+it('formats infolist money in usd with Money object', function (): void {
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('price')],
+        ['price' => new Money(100000000, new Currency('USD'))],
+        'price',
+    );
+    $entry = getComponent($component, 'price');
+    $state = getComponentState($component, 'price');
 
-    expect($entry->formatState($entry->getState()))->toEqual('$1,000,000.00');
+    expect($state)->toBeInstanceOf(Money::class);
+    expect($entry->formatState($state))->toEqual('$1,000,000.00');
 });
 
 it('formats infolist money in sek', function (): void {
-    $entry = MoneyEntry::make('price')->currency('SEK')->locale('sv_SE');
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('price')->currency('SEK')->locale('sv_SE')],
+        ['price' => new Money(1000000, new Currency('SEK'))],
+        'price',
+    );
+    $entry = getComponent($component, 'price');
 
-    $component = ComponentContainer::make(InfolistTestComponent::make())
-        ->components([$entry])
-        ->state([$entry->getName() => 1000000]);
+    $formatted = $entry->formatState(getComponentState($component, 'price'));
 
-    $entry = $component->getComponent('price');
-
-    $formatted = $entry->formatState($entry->getState());
-    $expected  = '10 000,00 kr';
-
-    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
+    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces('10 000,00 kr'));
 });
 
 it('formats infolist money in short format in USD', function (): void {
-    $entry = MoneyEntry::make('price')->short();
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('price')->short()],
+        [],
+        'price',
+    );
 
-    $component = ComponentContainer::make(InfolistTestComponent::make())
-        ->components([$entry])
-        ->state([$entry->getName() => 123456789]);
+    $entry = getComponent($component, 'price');
 
-    $entry = $component->getComponent('price');
+    $formatted = $entry->formatState(new Money(123456789, new Currency('USD')));
 
-    expect($entry->formatState($entry->getState()))->toEqual('$1.23M');
+    expect($formatted)->toEqual('$1.23M');
 });
 
 it('formats infolist money in short format in sek', function (): void {
-    $entry = MoneyEntry::make('price')->short()->currency('SEK')->locale('sv_SE');
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('price')->currency('SEK')->locale('sv_SE')->short()],
+        ['price' => new Money(123600, new Currency('SEK'))],
+        'price',
+    );
+    $entry = getComponent($component, 'price');
 
-    $component = ComponentContainer::make(InfolistTestComponent::make())
-        ->components([$entry])
-        ->state([$entry->getName() => 123456]);
+    $formatted = $entry->formatState(getComponentState($component, 'price'));
 
-    $entry = $component->getComponent('price');
-
-    $formatted = $entry->formatState($entry->getState());
-    $expected  = '1,23K kr';
-
-    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
+    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces('1,24K kr'));
 });
 
 it('formats infolist money in sek with no decimals', function (): void {
-    $entry = MoneyEntry::make('price')->currency('SEK')->locale('sv_SE')->decimals(0);
+    $component = createInfolistTestComponent(
+        [MoneyEntry::make('price')->currency('SEK')->locale('sv_SE')->decimals(0)],
+        ['price' => new Money(1000000, new Currency('SEK'))],
+        'price',
+    );
+    $entry = getComponent($component, 'price');
 
-    $component = ComponentContainer::make(InfolistTestComponent::make())
-        ->components([$entry])
-        ->state([$entry->getName() => 1000000]);
+    $formatted = $entry->formatState(getComponentState($component, 'price'));
 
-    $entry = $component->getComponent('price');
-
-    $formatted = $entry->formatState($entry->getState());
-    $expected  = '10 000 kr';
-
-    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
+    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces('10 000 kr'));
 });

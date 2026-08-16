@@ -20,15 +20,15 @@ This package would give "1 234,56 kr", while most other solutions probably would
 [![Crap](https://img.shields.io/endpoint?url=https://otterwise.app/badge/github/pelmered/filament-money-field/crap/25ef865e-5235-4775-a357-246bef38293c)](https://otterwise.app/github/pelmered/filament-money-field)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat)](https://otterwise.app/github/pelmered/filament-money-field)
 
-[![Tested with Laravel 11 to 12](https://img.shields.io/badge/Tested%20with%20Laravel-11%20%7C%2012-brightgreen?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
-[![Tested on PHP 8.2 to 8.4](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3%20|%208.4-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![Tested with Laravel 11 to 13](https://img.shields.io/badge/Tested%20with%20Laravel-11%20%7C%2012%20%7C%2013-brightgreen?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
+[![Tested on PHP 8.2 to 8.5](https://img.shields.io/badge/Tested%20on%20PHP-8.2%20|%208.3%20|%208.4%20|%208.5-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 [![Tested on OS:es Linux, MacOS, Windows](https://img.shields.io/badge/Tested%20on%20lastest%20versions%20of-%20Ubuntu%20|%20MacOS%20|%20Windows-brightgreen.svg?maxAge=2419200)](https://github.com/pelmered/filament-money-field/actions/workflows/tests.yml)
 
 ## Requirements
 
 - PHP 8.2 or higher
-- Laravel 11.24.1 or higher
-- Filament 3.2 or higher
+- Laravel 11.28 or higher
+- Filament 4.0 or higher (Filament 4 and 5 are supported; use version 1.x of this package for Filament 3)
 - [PHP Internationalization extension (intl)](https://www.php.net/manual/en/intro.intl.php)
 - The database column type should be a either decimal or integer (amount stored with minor units i.e. cents).
 
@@ -119,7 +119,7 @@ For changing existing columns, in this case a column called `price`.
 ```php
 Schema::table('tablename', function (Blueprint $table) {
     $table->char('price_currency', 3)->after('price')->change();
-    $this->index(['price', 'price_currency']);
+    $table->index(['price', 'price_currency']);
 });
 ```
 Available column types(methods) on the Blueprint object are:
@@ -139,8 +139,8 @@ Don't forget to run your migrations.
 Each money column should have a cast that casts the column to a Money object and the currency column should have a cast that casts the column to a Currency object
 
 ```php
-use Pelmered\Larapara\Casts\CurrencyCast;
-use Pelmered\Larapara\Casts\MoneyCast;
+use Pelmered\FilamentMoneyField\Casts\CurrencyCast;
+use Pelmered\FilamentMoneyField\Casts\MoneyCast;
 
 protected function casts(): array
 {
@@ -180,6 +180,15 @@ protected function priceCurrency(): Attribute
     );
 }
 ````
+
+The casts are required. `MoneyInput` writes a `\Money\Money` object to the attribute, and without a cast Eloquent passes that object straight to the query bindings, which fails with `Object of class Money\Money could not be converted to string`.
+
+A `Money` object is also not a valid query binding, so pass the raw amount when you query:
+```php
+Product::where('price', '>', $product->price->getAmount())->get();
+// or
+Product::where('price', '>', $product->getRawOriginal('price'))->get();
+```
 
 ## Usage
 
@@ -339,4 +348,48 @@ When you are submitting a PR, I appreciate if you:
 - Add tests for your code. Not a strict requirement. Ask for guidance if you are unsure. I will try to help if I have time. 
 - Run the test suite and make sure it passes with `composer test`.
 - Check the code with `composer lint`. This will run both PHPStan and Pint. See if you can address any issues there before submitting. You might also try to fix the code automatically with `composer fix`.
+
+### Test environments
+
+The test suite can run against three dependency sets, each in its own vendor directory, so they can all stay
+installed at once. `latest` is the ordinary `vendor/` from `composer install`, which is what `composer test` uses.
+
+| Environment | Filament | Laravel | PHP | Panel                       |
+|-------------|----------|---------|-----|-----------------------------|
+| `lowest`    | 4        | 11      | 8.3 | http://127.0.0.1:8004/admin |
+| `middle`    | 5        | 12      | 8.4 | http://127.0.0.1:8006/admin |
+| `latest`    | 5        | 13      | 8.5 | http://127.0.0.1:8000/admin |
+
+```bash
+composer env:lowest      # install or refresh, once per environment
+composer test:lowest     # run the test suite
+composer serve:lowest    # serve a real Filament panel
+```
+
+`lowest` and `middle` are built by `scripts/test-env.php`, which generates their composer and PHPUnit config
+from the real `composer.json` and `phpunit.xml`, so an environment can never pin something the package does
+not support. Dependencies resolve for the environment's target PHP even if you don't have it installed, and
+the scripts print which version they actually ran on. `lowest` targets 8.3 rather than the package minimum
+of 8.2 because the Pest browser plugin requires 8.3; override with `PHP_LOWEST` or `PHP_MIDDLE`. These are
+the same three combinations the `browser` job in CI runs.
+
+`serve:*` boots a [workbench](https://packages.tools/workbench.html) panel with no login, built on the same
+`Post` model as the tests. All three can run at once, and the panel title tells you which versions you are
+looking at — handy for checking that a change looks right everywhere.
+
+### Browser tests
+
+The `Browser` test suite uses [Pest browser testing](https://pestphp.com/docs/browser-testing) to cover the
+behaviour that only exists once Livewire, Alpine and Filament's JavaScript have booted — client-side value
+hydration, currency symbol placement and the input mask.
+
+It is **not** part of `composer test`, because it needs PHP 8.3+, Node and a Playwright browser:
+
+```bash
+npm ci
+npx playwright install chromium
+
+composer test:browser           # default vendor/
+composer test:browser:lowest    # or a specific environment
+```
 

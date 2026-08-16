@@ -1,6 +1,19 @@
 
 /vendor
+/vendor_high
+/vendor-lowest
+/composer-lowest.json
+/composer-lowest.lock
+/phpunit-lowest.xml
+/vendor-middle
+/composer-middle.json
+/composer-middle.lock
+/phpunit-middle.xml
 .phpunit.cache/
+.phpunit-lowest.cache/
+.phpunit-middle.cache/
 coverage.xml
 composer.lock
 /reports/*
+/node_modules
+/tests/Browser/Screenshots

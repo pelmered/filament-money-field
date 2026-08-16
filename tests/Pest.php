@@ -1,15 +1,14 @@
 <?php
 
-use Filament\Forms;
 use Filament\Forms\Components\Field;
-use Filament\Infolists;
+use Filament\Schemas\Schema;
 use Illuminate\Validation\ValidationException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
+use Pelmered\FilamentMoneyField\Tests\BrowserTestCase;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
 use Pelmered\FilamentMoneyField\Tests\Support\Components\InfolistTestComponent;
-use Pelmered\FilamentMoneyField\Tests\Support\Components\TableTestComponent;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 pest()->project()->github('pelmered/filament-money-field');
@@ -26,6 +25,7 @@ pest()->project()->github('pelmered/filament-money-field');
 */
 
 uses(TestCase::class)->in('Unit', 'Components', 'Forms');
+uses(BrowserTestCase::class)->in('Browser');
 
 /*
 |--------------------------------------------------------------------------
@@ -37,10 +37,6 @@ uses(TestCase::class)->in('Unit', 'Components', 'Forms');
 | to assert different things. Of course, you may extend the Expectation API at any time.
 |
 */
-
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -64,7 +60,7 @@ function replaceNonBreakingSpaces(string $string): string
 function validationTester(Field $field, $value, ?callable $assertsCallback = null): true|array
 {
     try {
-        \Filament\Forms\ComponentContainer::make(FormTestComponent::make())
+        Schema::make(FormTestComponent::make())
             ->statePath('data')
             ->components([$field])
             ->fill([$field->getName() => $value])
@@ -86,8 +82,12 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 /**
  * @throws Exception
  */
-function createTestComponent($type = 'form', $components = [], $fieldName = 'amount', $statePath = 'data'): Forms\ComponentContainer|Infolists\ComponentContainer
+function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null): Schema
 {
+    if (! $fieldName) {
+        $fieldName = $components[0]->getName();
+    }
+
     if (count($components) <= 0) {
         $components = match ($type) {
             'form'     => [MoneyInput::make($fieldName)],
@@ -98,25 +98,36 @@ function createTestComponent($type = 'form', $components = [], $fieldName = 'amo
     }
 
     return (match ($type) {
-        'form'     => Forms\ComponentContainer::make(FormTestComponent::make()),
-        'infolist' => Infolists\ComponentContainer::make(InfolistTestComponent::make()),
-        // 'table' =>  \Filament\Tables\ComponentContainer::make(TableTestComponent::make()),
+        'form'     => Schema::make(FormTestComponent::make()),
+        'infolist' => Schema::make(InfolistTestComponent::make()),
+        // 'table' =>  Schema::make(TableTestComponent::make()),
         default => throw new Exception('Unknown component type: '.$type),
     })
-        ->statePath($statePath)
         ->components($components);
 }
 
-function createFormTestComponent($components = [], $fill = [], $fieldName = 'amount', $statePath = 'data'): \Filament\Forms\ComponentContainer|\Filament\Infolists\ComponentContainer
+function createFormTestComponent($components = [], ?array $fill = [], ?string $fieldName = null): Schema
 {
-    $components = createTestComponent('form', $components, $fieldName, $statePath);
+    $components = createTestComponent('form', $components, $fieldName);
     $components->fill($fill);
 
     return $components;
 }
 
-function createInfolistTestComponent($components = [], string $fieldName = 'amount', string $statePath = 'data'): MoneyEntry
+function createInfolistTestComponent($components = [], array|object|null $fill = [], ?string $fieldName = null)
 {
-    return createTestComponent('infolist', $components, $fieldName, $statePath)
-        ->getComponent($statePath.'.'.$fieldName);
+    $components = createTestComponent('infolist', $components, $fieldName);
+    $components->state($fill);
+
+    return $components;
+}
+
+function getComponent($testComponent, $componentName): MoneyInput|MoneyEntry
+{
+    return $testComponent->getComponent($componentName);
+}
+
+function getComponentState($component, $componentName)
+{
+    return getComponent($component, $componentName)->getState();
 }
