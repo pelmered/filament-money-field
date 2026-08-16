@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelmered\FilamentMoneyField\Casts;
 
 use Pelmered\LaraPara\Casts\MoneyCast as LaraParaMoneyCast;

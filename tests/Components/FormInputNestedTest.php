@@ -63,6 +63,7 @@ it('does not check the model cast for a field inside an array repeater', functio
         ]);
 
     $schema->fill(['lines' => [['unit_price' => null]]]);
+
     $itemKey                                         = array_key_first($livewire->data['lines']);
     $livewire->data['lines'][$itemKey]['unit_price'] = '123,45';
 

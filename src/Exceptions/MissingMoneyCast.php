@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelmered\FilamentMoneyField\Exceptions;
 
 use RuntimeException;
@@ -10,8 +12,8 @@ class MissingMoneyCast extends RuntimeException
     {
         parent::__construct(strtr(
             'Attribute [{attribute}] on model [{model}] is not cast to a Money object, so it cannot be saved. '
-            .'Add \'{attribute}\' => \Pelmered\FilamentMoneyField\Casts\MoneyCast::class and '
-            .'\'{attribute}{suffix}\' => \Pelmered\FilamentMoneyField\Casts\CurrencyCast::class to the $casts of the model. '
+            .('Add \'{attribute}\' => ' . \Pelmered\FilamentMoneyField\Casts\MoneyCast::class . '::class and ')
+            .('\'{attribute}{suffix}\' => ' . \Pelmered\FilamentMoneyField\Casts\CurrencyCast::class . '::class to the $casts of the model. ')
             .'See https://github.com/pelmered/filament-money-field#casts',
             [
                 '{attribute}' => $attribute,

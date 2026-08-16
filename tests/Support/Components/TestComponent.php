@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelmered\FilamentMoneyField\Tests\Support\Components;
 
 use Filament\Forms\Concerns\InteractsWithForms;
