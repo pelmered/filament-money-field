@@ -39,6 +39,62 @@ composer types
 composer coverage
 ```
 
+### Test Environments
+
+Three dependency sets live side by side, each in its own vendor directory.
+`latest` is the default `vendor/` and needs no driver; the others are built by
+`scripts/test-env.php`, which generates `composer-<name>.json` and
+`phpunit-<name>.xml` from `composer.json` and `phpunit.xml` so an environment
+cannot drift from the real constraints. All generated files are gitignored.
+
+| Environment | Filament | Laravel | PHP | Serves on |
+| --- | --- | --- | --- | --- |
+| `lowest` — lowest supported | 4 | 11 (testbench `^9.0`) | 8.3 | `:8004` |
+| `middle` — latest Filament, previous Laravel | 5 | 12 (testbench `^10.0`) | 8.4 | `:8006` |
+| `latest` — default `vendor/` | 5 | 13 (testbench `^11.0`) | 8.5 | `:8000` |
+
+```bash
+# Install or refresh an environment
+composer env:lowest    composer env:middle    composer env:latest
+
+# Run the suite against one
+composer test:lowest   composer test:middle   composer test:latest
+
+# Run the Browser suite (needs "npm ci" + "npx playwright install chromium")
+composer test:browser:lowest   composer test:browser:middle   composer test:browser:latest
+
+# Serve the workbench app — all three can run at once
+composer serve:lowest  composer serve:middle  composer serve:latest
+```
+
+The `browser` job in `.github/workflows/tests.yml` uses the same three names.
+Add an environment by adding an entry to `TEST_ENVIRONMENTS` in
+`scripts/test-env.php` and the matching `env:`/`test:`/`serve:` scripts.
+
+`lowest` targets PHP 8.3 rather than the package floor of 8.2 because
+`pest-plugin-browser` requires `^8.3`. Each environment pins
+`config.platform.php` to its target, so dependencies resolve as CI resolves them
+even when the installed binary is a different version; the scripts print the
+runtime PHP and flag the difference when it applies (override with
+`PHP_LOWEST` / `PHP_MIDDLE`).
+
+`serve:*` boots a Filament panel at `/admin` with no login — `Workbench\App\Http\Middleware\AutoLogin`
+signs in the seeded demo user. The panel's brand name reports the running Filament,
+Laravel and Livewire versions, so you can always see which environment you are on.
+`workbench/` is shared source, so one demo resource renders under both majors.
+
+Laravel 11 does not run on PHP 8.5, so `lowest` never uses the ambient PHP when it
+is 8.5; it searches upward from its target to its ceiling and stops at 8.4.
+
+**Testbench assumes the package vendor directory is named `vendor`.** Two places
+would otherwise silently run the default environment instead, and both are
+handled in `scripts/test-env.php`:
+- The served skeleton bootstraps from `<package>/vendor/autoload.php`, so
+  `env:*`/`serve:*` rewrite `vendor-<name>/orchestra/testbench-core/laravel/bootstrap/autoload.php`
+  and abort loudly if that rewrite ever stops matching.
+- `testbench package:test` resolves the runner as `vendor/pestphp/pest/bin/pest`,
+  so `test:*` invokes `vendor-<name>/bin/pest` directly instead.
+
 ## Architecture
 
 ### Core Components (src/)

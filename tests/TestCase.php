@@ -76,6 +76,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function defineDatabaseMigrations()
     {
+        $this->loadMigrationsFrom(__DIR__.'/Support/Database/Migrations');
+
         artisan($this, 'migrate', ['--database' => 'testbench']);
 
         $this->beforeApplicationDestroyed(

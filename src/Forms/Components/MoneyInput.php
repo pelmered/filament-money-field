@@ -5,10 +5,13 @@ namespace Pelmered\FilamentMoneyField\Forms\Components;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
+use Pelmered\FilamentMoneyField\Exceptions\MissingMoneyCast;
 use Pelmered\FilamentMoneyField\Forms\Rules\MaxValueRule;
 use Pelmered\FilamentMoneyField\Forms\Rules\MinValueRule;
 use Pelmered\LaraPara\Currencies\Currency;
@@ -80,11 +83,55 @@ class MoneyInput extends TextInput
                 return null;
             }
 
+            $component->assertModelCastsMoneyAttribute();
+
             $currency = $component->getCurrency();
             $amount   = MoneyFormatter::parseDecimal((string) $state, $currency, $component->getLocale(), $this->getDecimals());
 
             return new Money((int) $amount, $currency->toMoneyCurrency());
         });
+    }
+
+    /**
+     * The dehydrated state is a Money object, which only reaches the database through a cast.
+     * Without one, Eloquent passes the object straight to the query bindings and PDO fails with
+     * "Object of class Money\Money could not be converted to string".
+     */
+    public function assertModelCastsMoneyAttribute(): void
+    {
+        $schema = $this->getContainer();
+
+        // Layout components (sections, grids, ...) don't bind a model of their own.
+        while ($schema->model === null) {
+            $schema = $schema->getParentComponent()?->getContainer();
+
+            if (! $schema instanceof Schema) {
+                return;
+            }
+        }
+
+        // Array state (repeaters, builders) is not an attribute of the model that owns the schema.
+        if ($this->getContainer()->getStatePath() !== $schema->getStatePath()) {
+            return;
+        }
+
+        $model = $this->getModelInstance();
+
+        if (! $model instanceof Model) {
+            return;
+        }
+
+        $attribute = $this->getName();
+
+        // A mutator is the user's own way of handling the value, so leave those alone.
+        if ($model->hasCast($attribute)
+            || method_exists($model, 'set'.Str::studly($attribute).'Attribute')
+            || method_exists($model, Str::camel($attribute))
+        ) {
+            return;
+        }
+
+        throw new MissingMoneyCast($model::class, $attribute);
     }
 
     protected function prepare(): void

@@ -181,6 +181,15 @@ protected function priceCurrency(): Attribute
 }
 ````
 
+The casts are required. `MoneyInput` writes a `\Money\Money` object to the attribute, and without a cast Eloquent passes that object straight to the query bindings, which fails with `Object of class Money\Money could not be converted to string`.
+
+A `Money` object is also not a valid query binding, so pass the raw amount when you query:
+```php
+Product::where('price', '>', $product->price->getAmount())->get();
+// or
+Product::where('price', '>', $product->getRawOriginal('price'))->get();
+```
+
 ## Usage
 
 ### Form
