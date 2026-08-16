@@ -39,6 +39,44 @@ composer types
 composer coverage
 ```
 
+### Test Environments
+
+Two dependency sets live side by side: the default `vendor/` (Filament 5 / Laravel 13)
+and `vendor-f4/` (Filament 4 / Laravel 11). `scripts/f4.php` generates `composer-f4.json`
+and `phpunit-f4.xml` from `composer.json` and `phpunit.xml`, so the two cannot drift.
+All generated files are gitignored.
+
+```bash
+# Install or refresh an environment
+composer env:f5
+composer env:f4
+
+# Run the suite against one
+composer test:f5
+composer test:f4
+
+# Serve the workbench app — F5 on :8000, F4 on :8004, both can run at once
+composer serve:f5
+composer serve:f4
+```
+
+`serve:*` boots a Filament panel at `/admin` with no login — `Workbench\App\Http\Middleware\AutoLogin`
+signs in the seeded demo user. The panel's brand name reports the running Filament,
+Laravel and Livewire versions, so you can always see which environment you are on.
+`workbench/` is shared source, so one demo resource renders under both majors.
+
+Laravel 11 does not run on PHP 8.5, so the F4 scripts dispatch to a PHP 8.4 binary
+(`php84` or `php8.4` on `PATH`; override with `PHP_F4=/path/to/php`).
+
+**Testbench assumes the package vendor directory is named `vendor`.** Two places
+would otherwise silently run the F5 code from the F4 environment, and both are
+handled in `scripts/f4.php`:
+- The served skeleton bootstraps from `<package>/vendor/autoload.php`, so
+  `env:f4`/`serve:f4` rewrite `vendor-f4/orchestra/testbench-core/laravel/bootstrap/autoload.php`
+  and abort loudly if that rewrite ever stops matching.
+- `testbench package:test` resolves the runner as `vendor/pestphp/pest/bin/pest`,
+  so `test:f4` invokes `vendor-f4/bin/pest` directly instead.
+
 ## Architecture
 
 ### Core Components (src/)

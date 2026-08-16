@@ -89,6 +89,29 @@
         "test:browser": [
             "@php vendor/bin/pest --testsuite=Browser"
         ],
+        "test:all": [
+            "@php vendor/bin/pest"
+        ],
+        "env:f5": [
+            "@composer update"
+        ],
+        "env:f4": [
+            "@php scripts/f4.php install"
+        ],
+        "test:f5": [
+            "@php vendor/bin/pest -c phpunit.xml --exclude-testsuite=Browser"
+        ],
+        "test:f4": [
+            "@php scripts/f4.php test --exclude-testsuite=Browser"
+        ],
+        "serve:f5": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer serve"
+        ],
+        "serve:f4": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/f4.php serve"
+        ],
         "coverage": [
             "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
         ],

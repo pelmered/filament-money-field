@@ -1,9 +1,18 @@
 
 providers:
     - "Pelmered\\LaraPara\\LaraParaServiceProvider"
+    - "Workbench\\App\\Providers\\DemoPanelProvider"
 
+# Reuses the suite's own posts migration and Post model, so the demo panel and
+# the tests exercise the same schema.
+migrations:
+    - tests/Support/Database/Migrations
+
+seeders:
+    - "Workbench\\Database\\Seeders\\DatabaseSeeder"
 
 workbench:
+  start: '/admin'
   install: true
   discovers:
     web: true
@@ -16,3 +25,4 @@ workbench:
   build:
     - create-sqlite-db
     - migrate:refresh
+    - filament:assets

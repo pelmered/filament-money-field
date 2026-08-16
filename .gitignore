@@ -1,7 +1,12 @@
 
 /vendor
 /vendor_high
+/vendor-f4
+/composer-f4.json
+/composer-f4.lock
+/phpunit-f4.xml
 .phpunit.cache/
+.phpunit-f4.cache/
 coverage.xml
 composer.lock
 /reports/*
