@@ -89,6 +89,48 @@
         "test:browser": [
             "@php vendor/bin/pest --testsuite=Browser"
         ],
+        "test:all": [
+            "@php vendor/bin/pest"
+        ],
+        "env:lowest": [
+            "@php scripts/test-env.php lowest install"
+        ],
+        "env:middle": [
+            "@php scripts/test-env.php middle install"
+        ],
+        "env:latest": [
+            "@composer update"
+        ],
+        "test:lowest": [
+            "@php scripts/test-env.php lowest test --exclude-testsuite=Browser"
+        ],
+        "test:middle": [
+            "@php scripts/test-env.php middle test --exclude-testsuite=Browser"
+        ],
+        "test:latest": [
+            "@php vendor/bin/pest -c phpunit.xml --exclude-testsuite=Browser"
+        ],
+        "test:browser:lowest": [
+            "@php scripts/test-env.php lowest test --testsuite=Browser"
+        ],
+        "test:browser:middle": [
+            "@php scripts/test-env.php middle test --testsuite=Browser"
+        ],
+        "test:browser:latest": [
+            "@php vendor/bin/pest -c phpunit.xml --testsuite=Browser"
+        ],
+        "serve:lowest": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/test-env.php lowest serve"
+        ],
+        "serve:middle": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php scripts/test-env.php middle serve"
+        ],
+        "serve:latest": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer serve"
+        ],
         "coverage": [
             "@php vendor/bin/pest --testsuite=default --coverage-clover=coverage.xml --coverage-filter=src --path-coverage"
         ],
