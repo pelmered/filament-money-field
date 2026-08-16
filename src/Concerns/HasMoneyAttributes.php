@@ -3,7 +3,6 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
-use Money\Money;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
@@ -27,19 +26,13 @@ trait HasMoneyAttributes
             return $this->currency;
         }
 
-        $state = match (true) {
-            $this instanceof \Pelmered\FilamentMoneyField\Forms\Components\MoneyInput => $this->getState(),
-            $this instanceof \Pelmered\FilamentMoneyField\Forms\Components\MoneyColumn => $this->getState(),
-            default => null,
-        };
-        if ($state instanceof Money) {
-            return Currency::fromMoney($state);
-        }
-
+        // A record that has no currency yet (a create form, a nullable column) falls
+        // through to the default rather than blowing up in Currency::fromCode().
         if ($record = $this->getRecord()) {
             $currencyCode = $record->{$this->getCurrencyColumn()};
+
             if ($currencyCode) {
-                return Currency::fromCode($currencyCode);
+                return Currency::fromCode((string) $currencyCode);
             }
         }
 
@@ -103,7 +96,7 @@ trait HasMoneyAttributes
 
     protected function getCurrencyColumnDefault(): string
     {
-        return $this->getName().config('larapara-filament-money-field.currency_column_suffix', '_currency');
+        return $this->getName().config('larapara.currency_column_suffix', '_currency');
     }
 
     public function currencyColumn(string|Closure $column): static

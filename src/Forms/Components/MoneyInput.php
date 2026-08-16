@@ -136,8 +136,8 @@ class MoneyInput extends TextInput
 
     protected function prepare(): void
     {
-        $symbolPlacement      = $this->getSymbolPlacement();
-        $getCurrencySymbol    = function (MoneyInput $component): string {
+        $symbolPlacement   = $this->getSymbolPlacement();
+        $getCurrencySymbol = function (MoneyInput $component): string {
             return MoneyFormatter::getFormattingRules(
                 $component->getLocale(),
                 $component->getCurrency()
