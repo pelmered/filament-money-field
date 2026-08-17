@@ -21,15 +21,8 @@ jobs:
 
     check:
         runs-on: ubuntu-latest
-        permissions:
-            # Give the default GITHUB_TOKEN write permission to commit and push the
-            # added or changed files to the repository.
-            contents: write
         steps:
             - uses: actions/checkout@v4
-              #with:
-                  # Must be used to trigger workflow after push
-                  # token: ${{ secrets.ACCESS_TOKEN }}
 
             - uses: shivammathur/setup-php@v2
               with:
@@ -39,21 +32,8 @@ jobs:
             - name: Install dependencies
               run: composer install --no-interaction
 
-            - run: vendor/bin/rector --ansi
-
-            - name: Format Rector output
-              # Rector's output is not necessarily Pint-clean. Without this the
-              # auto-commit below lands a commit that fails the php-lint job.
-              run: vendor/bin/pint --config ./pint.json
-
-            - uses: stefanzweifel/git-auto-commit-action@v6
-              # Both push and pull_request fire for a branch with an open PR.
-              # Without this guard both runs auto-commit and race, and the loser
-              # fails with "atomic push failed ... fetch first".
-              if: github.event_name == 'push'
-              with:
-                commit_message: '[rector] Rector fixes'
-                commit_author: 'Peter Elmered <peter@elmered.com>'
-                commit_user_email: 'peter@elmered.com'
+            - name: Check for Rector fixes
+              # Run "composer fix" locally to apply what this finds.
+              run: vendor/bin/rector --dry-run --no-progress-bar --ansi
 
             - uses: php-actions/phpstan@v3
