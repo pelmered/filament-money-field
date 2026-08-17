@@ -26,8 +26,17 @@ trait HasMoneyAttributes
             return $this->currency;
         }
 
-        if ($this->getRecord()) {
-            return Currency::fromCode($this->getRecord()->{$this->getCurrencyColumn()});
+        // An empty currency column is a normal state — the column is nullable in
+        // the nullableMoney() and smallMoney() migrations, and a record being
+        // created has nothing in it yet — so it falls back to the default rather
+        // than failing. A non-empty but unknown code is a real error, and
+        // Currency::fromCode() still throws UnsupportedCurrency for it.
+        if ($record = $this->getRecord()) {
+            $currencyCode = (string) ($record->{$this->getCurrencyColumn()} ?? '');
+
+            if ($currencyCode !== '') {
+                return Currency::fromCode($currencyCode);
+            }
         }
 
         return MoneyFormatter::getDefaultCurrency();
