@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Config;
 use Pelmered\FilamentMoneyField\FilamentMoneyFieldServiceProvider;
+use Pelmered\FilamentMoneyField\Tests\TestCase;
 
 // Tests for FilamentMoneyFieldServiceProvider that avoid using reflection
 
@@ -33,4 +34,45 @@ it('merges config', function (): void {
 
     // Reset to original value
     config(['filament-money-field.default_currency' => $originalDefaultCurrency]);
+});
+
+function forwardConfig(array $config): void
+{
+    config($config);
+
+    TestCase::callMethod(
+        new FilamentMoneyFieldServiceProvider(app()),
+        'forwardConfigToLaraPara',
+        []
+    );
+}
+
+it("forwards its own config over LaraPara's", function (string $key, string $laraParaKey, mixed $value): void {
+    forwardConfig(['filament-money-field.'.$key => $value]);
+
+    expect(config('larapara.'.$laraParaKey))->toBe($value);
+})->with([
+    'default currency'       => ['default_currency', 'default_currency', 'SEK'],
+    'intl currency symbol'   => ['intl_currency_symbol', 'intl_currency_symbol', true],
+    'currency column suffix' => ['currency_column_suffix', 'currency_column_suffix', '_iso'],
+    'available currencies'   => ['available_currencies', 'available_currencies', ['USD', 'SEK']],
+    'store format'           => ['store.format', 'store.format', 'decimal'],
+]);
+
+it("leaves LaraPara's own config alone when nothing is set here", function (): void {
+    forwardConfig([
+        'larapara.default_currency'             => 'EUR',
+        'filament-money-field.default_currency' => null,
+    ]);
+
+    expect(config('larapara.default_currency'))->toBe('EUR');
+});
+
+it('keeps the sibling keys of a nested group it overrides', function (): void {
+    $ttl = config('larapara.currency_cache.ttl');
+
+    forwardConfig(['filament-money-field.store.format' => 'decimal']);
+
+    expect(config('larapara.store.format'))->toBe('decimal')
+        ->and(config('larapara.currency_cache.ttl'))->toBe($ttl);
 });
