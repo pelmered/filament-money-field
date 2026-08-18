@@ -18,8 +18,6 @@ trait HasMoneyAttributes
 
     protected ?int $decimals = null;
 
-    protected ?bool $inMinor = null;
-
     public function getCurrency(): Currency
     {
         if (isset($this->currency)) {
@@ -35,7 +33,7 @@ trait HasMoneyAttributes
 
     public function getLocale(): string
     {
-        return $this->locale ?? config('filament-money-field.default_locale') ?? app()->getLocale();
+        return $this->locale ?? (config('filament-money-field.default_locale') ?: app()->getLocale());
     }
 
     public function currency(string|Closure $currencyCode): static
@@ -49,35 +47,6 @@ trait HasMoneyAttributes
         }
 
         $this->currency = $currency;
-
-        return $this;
-    }
-
-    protected function getInMinorUnits(): bool
-    {
-        if ($this->inMinor !== null) {
-            return $this->inMinor;
-        }
-
-        // Mirrors LaraPara's own casts, where anything but 'decimal' means minor units.
-        return config('larapara.store.format') !== 'decimal';
-    }
-
-    public function inMajorUnits(): static
-    {
-        $this->inMinor = false;
-
-        return $this;
-    }
-
-    public function notInMinor(): static
-    {
-        return $this->inMajorUnits();
-    }
-
-    public function inMinor(): static
-    {
-        $this->inMinor = true;
 
         return $this;
     }

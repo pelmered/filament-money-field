@@ -70,6 +70,14 @@ Don't forget to run your migrations.
 
 Recommended approach is to make a backup of your current config, and copy in [the new config](config/filament-money-field.php). Then merge the values that you have changed.
 
+`default_locale` no longer defaults to `en_US`. Leave it unset and money fields follow the Laravel app locale; set it to pin one locale regardless of the app locale.
+
+The currency settings (`default_currency`, `intl_currency_symbol`, `currency_column_suffix`, `available_currencies` and `store.format`) now live in [LaraPara](https://github.com/pelmered/larapara) and are mirrored in this package's config file, where a `null` means "inherit LaraPara's own value". If you keep an old published config file, those keys still hold their old non-null values and will override a published `config/larapara.php` - null them out or copy in the new file.
+
+### Removed `inMinor()`, `inMajorUnits()` and `notInMinor()`
+
+These field methods are gone. They never had any effect: the components format `Money` objects, which always carry minor units, and whether the column itself holds minor units or decimals is decided by `store.format` and handled by the cast. Remove the calls, and use `store.format` (or `MONEY_STORE_FORMAT`) to choose how amounts are stored.
+
 ## Configure available currencies
 
 You need to configure the available currencies in the `filament-money-field.php` config or in your `.env` file.

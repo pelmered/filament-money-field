@@ -15,21 +15,14 @@ it('uses the configured currency column suffix', function (string $component): v
     'entry'  => [MoneyEntry::class],
 ]);
 
-it('falls back to the app locale when no default locale is configured', function (): void {
+it('falls back to the app locale when no default locale is configured', function (?string $locale): void {
     config([
-        'filament-money-field.default_locale' => null,
+        'filament-money-field.default_locale' => $locale,
         'app.locale'                          => 'sv_SE',
     ]);
 
     expect(MoneyInput::make('price')->getLocale())->toBe('sv_SE');
-});
-
-it('takes the minor units default from the store format', function (?string $format, bool $inMinor): void {
-    config(['larapara.store.format' => $format]);
-
-    expect(TestCase::callMethod(MoneyInput::make('price'), 'getInMinorUnits', []))->toBe($inMinor);
 })->with([
-    'int'     => ['int', true],
-    'decimal' => ['decimal', false],
-    'not set' => [null, true],
+    'null'         => [null],
+    'empty string' => [''],
 ]);

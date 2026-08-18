@@ -8,11 +8,11 @@ return [
     | Default locale
     |---------------------------------------------------------------------------
     |
-    | If not set, it will use the Laravel app locale.
     | For example: en_US, en_GB, sv_SE, etc.
+    | Leave this unset to follow the Laravel app locale.
     |
     */
-    'default_locale' => env('MONEY_DEFAULT_LOCALE', 'en_US'),
+    'default_locale' => env('MONEY_DEFAULT_LOCALE'),
 
     /*
     |---------------------------------------------------------------------------

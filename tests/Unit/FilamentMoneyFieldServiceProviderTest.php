@@ -20,7 +20,7 @@ it('registers config file correctly', function (): void {
     expect($hasConfigFile)->toBeTrue();
 
     // Check that we can access the configuration
-    expect(config('filament-money-field.default_locale'))->not()->toBeNull();
+    expect(config('filament-money-field.decimal_digits'))->not()->toBeNull();
 });
 
 it('merges config', function (): void {
