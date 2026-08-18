@@ -1,10 +1,10 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents working with code in this repository.
 
 ## Project Overview
 
-Filament Money Field is a Laravel/Filament package providing localized money fields (form input, table column, infolist entry) powered by [Money PHP](https://www.moneyphp.org/). It supports both Filament 3 and Filament 4. The heavy formatting logic lives in the dependency `pelmered/larapara` (LaraPara).
+Filament Money Field is a Laravel/Filament package providing localized money fields (form input, table column, infolist entry) powered by [Money PHP](https://www.moneyphp.org/). It supports Filament 4 and Filament 5. The heavy formatting logic lives in the dependency `pelmered/larapara` (LaraPara).
 
 ## Common Commands
 
@@ -108,14 +108,10 @@ handled in `scripts/test-env.php`:
 - **`Synthesizers/`** — Livewire property synthesizers for `Money` and `Currency` objects (hydrate/dehydrate for Livewire state).
 - **`Casts/MoneyCast`** — Eloquent cast for Money objects.
 - **`Forms/Rules/MinValueRule`, `MaxValueRule`** — Custom validation rules that parse localized input before comparing.
-- **`Helper`** — Contains `isFilament3()` which checks the installed Filament version at runtime via `Composer\InstalledVersions`.
 
-### Filament 3 vs 4 Compatibility
+### Filament 4 and 5 Compatibility
 
-The package supports both Filament 3 and 4. Key differences are handled via `Helper::isFilament3()`:
-- Filament 4 uses `Filament\Schemas\Schema` and `Filament\Actions\Action`
-- Filament 3 uses `Filament\Forms\ComponentContainer` and `Filament\Forms\Components\Actions\Action`
-- Test helpers in `tests/Pest.php` branch on this (see `createTestComponent`, `resolveFilament3Components`, `getComponent`)
+The package supports Filament 4 and 5 from one codebase. The two majors share an identical PHP API (`Filament\Schemas\Schema`, `Filament\Actions\Action`, etc.); the difference is Livewire (v3 on Filament 4, v4 on Filament 5), handled entirely by composer constraints. CI pins each Filament major explicitly via the `filament` matrix axis in `.github/workflows/tests.yml`.
 
 ### Test Structure (tests/)
 
@@ -142,5 +138,5 @@ Config file: `config/filament-money-field.php`. Key settings (all overridable vi
 
 - `moneyphp/money` — Core Money value objects
 - `pelmered/larapara` — Currency repository, MoneyFormatter (formatting, parsing, rules), Currency value objects, migration macros
-- `filament/support` — Filament framework (supports v3.2.39+ and v4.0+)
+- `filament/support` — Filament framework (supports v4.0+ and v5.0+)
 - `ext-intl` — Required for locale-aware number formatting
