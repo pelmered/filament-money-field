@@ -325,6 +325,24 @@ it('allows setting a currency column', function (): void {
     expect($field->getCurrency()->getCode())->toEqual('EUR');
 });
 
+it('keeps a currency column that is not the default one', function (): void {
+    $component = createFormTestComponent(
+        [
+            MoneyInput::make('price')
+                ->currencyColumn('currency')
+                ->currency('EUR'),
+        ],
+        ['price' => new Money(123456, new Currency('EUR'))],
+    );
+
+    // Formatting the state prepares the field a second time.
+    getComponentState($component, 'price');
+
+    $field = getComponent($component, 'price');
+
+    expect(TestCase::callMethod($field, 'getCurrencyColumn', []))->toEqual('currency');
+});
+
 it('allows can enable or disable currency switcher with global config', function (): void {
     config(['filament-money-field.currency_switcher_enabled_default' => false]);
 

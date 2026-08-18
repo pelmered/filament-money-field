@@ -35,7 +35,7 @@ trait HasMoneyAttributes
 
     public function getLocale(): string
     {
-        return $this->locale ?? config('filament-money-field.default_locale');
+        return $this->locale ?? config('filament-money-field.default_locale') ?? app()->getLocale();
     }
 
     public function currency(string|Closure $currencyCode): static
@@ -59,9 +59,8 @@ trait HasMoneyAttributes
             return $this->inMinor;
         }
 
-        $storeFormat = config('filament-money-field.store.format');
-
-        return $storeFormat === 'int';
+        // Mirrors LaraPara's own casts, where anything but 'decimal' means minor units.
+        return config('larapara.store.format') !== 'decimal';
     }
 
     public function inMajorUnits(): static
@@ -90,7 +89,7 @@ trait HasMoneyAttributes
 
     protected function getCurrencyColumnDefault(): string
     {
-        return $this->getName().config('larapara-filament-money-field.currency_column_suffix', '_currency');
+        return $this->getName().config('larapara.currency_column_suffix', '_currency');
     }
 
     public function currencyColumn(string|Closure $column): static
