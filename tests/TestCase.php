@@ -56,7 +56,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
             ]);
             $config->set('cache.default', 'file');
 
-            $config->set('filament-money-field.currency_cache.type', false);
+            // currency_cache is not mirrored in this package's config, so it has to be set on larapara.
+            $config->set('larapara.currency_cache.type', false);
+
+            // The expectations throughout the suite are written for en_US. The package itself
+            // no longer defaults to a locale, so pin it here like a real app would.
+            $config->set('filament-money-field.default_locale', 'en_US');
             $config->set('filament-money-field.available_currencies', ['USD', 'EUR', 'SEK']);
 
             // Setup queue database connections.

@@ -43,7 +43,7 @@ This package would give "1 234,56 kr", while most other solutions probably would
 - Comprehensive test suite. 100 % type coverage and 99+ % test coverage.
 - Configure currency and locale globally or per field.
 - Validation rules for valid numeric input, and min/max values.
-- A [money formatter class](MONEY-FORMATTER.md) that could be used in your project. Any public method there is considered stable and will not change without major version update. See [documentation](MONEY-FORMATTER.md) for details. This is now part of the [LaraPara](https://github.com/pelmered/larapara) package.
+- A money formatter class that could be used in your project. Any public method there is considered stable and will not change without major version update. This is now part of the [LaraPara](https://github.com/pelmered/larapara) package - see [its documentation](https://github.com/pelmered/larapara/blob/main/MONEY-FORMATTER.md) for details.
 
 **Are you using this package to make profits? Please consider [sponsoring me](https://github.com/sponsors/pelmered).**
 

@@ -18,8 +18,6 @@ trait HasMoneyAttributes
 
     protected ?int $decimals = null;
 
-    protected ?bool $inMinor = null;
-
     public function getCurrency(): Currency
     {
         if (isset($this->currency)) {
@@ -35,7 +33,7 @@ trait HasMoneyAttributes
 
     public function getLocale(): string
     {
-        return $this->locale ?? config('filament-money-field.default_locale');
+        return $this->locale ?? (config('filament-money-field.default_locale') ?: app()->getLocale());
     }
 
     public function currency(string|Closure $currencyCode): static
@@ -53,36 +51,6 @@ trait HasMoneyAttributes
         return $this;
     }
 
-    protected function getInMinorUnits(): bool
-    {
-        if ($this->inMinor !== null) {
-            return $this->inMinor;
-        }
-
-        $storeFormat = config('filament-money-field.store.format');
-
-        return $storeFormat === 'int';
-    }
-
-    public function inMajorUnits(): static
-    {
-        $this->inMinor = false;
-
-        return $this;
-    }
-
-    public function notInMinor(): static
-    {
-        return $this->inMajorUnits();
-    }
-
-    public function inMinor(): static
-    {
-        $this->inMinor = true;
-
-        return $this;
-    }
-
     protected function getCurrencyColumn(): string
     {
         return $this->currencyColumn ?? $this->getCurrencyColumnDefault();
@@ -90,7 +58,7 @@ trait HasMoneyAttributes
 
     protected function getCurrencyColumnDefault(): string
     {
-        return $this->getName().config('larapara-filament-money-field.currency_column_suffix', '_currency');
+        return $this->getName().config('larapara.currency_column_suffix', '_currency');
     }
 
     public function currencyColumn(string|Closure $column): static
