@@ -65,8 +65,13 @@ return [
     | The currency handling itself lives in pelmered/larapara, which ships its
     | own config file. Anything set below wins over the matching key in
     | config/larapara.php, so a project only needs to publish this one file.
-    | Leave a value null to inherit LaraPara's own default, which keeps a
-    | published config/larapara.php working.
+    |
+    | Every key in this section is inherited from LaraPara unless you set it
+    | here: leaving it null - which is also what you get by removing the key
+    | from this file, or by leaving its MONEY_* variable out of .env - keeps
+    | LaraPara's own value in charge, so a published config/larapara.php still
+    | decides and nothing is silently overridden. The inherited value is noted
+    | with each key below.
     |
     | The remaining LaraPara keys (currency_provider, currency_cast_to,
     | excluded_currencies, load_crypto_currencies, currency_cache) are advanced
@@ -74,21 +79,25 @@ return [
     |
     */
 
-    // ISO 4217 code, e.g. USD, EUR, SEK. Inherits USD.
+    // ISO 4217 code, e.g. USD, EUR, SEK. Inherits 'USD'.
     'default_currency' => env('MONEY_DEFAULT_CURRENCY'),
 
     // Use ISO codes instead of symbols: USD instead of $, SEK instead of kr.
+    // Inherits false.
     'intl_currency_symbol' => env('MONEY_INTL_CURRENCY_SYMBOL'),
 
     // Suffix of the companion currency column, so price -> price_currency.
+    // Inherits '_currency'.
     'currency_column_suffix' => env('MONEY_CURRENCY_COLUMN_SUFFIX'),
 
     // Restrict the selectable currencies. An array here, or a comma separated
     // string in .env: MONEY_AVAILABLE_CURRENCIES="USD,EUR,SEK".
+    // Inherits [], which allows every currency LaraPara knows about.
     'available_currencies' => env('MONEY_AVAILABLE_CURRENCIES'),
 
     // How the amount is stored: 'int' (minor units) or 'decimal'. Decides what
     // the money() migration macros create and how MoneyCast reads the column.
+    // Inherits 'int'.
     'store' => [
         'format' => env('MONEY_STORE_FORMAT'),
     ],
