@@ -38,14 +38,17 @@ it("reads the currency from the record's currency column", function (): void {
     expect($field->getCurrency()->getCode())->toBe('SEK');
 });
 
-it('falls back to the default currency when the record has no currency yet', function (): void {
+it('falls back to the default currency when the record has no currency yet', function (mixed $emptyCurrency): void {
     $field = fieldOnRecord(
         MoneyInput::make('price'),
-        new Post(['title' => 'Test', 'price' => null, 'price_currency' => null]),
+        new Post(['title' => 'Test', 'price' => null, 'price_currency' => $emptyCurrency]),
     );
 
     expect($field->getCurrency()->getCode())->toBe('USD');
-});
+})->with([
+    'null' => [null],
+    'empty string' => [''],
+]);
 
 it('falls back to the default currency when the record has no currency column', function (): void {
     $field = fieldOnRecord(
