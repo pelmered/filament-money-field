@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
+use Money\Money;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
@@ -20,14 +21,26 @@ trait HasMoneyAttributes
 
     protected ?bool $inMinor = null;
 
-    public function getCurrency(): Currency
+    public function getCurrency(mixed $state = null): Currency
     {
         if (isset($this->currency)) {
             return $this->currency;
         }
 
-        if ($this->getRecord()) {
-            return Currency::fromCode($this->getRecord()->{$this->getCurrencyColumn()});
+        // A Money state already carries the currency it was stored with, which is
+        // more specific than the record's currency column or the configured default.
+        if ($state instanceof Money) {
+            return Currency::fromMoney($state);
+        }
+
+        // A record that has no currency yet (a create form, a nullable column) falls
+        // through to the default rather than blowing up in Currency::fromCode().
+        if ($record = $this->getRecord()) {
+            $currencyCode = $record->{$this->getCurrencyColumn()};
+
+            if ($currencyCode) {
+                return Currency::fromCode((string) $currencyCode);
+            }
         }
 
         return MoneyFormatter::getDefaultCurrency();
@@ -59,7 +72,7 @@ trait HasMoneyAttributes
             return $this->inMinor;
         }
 
-        $storeFormat = config('filament-money-field.store.format');
+        $storeFormat = config('larapara.store.format');
 
         return $storeFormat === 'int';
     }
@@ -90,7 +103,7 @@ trait HasMoneyAttributes
 
     protected function getCurrencyColumnDefault(): string
     {
-        return $this->getName().config('larapara-filament-money-field.currency_column_suffix', '_currency');
+        return $this->getName().config('larapara.currency_column_suffix', '_currency');
     }
 
     public function currencyColumn(string|Closure $column): static
