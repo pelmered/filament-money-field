@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://storage.googleapis.com/coderabbit_public_assets/schema.v2.json
+#
+# Repo conventions are not repeated here: CodeRabbit reads AGENTS.md by default.
+# Everything below is a deliberate deviation from CodeRabbit's defaults.
+
+reviews:
+  pre_merge_checks:
+    docstrings:
+      # Small components and one-line getters in src/Concerns; a coverage
+      # threshold on those is pure nagging.
+      mode: "off"
+
+  path_instructions:
+    - path: tests/**/*.php
+      instructions: |-
+        intl formats money with non-breaking and narrow no-break spaces.
+        Assertions against formatted output must go through
+        replaceNonBreakingSpaces(); a literal ASCII space in an expected string
+        is a bug that only surfaces on some ICU versions.
+
+  tools:
+    phpstan:
+      # phpstan.neon includes larastan's extension.neon from vendor/, which
+      # CodeRabbit does not install. The "check" job in code-check.yaml runs
+      # PHPStan at level 8 with vendor/ present.
+      enabled: false
+    phpcs:
+      # Pint owns formatting (laravel preset + aligned binary operators).
+      # phpcs would review against PSR-12 and contradict pint.json.
+      enabled: false
