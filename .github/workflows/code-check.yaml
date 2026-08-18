@@ -10,10 +10,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Run Laravel Pint
-              uses: aglipanci/laravel-pint-action@v2
+              # Pinned to the patch tag: upstream's moving v2 tag still points at 2.4.
+              uses: aglipanci/laravel-pint-action@2.6
               with:
                   verboseMode: true
                   testMode: true
@@ -22,7 +23,7 @@ jobs:
     check:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
 
             - uses: shivammathur/setup-php@v2
               with:
