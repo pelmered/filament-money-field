@@ -46,7 +46,7 @@ it('falls back to the default currency when the record has no currency yet', fun
 
     expect($field->getCurrency()->getCode())->toBe('USD');
 })->with([
-    'null' => [null],
+    'null'         => [null],
     'empty string' => [''],
 ]);
 
