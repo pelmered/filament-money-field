@@ -7,7 +7,6 @@ namespace Pelmered\FilamentMoneyField\Infolists\Components;
 use Filament\Infolists\Components\TextEntry;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
-use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 class MoneyEntry extends TextEntry
 {
@@ -27,13 +26,7 @@ class MoneyEntry extends TextEntry
                 return '';
             }
 
-            return MoneyFormatter::format(
-                $state,
-                $component->getCurrency(),
-                $component->getLocale(),
-                decimals: $this->getDecimals(),
-                showCurrencySymbol: $this->showCurrencySymbol,
-            );
+            return $component->formatMoney($state, $component->showCurrencySymbol);
         });
     }
 
@@ -44,13 +37,7 @@ class MoneyEntry extends TextEntry
                 return '';
             }
 
-            return MoneyFormatter::formatShort(
-                $state,
-                $component->getCurrency(),
-                $component->getLocale(),
-                decimals: $this->getDecimals(),
-                showCurrencySymbol: $component->showCurrencySymbol,
-            );
+            return $component->formatMoneyShort($state, $component->showCurrencySymbol);
         });
 
         return $this;

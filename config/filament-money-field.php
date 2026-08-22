@@ -31,9 +31,11 @@ return [
     |
     | The number of decimals to display. Negative values mean significant
     | digits instead, so -2 displays 1234.56 as 1,200.
+    | Leave this unset to use the minor unit of each currency: 2 for USD,
+    | none for JPY, 3 for BHD.
     |
     */
-    'decimal_digits' => env('MONEY_DECIMAL_DIGITS', 2),
+    'decimal_digits' => env('MONEY_DECIMAL_DIGITS'),
 
     /*
     |---------------------------------------------------------------------------
@@ -97,8 +99,17 @@ return [
 
     // How the amount is stored: 'int' (minor units) or 'decimal'. Decides what
     // the money() migration macros create and how MoneyCast reads the column.
-    // Inherits 'int'.
+    // Inherits 'int'. The scale is the decimals a 'decimal' column keeps, and
+    // an amount needing more of them is refused rather than rounded.
+    // Inherits 3.
     'store' => [
-        'format' => env('MONEY_STORE_FORMAT'),
+        'format'        => env('MONEY_STORE_FORMAT'),
+        'decimal_scale' => env('MONEY_STORE_DECIMAL_SCALE'),
+    ],
+
+    // Strict parsing accepts only the notation this configuration writes, and
+    // refuses every other placement, spacing and separator. Inherits false.
+    'parse' => [
+        'strict' => env('MONEY_PARSE_STRICT'),
     ],
 ];

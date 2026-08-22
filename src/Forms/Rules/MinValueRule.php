@@ -18,7 +18,7 @@ readonly class MinValueRule implements ValidationRule
         $locale       = $this->component->getLocale();
 
         try {
-            $minorValue = (int) MoneyFormatter::parseDecimal(
+            $minorValue = (int) MoneyFormatter::parseToMinor(
                 $value,
                 $currencyCode,
                 $locale
@@ -28,7 +28,7 @@ readonly class MinValueRule implements ValidationRule
                 $fail('filament-money-field::validation.min_value')
                     ->translate([
                         'attribute' => $this->component->getValidationAttribute(),
-                        'value'     => MoneyFormatter::numberFormat($this->min, $locale),
+                        'value'     => MoneyFormatter::formatFromMinor($this->min, $currencyCode, $locale, showCurrencySymbol: false),
                     ]);
             }
         } catch (ParserException) {

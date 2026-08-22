@@ -19,8 +19,10 @@ it('registers config file correctly', function (): void {
 
     expect($hasConfigFile)->toBeTrue();
 
-    // Check that we can access the configuration
-    expect(config('filament-money-field.decimal_digits'))->not()->toBeNull();
+    // Check that we can access the configuration. Most keys are unset by default,
+    // since they inherit either the app locale or LaraPara's own value.
+    expect(config('filament-money-field'))->toBeArray()
+        ->toHaveKeys(['default_locale', 'decimal_digits', 'default_currency']);
 });
 
 it('merges config', function (): void {
@@ -57,6 +59,8 @@ it("forwards its own config over LaraPara's", function (string $key, string $lar
     'currency column suffix' => ['currency_column_suffix', 'currency_column_suffix', '_iso'],
     'available currencies'   => ['available_currencies', 'available_currencies', ['USD', 'SEK']],
     'store format'           => ['store.format', 'store.format', 'decimal'],
+    'store decimal scale'    => ['store.decimal_scale', 'store.decimal_scale', 8],
+    'parse strict'           => ['parse.strict', 'parse.strict', true],
 ]);
 
 it("leaves LaraPara's own config alone when nothing is set here", function (): void {

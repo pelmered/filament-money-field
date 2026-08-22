@@ -63,6 +63,8 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
             'currency_column_suffix' => config('filament-money-field.currency_column_suffix'),
             'available_currencies'   => config('filament-money-field.available_currencies'),
             'store.format'           => config('filament-money-field.store.format'),
+            'store.decimal_scale'    => config('filament-money-field.store.decimal_scale'),
+            'parse.strict'           => config('filament-money-field.parse.strict'),
         ];
 
         foreach ($overrides as $key => $value) {

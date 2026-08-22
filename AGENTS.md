@@ -137,13 +137,15 @@ Config file: `config/filament-money-field.php`, all keys env-overridable.
 
 Own settings — the value in this file is what applies:
 - `MONEY_DEFAULT_LOCALE` — unset follows the Laravel app locale
-- `MONEY_USE_INPUT_MASK`, `MONEY_DECIMAL_DIGITS`
+- `MONEY_USE_INPUT_MASK`
+- `MONEY_DECIMAL_DIGITS` — unset uses the minor unit of each currency; negative means significant digits
 - `MONEY_UNIT_PLACEMENT` (`before`/`after`/`hidden`)
 - `MONEY_CURRENCY_SWITCHER_ENABLED`
 
 LaraPara overrides — the second half of the file mirrors keys that belong to
 `config/larapara.php`: `default_currency`, `intl_currency_symbol`,
-`currency_column_suffix`, `available_currencies`, `store.format`. A value set
+`currency_column_suffix`, `available_currencies`, `store.format`,
+`store.decimal_scale`, `parse.strict`. A value set
 here wins over LaraPara's; leaving it null — which is also what an absent key or
 an absent `MONEY_*` variable gives — leaves LaraPara's own value in charge, so a
 published `config/larapara.php` is never silently overridden. The remaining

@@ -1,4 +1,36 @@
 
+# Behaviour changes in the 2.* line
+
+The formatting and storage behaviour lives in [LaraPara](https://github.com/pelmered/larapara), which
+has its own list of what changed and the migration each change needs - amounts stored as decimals,
+currency columns, casts and parsing among them. Read
+[LaraPara's UPGRADE.md](https://github.com/pelmered/larapara/blob/main/UPGRADE.md) alongside this file.
+
+Two of those reach the components here:
+
+## Decimals come from the currency
+
+`decimal_digits` is unset by default and each currency is formatted with its own minor unit, where every
+currency used to be formatted with two decimals: `¥1,000` rather than `¥1,000.00`, and `BHD 1,234.567`
+rather than `BHD 1,234.57`. Set `decimal_digits` (or `MONEY_DECIMAL_DIGITS`) to pin one number for every
+currency, or `->decimals()` to pin it for one field. A negative value still means significant digits.
+
+## A `Money` is formatted in the currency it carries
+
+`->currency()` no longer relabels a `Money`. It says which currency a *bare* amount is counted in, and
+which one a field falls back to, but a `Money` carries its own currency and is formatted in that:
+
+```php
+MoneyColumn::make('price')->currency('SEK')->locale('sv_SE');
+
+// state new Money(12345, new Currency('USD')):  "123,45 US$"   (was "123,45 kr")
+// state 12345:                                  "123,45 kr"    (unchanged)
+```
+
+An amount in one currency displayed under the symbol of another was a mislabelled amount rather than a
+conversion. If a field showed the right label this way, the currency reaching it is wrong - check the
+record's currency column, its cast, and `default_currency`.
+
 # Upgrade from 1.* to 2.*
 
 ### Add Model cats for money fields (optional but strongly recommended)

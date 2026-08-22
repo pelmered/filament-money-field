@@ -78,7 +78,7 @@ php artisan vendor:publish --provider="Pelmered\FilamentMoneyField\FilamentMoney
 
 #### Decimals and significant digits
 
-The number of decimals and significant digits can be set in the config file. Defaults to 2.
+The number of decimals and significant digits can be set in the config file. Left unset, each currency is formatted with its own minor unit: 2 decimals for USD, none for JPY, 3 for BHD.
 
 ```env
 //with input 123456
@@ -293,6 +293,18 @@ If you want to use international currency codes istead of their symbols or local
 MONEY_INTL_CURRENCY_SYMBOL=true // Defaults to false
 ```
 
+### Storage, parsing and currencies
+
+These belong to [LaraPara](https://github.com/pelmered/larapara), and this package's config file mirrors them, so setting them here is enough. Leave one unset to inherit LaraPara's own value.
+
+```env
+MONEY_AVAILABLE_CURRENCIES="USD,EUR,SEK" // Defaults to every currency in the list
+MONEY_CURRENCY_COLUMN_SUFFIX=_currency   // Companion column: price -> price_currency
+MONEY_STORE_FORMAT=int                   // 'int' (minor units) or 'decimal'
+MONEY_STORE_DECIMAL_SCALE=3              // Decimals a 'decimal' column keeps
+MONEY_PARSE_STRICT=false                 // Accept only the notation this config writes
+```
+
 ### Placement of currency symbol/code on input fields
 
 Possible options: `after`, `before`, `none`.
@@ -303,7 +315,7 @@ MONEY_UNIT_PLACEMENT=after // Defaults to before
 
 ### Decimals and significant digits
 
-The number of decimals and significant digits can be set in the config file. Defaults to 2.
+The number of decimals and significant digits can be set in the config file. Left unset, each currency is formatted with its own minor unit: 2 decimals for USD, none for JPY, 3 for BHD.
 
 ```env
 //with input 123456

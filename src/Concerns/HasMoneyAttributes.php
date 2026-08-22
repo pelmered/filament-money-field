@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
+use Money\Money;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
@@ -82,13 +83,84 @@ trait HasMoneyAttributes
         return $this;
     }
 
-    private function getDecimals(): int
+    private function getDecimals(): ?int
     {
         if (! is_null($this->decimals)) {
             return $this->decimals;
         }
 
-        return (int) config('filament-money-field.decimal_digits', 2);
+        $decimals = config('filament-money-field.decimal_digits');
+
+        return is_null($decimals) ? null : (int) $decimals;
+    }
+
+    /**
+     * LaraPara asks for precision by name and refuses a negative number of decimals.
+     * A negative decimal_digits is this package's way of asking for significant digits,
+     * so it moves over to the parameter that means that. Null for both leaves the
+     * decimals to the minor unit of the currency.
+     *
+     * @return array{0: int|null, 1: int|null} decimals, significant digits
+     */
+    private function getPrecision(): array
+    {
+        $decimals = $this->getDecimals();
+
+        return ! is_null($decimals) && $decimals < 0
+            ? [null, abs($decimals)]
+            : [$decimals, null];
+    }
+
+    /**
+     * LaraPara names its formatters for what they take: a Money carries the currency
+     * that scales it, while a bare amount is minor units and needs the field's.
+     */
+    protected function formatMoney(Money|int|string $state, bool $showCurrencySymbol = true): string
+    {
+        [$decimals, $significantDigits] = $this->getPrecision();
+
+        if ($state instanceof Money) {
+            return MoneyFormatter::format(
+                $state,
+                $this->getLocale(),
+                decimals: $decimals,
+                significantDigits: $significantDigits,
+                showCurrencySymbol: $showCurrencySymbol,
+            );
+        }
+
+        return MoneyFormatter::formatFromMinor(
+            $state,
+            $this->getCurrency(),
+            $this->getLocale(),
+            decimals: $decimals,
+            significantDigits: $significantDigits,
+            showCurrencySymbol: $showCurrencySymbol,
+        );
+    }
+
+    protected function formatMoneyShort(Money|int|string $state, bool $showCurrencySymbol = true): string
+    {
+        [$decimals, $significantDigits] = $this->getPrecision();
+
+        if ($state instanceof Money) {
+            return MoneyFormatter::formatShort(
+                $state,
+                $this->getLocale(),
+                decimals: $decimals,
+                significantDigits: $significantDigits,
+                showCurrencySymbol: $showCurrencySymbol,
+            );
+        }
+
+        return MoneyFormatter::formatShortFromMinor(
+            $state,
+            $this->getCurrency(),
+            $this->getLocale(),
+            decimals: $decimals,
+            significantDigits: $significantDigits,
+            showCurrencySymbol: $showCurrencySymbol,
+        );
     }
 
     // This should typically be provided by the Filament\Support\Concerns\EvaluatesClosures trait in Filament

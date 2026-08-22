@@ -7,7 +7,6 @@ namespace Pelmered\FilamentMoneyField\Tables\Columns;
 use Filament\Tables\Columns\TextColumn;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Concerns\HasMoneyAttributes;
-use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 class MoneyColumn extends TextColumn
 {
@@ -27,14 +26,7 @@ class MoneyColumn extends TextColumn
                 return '';
             }
 
-            $amount = $state instanceof Money ? $state->getAmount() : $state;
-
-            return MoneyFormatter::format(
-                $amount,
-                $component->getCurrency(),
-                $component->getLocale(),
-                decimals: $this->getDecimals()
-            );
+            return $component->formatMoney($state);
         });
     }
 
@@ -45,15 +37,7 @@ class MoneyColumn extends TextColumn
                 return '';
             }
 
-            $amount = $state instanceof Money ? $state->getAmount() : $state;
-
-            return MoneyFormatter::formatShort(
-                $amount,
-                $component->getCurrency(),
-                $component->getLocale(),
-                decimals: $this->getDecimals(),
-                showCurrencySymbol: $component->showCurrencySymbol,
-            );
+            return $component->formatMoneyShort($state, $component->showCurrencySymbol);
         });
 
         return $this;
