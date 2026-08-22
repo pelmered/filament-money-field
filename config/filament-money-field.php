@@ -32,7 +32,7 @@ return [
     | The number of decimals to display. Negative values mean significant
     | digits instead, so -2 displays 1234.56 as 1,200.
     | Leave this unset to use the minor unit of each currency: 2 for USD,
-    | none for JPY, 3 for BHD.
+    | none for JPY, 3 for BHD etc.
     |
     */
     'decimal_digits' => env('MONEY_DECIMAL_DIGITS'),

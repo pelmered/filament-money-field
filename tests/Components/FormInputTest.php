@@ -1,10 +1,13 @@
 <?php
 
 use Filament\Actions\Action;
+use Filament\Schemas\Schema;
 use Illuminate\Validation\ValidationException;
 use Money\Currency;
 use Money\Money;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
+use Pelmered\FilamentMoneyField\Tests\Support\Components\FormTestComponent;
+use Pelmered\FilamentMoneyField\Tests\Support\Models\Post;
 use Pelmered\FilamentMoneyField\Tests\TestCase;
 use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 
@@ -323,6 +326,26 @@ it('allows setting a currency column', function (): void {
 
     expect(TestCase::callMethod($field, 'getCurrencyColumn', []))->toEqual('price_currency');
     expect($field->getCurrency()->getCode())->toEqual('EUR');
+});
+
+it('takes the currency from the record, not from the field', function (): void {
+    config(['larapara.available_currencies' => ['USD', 'SEK', 'JPY']]);
+
+    $post = Post::create([
+        'title' => 'Test',
+        'price' => new Money(1000, new Currency('JPY')),
+    ]);
+
+    $livewire = FormTestComponent::make();
+    $schema   = Schema::make($livewire)
+        ->model($post)
+        ->statePath('data')
+        ->components([MoneyInput::make('price')->currency('SEK')->locale('en_US')]);
+    $schema->fill(['price' => $post->price]);
+
+    // JPY counts no minor units, so the stored 1000 reads as 1,000 rather than SEK's 10.00.
+    expect($schema->getComponent('price')->getCurrency()->getCode())->toBe('JPY')
+        ->and($livewire->data['price'])->toEqual('1,000');
 });
 
 it('keeps a currency column that is not the default one', function (): void {

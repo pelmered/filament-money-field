@@ -15,10 +15,18 @@ currency used to be formatted with two decimals: `¥1,000` rather than `¥1,000.
 rather than `BHD 1,234.57`. Set `decimal_digits` (or `MONEY_DECIMAL_DIGITS`) to pin one number for every
 currency, or `->decimals()` to pin it for one field. A negative value still means significant digits.
 
-## A `Money` is formatted in the currency it carries
+## An amount is shown in the currency it was stored in
 
-`->currency()` no longer relabels a `Money`. It says which currency a *bare* amount is counted in, and
-which one a field falls back to, but a `Money` carries its own currency and is formatted in that:
+`->currency()` no longer overrides the currency of an amount that has one. A stored amount was written
+in the currency of its own record, so that is the currency it is displayed, labelled and saved in, and
+`->currency()` says what an amount with no currency of its own is counted in - a new record, or a table
+with no currency column.
+
+Two things follow from that.
+
+A `Money` is formatted in the currency it carries. `MoneyFormatter::format()` takes it from the `Money`
+and has no argument left to override it with, which could only ever mislabel an amount, never convert
+it:
 
 ```php
 MoneyColumn::make('price')->currency('SEK')->locale('sv_SE');
@@ -27,9 +35,13 @@ MoneyColumn::make('price')->currency('SEK')->locale('sv_SE');
 // state 12345:                                  "123,45 kr"    (unchanged)
 ```
 
-An amount in one currency displayed under the symbol of another was a mislabelled amount rather than a
-conversion. If a field showed the right label this way, the currency reaching it is wrong - check the
-record's currency column, its cast, and `default_currency`.
+And the currency resolution order is reversed: the record's currency column comes before the currency
+set on the field, where the field used to win. A field on a record holding JPY reads, labels and saves
+JPY however the field is configured. Changing the currency of an existing record is the currency
+switcher's job, which writes the column.
+
+If a field only showed the right currency because it was set there, the currency reaching it from the
+record is wrong - check its currency column, its cast, and `default_currency`.
 
 # Upgrade from 1.* to 2.*
 

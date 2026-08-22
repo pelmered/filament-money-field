@@ -21,20 +21,37 @@ trait HasMoneyAttributes
 
     public function getCurrency(): Currency
     {
-        if (isset($this->currency)) {
-            return $this->currency;
+        // The record's own currency comes first: it is the one its stored amount was
+        // written in, so it is the one that describes the number being displayed. A
+        // currency set on the field says what an amount with none of its own is counted
+        // in - a new record, or a table without a currency column.
+        $storedCurrency = $this->getRecordOrNull()?->{$this->getCurrencyColumn()};
+
+        if (! blank($storedCurrency)) {
+            return Currency::fromCode((string) $storedCurrency);
         }
 
-        if ($this->getRecord()) {
-            return Currency::fromCode($this->getRecord()->{$this->getCurrencyColumn()});
-        }
-
-        return MoneyFormatter::getDefaultCurrency();
+        return $this->currency ?? MoneyFormatter::getDefaultCurrency();
     }
 
     public function getLocale(): string
     {
         return $this->locale ?? (config('filament-money-field.default_locale') ?: app()->getLocale());
+    }
+
+    /**
+     * A schema component that was never attached to a container - a validation rule built
+     * from a bare field, say - has no record to ask, and Filament's getRecord() throws on
+     * the uninitialized container rather than saying so. A table column has no container
+     * to begin with and answers for itself.
+     */
+    private function getRecordOrNull(): mixed
+    {
+        if (property_exists($this, 'container') && ! isset($this->container)) {
+            return null;
+        }
+
+        return $this->getRecord();
     }
 
     public function currency(string|Closure $currencyCode): static

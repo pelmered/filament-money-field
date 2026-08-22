@@ -107,7 +107,7 @@ handled in `scripts/test-env.php`:
 - **`Forms/Components/MoneyInput`** — Extends Filament's `TextInput`. Handles formatting state for display (`formatStateUsing`) and parsing back to `Money` objects (`dehydrateStateUsing`). Supports currency switcher action, input mask, symbol placement, min/max validation.
 - **`Tables/Columns/MoneyColumn`** — Extends `TextColumn`. Formats `Money|int|string` state for display. Supports `short()` format (e.g. "$1.23M").
 - **`Infolists/Components/MoneyEntry`** — Extends `TextEntry`. Same pattern as MoneyColumn.
-- **`Concerns/HasMoneyAttributes`** — Shared trait used by all three components. Provides `currency()`, `locale()`, `decimals()`, `currencyColumn()`, and related getters. Currency resolution falls back: field → record's currency column → default config.
+- **`Concerns/HasMoneyAttributes`** — Shared trait used by all three components. Provides `currency()`, `locale()`, `decimals()`, `currencyColumn()`, and related getters. Currency resolution: record's currency column → currency set on the field → `default_currency`. The record comes first because its column is what its stored amount was written in.
 - **`Synthesizers/`** — Livewire property synthesizers for `Money` and `Currency` objects (hydrate/dehydrate for Livewire state).
 - **`Casts/MoneyCast`, `Casts/CurrencyCast`** — Eloquent casts. Both are thin subclasses of the LaraPara casts, kept so the documented `Pelmered\FilamentMoneyField\Casts\*` names keep working after the split.
 - **`Exceptions/MissingMoneyCast`** — Thrown when a saved attribute is not cast to `Money`; the message names both casts to add.
