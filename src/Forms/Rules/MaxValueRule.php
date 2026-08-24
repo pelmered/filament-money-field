@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Money\Exception\ParserException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
+use Pelmered\LaraPara\Exceptions\UnsupportedCurrency;
 use Pelmered\LaraPara\MoneyFormatter\MoneyFormatter;
 
 readonly class MaxValueRule implements ValidationRule
@@ -14,8 +15,17 @@ readonly class MaxValueRule implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $currencyCode = $this->component->getCurrency();
-        $locale       = $this->component->getLocale();
+        try {
+            $currencyCode = $this->component->getCurrency();
+        } catch (UnsupportedCurrency) {
+            // The record holds a currency code this configuration does not know. Resolving it
+            // is what the field itself does to render, so that misconfiguration is already
+            // loud where it belongs; raising it again from here would turn a save into a 500,
+            // and reporting it as a failed bound would blame an amount that is fine.
+            return;
+        }
+
+        $locale = $this->component->getLocale();
 
         try {
             $minorValue = (int) MoneyFormatter::parseToMinor(

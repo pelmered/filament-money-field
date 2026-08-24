@@ -48,9 +48,12 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
 
     /**
      * LaraPara owns the currency configuration, but this package's config file is
-     * the one its users publish, so anything set there wins. A null means "inherit
-     * LaraPara's own default", which leaves a published config/larapara.php in
-     * charge of the keys this file does not mirror.
+     * the one its users publish, so anything set there wins. An empty value means
+     * "inherit LaraPara's own default", which leaves a published config/larapara.php
+     * in charge of the keys this file does not mirror. Empty rather than null,
+     * because a MONEY_* variable named in .env with nothing after the = reads as ''
+     * - the most natural way to write "I am not setting this" - and forwarding that
+     * would leave larapara.default_currency holding a code no currency answers to.
      *
      * Every larapara.* key is read lazily — Blueprint macros, casts and the
      * formatter all read it per call — so boot() is early enough for all of them.
@@ -68,7 +71,7 @@ class FilamentMoneyFieldServiceProvider extends PackageServiceProvider
         ];
 
         foreach ($overrides as $key => $value) {
-            if (! is_null($value)) {
+            if (! blank($value)) {
                 config(['larapara.'.$key => $value]);
             }
         }

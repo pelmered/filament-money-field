@@ -67,9 +67,9 @@ it('formats with significant digits when decimal_digits is negative', function (
     expect($formatted)->toEqual('$1,200');
 });
 
-it('leaves the decimals to the currency when none is configured', function (): void {
+it('leaves the decimals to the currency when none is configured', function (mixed $unset): void {
     config([
-        'filament-money-field.decimal_digits' => null,
+        'filament-money-field.decimal_digits' => $unset,
         'larapara.available_currencies'       => ['USD', 'JPY', 'BHD'],
     ]);
 
@@ -78,6 +78,18 @@ it('leaves the decimals to the currency when none is configured', function (): v
     expect(replaceNonBreakingSpaces($column->formatState(new Money(1000, new Currency('JPY')))))->toEqual('¥1,000')
         ->and(replaceNonBreakingSpaces($column->formatState(new Money(1234567, new Currency('BHD')))))->toEqual('BHD 1,234.567')
         ->and($column->formatState(new Money(123456, new Currency('USD'))))->toEqual('$1,234.56');
+})->with([
+    // MONEY_DECIMAL_DIGITS= in .env reads as an empty string, not null; (int) '' would pin
+    // every currency to whole units.
+    'null'         => [null],
+    'empty string' => [''],
+]);
+
+it('honours hideCurrencySymbol() on the default format, not only on short()', function (): void {
+    $state = new Money(123456, new Currency('USD'));
+
+    expect(MoneyColumn::make('amount')->hideCurrencySymbol()->formatState($state))->toEqual('1,234.56')
+        ->and(MoneyColumn::make('amount')->formatState($state))->toEqual('$1,234.56');
 });
 
 it('formats money with custom decimal precision', function (): void {

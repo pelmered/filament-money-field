@@ -3,6 +3,7 @@
 namespace Pelmered\FilamentMoneyField\Concerns;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Money\Money;
 use Pelmered\LaraPara\Currencies\Currency;
 use Pelmered\LaraPara\Currencies\CurrencyRepository;
@@ -25,7 +26,7 @@ trait HasMoneyAttributes
         // written in, so it is the one that describes the number being displayed. A
         // currency set on the field says what an amount with none of its own is counted
         // in - a new record, or a table without a currency column.
-        $storedCurrency = $this->getRecordOrNull()?->{$this->getCurrencyColumn()};
+        $storedCurrency = $this->getStoredCurrency();
 
         if (! blank($storedCurrency)) {
             return Currency::fromCode((string) $storedCurrency);
@@ -44,14 +45,34 @@ trait HasMoneyAttributes
      * from a bare field, say - has no record to ask, and Filament's getRecord() throws on
      * the uninitialized container rather than saying so. A table column has no container
      * to begin with and answers for itself.
+     *
+     * @return Model|array<string, mixed>|null
      */
-    private function getRecordOrNull(): mixed
+    private function getRecordOrNull(): Model|array|null
     {
         if (property_exists($this, 'container') && ! isset($this->container)) {
             return null;
         }
 
         return $this->getRecord();
+    }
+
+    /**
+     * Filament hands back either a model or a plain array as the record, so the currency
+     * column is read the way the record it came from allows. Reading an array with `->`
+     * yields a warning and no value, which would silently report the default currency for
+     * a record that names one.
+     */
+    private function getStoredCurrency(): mixed
+    {
+        $record = $this->getRecordOrNull();
+        $column = $this->getCurrencyColumn();
+
+        if (is_array($record)) {
+            return $record[$column] ?? null;
+        }
+
+        return $record?->{$column};
     }
 
     public function currency(string|Closure $currencyCode): static
@@ -108,7 +129,9 @@ trait HasMoneyAttributes
 
         $decimals = config('filament-money-field.decimal_digits');
 
-        return is_null($decimals) ? null : (int) $decimals;
+        // An absent MONEY_DECIMAL_DIGITS gives null, an empty one gives '', and both mean
+        // "leave the decimals to the currency" - (int) '' would pin every amount to 0.
+        return blank($decimals) ? null : (int) $decimals;
     }
 
     /**

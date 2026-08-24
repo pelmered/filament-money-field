@@ -63,14 +63,20 @@ it("forwards its own config over LaraPara's", function (string $key, string $lar
     'parse strict'           => ['parse.strict', 'parse.strict', true],
 ]);
 
-it("leaves LaraPara's own config alone when nothing is set here", function (): void {
+it("leaves LaraPara's own config alone when nothing is set here", function (mixed $unset): void {
     forwardConfig([
         'larapara.default_currency'             => 'EUR',
-        'filament-money-field.default_currency' => null,
+        'filament-money-field.default_currency' => $unset,
     ]);
 
     expect(config('larapara.default_currency'))->toBe('EUR');
-});
+})->with([
+    // A MONEY_* variable named in .env with nothing after the = reads as an empty string,
+    // not null, and that is the most natural way to write "I am not setting this".
+    'null'         => [null],
+    'empty string' => [''],
+    'only spaces'  => ['   '],
+]);
 
 it('keeps the sibling keys of a nested group it overrides', function (): void {
     $ttl = config('larapara.currency_cache.ttl');

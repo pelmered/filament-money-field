@@ -26,7 +26,7 @@ class MoneyColumn extends TextColumn
                 return '';
             }
 
-            return $component->formatMoney($state);
+            return $component->formatMoney($state, $component->showCurrencySymbol);
         });
     }
 
