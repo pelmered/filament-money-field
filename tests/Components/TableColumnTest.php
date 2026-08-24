@@ -35,13 +35,20 @@ it('formats money value with custom locale correctly', function (): void {
     expect(replaceNonBreakingSpaces($formatted))->toContain('$');
 });
 
-it('formats money with custom currency and locale', function (): void {
+it('formats a money in the currency it carries, not the one set on the field', function (): void {
     $column = MoneyColumn::make('amount')->currency('SEK')->locale('sv_SE');
 
     $formatted = $column->formatState(new Money(12345, new Currency('USD')));
-    $expected  = '123,45 kr';
 
-    expect(replaceNonBreakingSpaces($formatted))->toEqual(replaceNonBreakingSpaces($expected));
+    expect(replaceNonBreakingSpaces($formatted))->toEqual('123,45 US$');
+});
+
+it("formats a bare amount in the field's currency", function (): void {
+    $column = MoneyColumn::make('amount')->currency('SEK')->locale('sv_SE');
+
+    $formatted = $column->formatState(12345);
+
+    expect(replaceNonBreakingSpaces($formatted))->toEqual('123,45 kr');
 });
 
 it('formats money with short format', function (): void {
@@ -50,6 +57,39 @@ it('formats money with short format', function (): void {
     $formatted = $column->formatState(new Money(1234567, new Currency('USD')));
 
     expect($formatted)->toEqual('$12.35K');
+});
+
+it('formats with significant digits when decimal_digits is negative', function (): void {
+    config(['filament-money-field.decimal_digits' => -2]);
+
+    $formatted = MoneyColumn::make('amount')->formatState(new Money(123456, new Currency('USD')));
+
+    expect($formatted)->toEqual('$1,200');
+});
+
+it('leaves the decimals to the currency when none is configured', function (mixed $unset): void {
+    config([
+        'filament-money-field.decimal_digits' => $unset,
+        'larapara.available_currencies'       => ['USD', 'JPY', 'BHD'],
+    ]);
+
+    $column = MoneyColumn::make('amount');
+
+    expect(replaceNonBreakingSpaces($column->formatState(new Money(1000, new Currency('JPY')))))->toEqual('¥1,000')
+        ->and(replaceNonBreakingSpaces($column->formatState(new Money(1234567, new Currency('BHD')))))->toEqual('BHD 1,234.567')
+        ->and($column->formatState(new Money(123456, new Currency('USD'))))->toEqual('$1,234.56');
+})->with([
+    // MONEY_DECIMAL_DIGITS= in .env reads as an empty string, not null; (int) '' would pin
+    // every currency to whole units.
+    'null'         => [null],
+    'empty string' => [''],
+]);
+
+it('honours hideCurrencySymbol() on the default format, not only on short()', function (): void {
+    $state = new Money(123456, new Currency('USD'));
+
+    expect(MoneyColumn::make('amount')->hideCurrencySymbol()->formatState($state))->toEqual('1,234.56')
+        ->and(MoneyColumn::make('amount')->formatState($state))->toEqual('$1,234.56');
 });
 
 it('formats money with custom decimal precision', function (): void {

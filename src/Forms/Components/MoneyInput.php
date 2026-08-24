@@ -71,11 +71,8 @@ class MoneyInput extends TextInput
                 return '';
             }
 
-            $amount   = $state->getAmount();
-            $currency = Currency::fromMoney($state);
-            $locale   = $component->getLocale();
-
-            return MoneyFormatter::numberFormat((int) $amount, $locale, $this->getDecimals());
+            // The currency is already the field's prefix or suffix, so the number goes in bare.
+            return $component->formatMoney($state, showCurrencySymbol: false);
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
@@ -85,10 +82,7 @@ class MoneyInput extends TextInput
 
             $component->assertModelCastsMoneyAttribute();
 
-            $currency = $component->getCurrency();
-            $amount   = MoneyFormatter::parseDecimal((string) $state, $currency, $component->getLocale(), $this->getDecimals());
-
-            return new Money((int) $amount, $currency->toMoneyCurrency());
+            return MoneyFormatter::parseToMoney((string) $state, $component->getCurrency(), $component->getLocale());
         });
     }
 
@@ -136,9 +130,8 @@ class MoneyInput extends TextInput
 
     protected function prepare(): void
     {
-        $this->currencyColumn = $this->name.config('larapara.currency_column_suffix', '_currency');
-        $symbolPlacement      = $this->getSymbolPlacement();
-        $getCurrencySymbol    = function (MoneyInput $component): string {
+        $symbolPlacement   = $this->getSymbolPlacement();
+        $getCurrencySymbol = function (MoneyInput $component): string {
             return MoneyFormatter::getFormattingRules(
                 $component->getLocale(),
                 $component->getCurrency()

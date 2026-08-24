@@ -1,4 +1,48 @@
 
+# Behaviour changes in the 2.* line
+
+The formatting and storage behaviour lives in [LaraPara](https://github.com/pelmered/larapara), which
+has its own list of what changed and the migration each change needs - amounts stored as decimals,
+currency columns, casts and parsing among them. Read
+[LaraPara's UPGRADE.md](https://github.com/pelmered/larapara/blob/main/UPGRADE.md) alongside this file.
+
+Two of those reach the components here:
+
+## Decimals come from the currency
+
+`decimal_digits` is unset by default and each currency is formatted with its own minor unit, where every
+currency used to be formatted with two decimals: `¥1,000` rather than `¥1,000.00`, and `BHD 1,234.567`
+rather than `BHD 1,234.57`. Set `decimal_digits` (or `MONEY_DECIMAL_DIGITS`) to pin one number for every
+currency, or `->decimals()` to pin it for one field. A negative value still means significant digits.
+
+## An amount is shown in the currency it was stored in
+
+`->currency()` no longer overrides the currency of an amount that has one. A stored amount was written
+in the currency of its own record, so that is the currency it is displayed, labelled and saved in, and
+`->currency()` says what an amount with no currency of its own is counted in - a new record, or a table
+with no currency column.
+
+Two things follow from that.
+
+A `Money` is formatted in the currency it carries. `MoneyFormatter::format()` takes it from the `Money`
+and has no argument left to override it with, which could only ever mislabel an amount, never convert
+it:
+
+```php
+MoneyColumn::make('price')->currency('SEK')->locale('sv_SE');
+
+// state new Money(12345, new Currency('USD')):  "123,45 US$"   (was "123,45 kr")
+// state 12345:                                  "123,45 kr"    (unchanged)
+```
+
+And the currency resolution order is reversed: the record's currency column comes before the currency
+set on the field, where the field used to win. A field on a record holding JPY reads, labels and saves
+JPY however the field is configured. Changing the currency of an existing record is the currency
+switcher's job, which writes the column.
+
+If a field only showed the right currency because it was set there, the currency reaching it from the
+record is wrong - check its currency column, its cast, and `default_currency`.
+
 # Upgrade from 1.* to 2.*
 
 ### Add Model cats for money fields (optional but strongly recommended)
@@ -69,6 +113,14 @@ Don't forget to run your migrations.
 ### Config changes
 
 Recommended approach is to make a backup of your current config, and copy in [the new config](config/filament-money-field.php). Then merge the values that you have changed.
+
+`default_locale` no longer defaults to `en_US`. Leave it unset and money fields follow the Laravel app locale; set it to pin one locale regardless of the app locale.
+
+The currency settings (`default_currency`, `intl_currency_symbol`, `currency_column_suffix`, `available_currencies` and `store.format`) now live in [LaraPara](https://github.com/pelmered/larapara) and are mirrored in this package's config file, where a `null` means "inherit LaraPara's own value". If you keep an old published config file, those keys still hold their old non-null values and will override a published `config/larapara.php` - null them out or copy in the new file.
+
+### Removed `inMinor()`, `inMajorUnits()` and `notInMinor()`
+
+These field methods are gone. They never had any effect: the components format `Money` objects, which always carry minor units, and whether the column itself holds minor units or decimals is decided by `store.format` and handled by the cast. Remove the calls, and use `store.format` (or `MONEY_STORE_FORMAT`) to choose how amounts are stored.
 
 ## Configure available currencies
 

@@ -2,6 +2,7 @@
 
 use Filament\Forms\Components\Field;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use Pelmered\FilamentMoneyField\Infolists\Components\MoneyEntry;
@@ -82,7 +83,7 @@ function validationTester(Field $field, $value, ?callable $assertsCallback = nul
 /**
  * @throws Exception
  */
-function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null): Schema
+function createTestComponent($type = 'form', array $components = [], ?string $fieldName = null, ?Model $model = null): Schema
 {
     if (! $fieldName) {
         $fieldName = $components[0]->getName();
@@ -103,12 +104,13 @@ function createTestComponent($type = 'form', array $components = [], ?string $fi
         // 'table' =>  Schema::make(TableTestComponent::make()),
         default => throw new Exception('Unknown component type: '.$type),
     })
+        ->when($model, fn (Schema $schema): Schema => $schema->model($model)->statePath('data'))
         ->components($components);
 }
 
-function createFormTestComponent($components = [], ?array $fill = [], ?string $fieldName = null): Schema
+function createFormTestComponent($components = [], ?array $fill = [], ?string $fieldName = null, ?Model $model = null): Schema
 {
-    $components = createTestComponent('form', $components, $fieldName);
+    $components = createTestComponent('form', $components, $fieldName, $model);
     $components->fill($fill);
 
     return $components;
