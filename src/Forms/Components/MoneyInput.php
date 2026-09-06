@@ -75,7 +75,13 @@ class MoneyInput extends TextInput
             $currency = Currency::fromMoney($state);
             $locale   = $component->getLocale();
 
-            return MoneyFormatter::numberFormat((int) $amount, $locale, $this->getDecimals());
+            return MoneyFormatter::formatFromMinor(
+                (int) $amount,
+                $currency,
+                $locale,
+                decimals: $this->getDecimals(),
+                showCurrencySymbol: false,
+            );
         });
 
         $this->dehydrateStateUsing(function (MoneyInput $component, null|int|string $state): ?Money {
@@ -86,7 +92,7 @@ class MoneyInput extends TextInput
             $component->assertModelCastsMoneyAttribute();
 
             $currency = $component->getCurrency();
-            $amount   = MoneyFormatter::parseDecimal((string) $state, $currency, $component->getLocale(), $this->getDecimals());
+            $amount   = MoneyFormatter::parseToMinor((string) $state, $currency, $component->getLocale());
 
             return new Money((int) $amount, $currency->toMoneyCurrency());
         });

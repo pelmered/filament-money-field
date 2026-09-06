@@ -27,8 +27,10 @@ class MoneyEntry extends TextEntry
                 return '';
             }
 
-            return MoneyFormatter::format(
-                $state,
+            $amount = $state instanceof Money ? $state->getAmount() : $state;
+
+            return MoneyFormatter::formatFromMinor(
+                $amount,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals(),
@@ -44,8 +46,10 @@ class MoneyEntry extends TextEntry
                 return '';
             }
 
-            return MoneyFormatter::formatShort(
-                $state,
+            $amount = $state instanceof Money ? $state->getAmount() : $state;
+
+            return MoneyFormatter::formatShortFromMinor(
+                $amount,
                 $component->getCurrency(),
                 $component->getLocale(),
                 decimals: $this->getDecimals(),
