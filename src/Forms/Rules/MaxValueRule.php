@@ -18,7 +18,7 @@ readonly class MaxValueRule implements ValidationRule
         $locale       = $this->component->getLocale();
 
         try {
-            $minorValue = (int) MoneyFormatter::parseDecimal(
+            $minorValue = (int) MoneyFormatter::parseToMinor(
                 $value,
                 $currencyCode,
                 $locale
@@ -28,7 +28,7 @@ readonly class MaxValueRule implements ValidationRule
                 $fail('filament-money-field::validation.max_value')
                     ->translate([
                         'attribute' => $this->component->getValidationAttribute(),
-                        'value'     => MoneyFormatter::numberFormat($this->max, $locale),
+                        'value'     => MoneyFormatter::formatFromMinor($this->max, $currencyCode, $locale, showCurrencySymbol: false),
                     ]);
             }
         } catch (ParserException) {
